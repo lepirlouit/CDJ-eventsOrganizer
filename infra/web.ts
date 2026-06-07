@@ -9,7 +9,9 @@ export const web = new sst.aws.StaticSite(`Web`, {
   },
   domain: {
     name: "cdj.pirlou.it",
-    dns: sst.aws.dns(),
+    // pirlou.it is not in Route 53 — add a CNAME record manually:
+    //   cdj.pirlou.it  CNAME  <CloudFront URL printed after deploy>
+    // dns: sst.aws.dns(),
   },
   environment: {
     VITE_API_URL: api.url,
