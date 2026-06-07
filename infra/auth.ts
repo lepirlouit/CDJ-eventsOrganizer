@@ -56,18 +56,16 @@ export const userPoolClient = new aws.cognito.UserPoolClient(`UserPoolClient`, {
 });
 
 // Grant Cognito permission to invoke the Lambda triggers
-const triggers = [
-  { fn: defineAuthChallenge, source: "cognito-idp.amazonaws.com" },
-  { fn: createAuthChallenge, source: "cognito-idp.amazonaws.com" },
-  { fn: verifyAuthChallenge, source: "cognito-idp.amazonaws.com" },
-  { fn: postConfirmation, source: "cognito-idp.amazonaws.com" },
-];
-
-triggers.forEach(({ fn, source }) => {
-  new aws.lambda.Permission(`${fn.name}CognitoPermission`, {
+for (const [name, fn] of [
+  ["DefineAuthChallenge", defineAuthChallenge],
+  ["CreateAuthChallenge", createAuthChallenge],
+  ["VerifyAuthChallenge", verifyAuthChallenge],
+  ["PostConfirmation",    postConfirmation],
+] as const) {
+  new aws.lambda.Permission(`${name}CognitoPermission`, {
     action: "lambda:InvokeFunction",
     function: fn.arn,
-    principal: source,
+    principal: "cognito-idp.amazonaws.com",
     sourceArn: userPool.arn,
   });
-});
+}
