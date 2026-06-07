@@ -18,7 +18,9 @@
     "map_title": "Dojos in België",
     "see_events": "Bekijk evenementen",
     "upcoming": "Komende dojos",
-    "no_dojos": "Geen dojos gevonden"
+    "no_dojos": "Geen dojos gevonden",
+    "search_placeholder": "Zoeken op stad of naam…",
+    "no_results": "Geen dojos komen overeen met uw zoekopdracht"
   },
   "events": {
     "title": "Evenementen",

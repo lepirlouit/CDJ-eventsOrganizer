@@ -11,6 +11,11 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import Chip from "@mui/material/Chip";
 import Skeleton from "@mui/material/Skeleton";
+import TextField from "@mui/material/TextField";
+import InputAdornment from "@mui/material/InputAdornment";
+import SearchIcon from "@mui/icons-material/Search";
+import ClearIcon from "@mui/icons-material/Clear";
+import IconButton from "@mui/material/IconButton";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useTheme } from "@mui/material/styles";
 import { api } from "../../lib/api";
@@ -42,6 +47,7 @@ export function HomePage() {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const [selectedDojoId, setSelectedDojoId] = useState<string | null>(null);
+  const [search, setSearch] = useState("");
   const cardRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
   // Single call for all dojos
@@ -55,6 +61,15 @@ export function HomePage() {
     queryKey: ["upcomingEvents"],
     queryFn: () => api.get("/events").then((r) => r.data),
   });
+
+  // Filter dojos by search query (name or city)
+  const filteredDojos = useMemo(() => {
+    if (!search.trim()) return dojos;
+    const q = search.toLowerCase();
+    return dojos.filter(
+      (d) => d.name.toLowerCase().includes(q) || d.city.toLowerCase().includes(q)
+    );
+  }, [dojos, search]);
 
   // Group events by dojoId client-side — O(n), no extra requests
   const eventsByDojo = useMemo(() => {
@@ -96,14 +111,40 @@ export function HomePage() {
         )}
         <Grid item xs={12} md={isMobile ? 12 : 7}>
           {isMobile && <Box mb={2}>{mapSection}</Box>}
+
+          <TextField
+            fullWidth
+            size="small"
+            placeholder={t("home.search_placeholder")}
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            sx={{ mb: 2 }}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon fontSize="small" />
+                </InputAdornment>
+              ),
+              endAdornment: search ? (
+                <InputAdornment position="end">
+                  <IconButton size="small" onClick={() => setSearch("")} edge="end">
+                    <ClearIcon fontSize="small" />
+                  </IconButton>
+                </InputAdornment>
+              ) : null,
+            }}
+          />
+
           {isLoading ? (
             Array.from({ length: 3 }).map((_, i) => (
               <Skeleton key={i} variant="rectangular" height={140} sx={{ mb: 2, borderRadius: 2 }} />
             ))
-          ) : dojos.length === 0 ? (
-            <Typography color="text.secondary">{t("home.no_dojos")}</Typography>
+          ) : filteredDojos.length === 0 ? (
+            <Typography color="text.secondary">
+              {search ? t("home.no_results") : t("home.no_dojos")}
+            </Typography>
           ) : (
-            dojos.map((dojo) => {
+            filteredDojos.map((dojo) => {
               const events = (eventsByDojo[dojo.dojoId] ?? []).slice(0, 3);
               const isSelected = selectedDojoId === dojo.dojoId;
               return (
