@@ -211,7 +211,7 @@ export function RegisterPage() {
           onClick={() => append(emptyChild())}
           sx={{ mb: 3 }}
         >
-          Add another child
+          {t("registration.add_child")}
         </Button>
 
         <Divider sx={{ mb: 3 }} />

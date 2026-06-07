@@ -60,9 +60,9 @@ export function MyRegistrationsPage() {
 
   return (
     <Box maxWidth={700} mx="auto">
-      <Typography variant="h5" fontWeight={700} mb={3}>My Registrations</Typography>
+      <Typography variant="h5" fontWeight={700} mb={3}>{t("nav.my_registrations")}</Typography>
       {registrations.length === 0 ? (
-        <Typography color="text.secondary">No registrations yet.</Typography>
+        <Typography color="text.secondary">{t("registration.none_yet")}</Typography>
       ) : (
         registrations.map((reg) => {
           const event = eventsById[reg.eventId];

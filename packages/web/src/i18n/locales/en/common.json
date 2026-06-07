@@ -4,7 +4,8 @@
     "events": "Events",
     "login": "Sign in",
     "dashboard": "Dashboard",
-    "logout": "Sign out"
+    "logout": "Sign out",
+    "my_registrations": "My Registrations"
   },
   "auth": {
     "enter_email": "Enter your email address",
@@ -45,7 +46,9 @@
     "consent_contact": "I agree to be contacted for future events",
     "submit": "Register",
     "success": "Registration confirmed!",
-    "waitlisted": "You're on the waitlist at position #{{position}}"
+    "waitlisted": "You're on the waitlist at position #{{position}}",
+    "none_yet": "No registrations yet.",
+    "add_child": "Add another child"
   },
   "admin": {
     "dashboard": "Admin Dashboard",

@@ -4,7 +4,8 @@
     "events": "Événements",
     "login": "Se connecter",
     "dashboard": "Tableau de bord",
-    "logout": "Se déconnecter"
+    "logout": "Se déconnecter",
+    "my_registrations": "Mes inscriptions"
   },
   "auth": {
     "enter_email": "Entrez votre adresse e-mail",
@@ -45,7 +46,9 @@
     "consent_contact": "J'accepte d'être contacté pour de futurs événements",
     "submit": "S'inscrire",
     "success": "Inscription confirmée!",
-    "waitlisted": "Vous êtes sur la liste d'attente à la position #{{position}}"
+    "waitlisted": "Vous êtes sur la liste d'attente à la position #{{position}}",
+    "none_yet": "Aucune inscription pour le moment.",
+    "add_child": "Ajouter un autre enfant"
   },
   "admin": {
     "dashboard": "Tableau de bord",

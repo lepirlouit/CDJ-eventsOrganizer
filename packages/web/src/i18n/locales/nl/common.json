@@ -4,7 +4,8 @@
     "events": "Evenementen",
     "login": "Inloggen",
     "dashboard": "Dashboard",
-    "logout": "Uitloggen"
+    "logout": "Uitloggen",
+    "my_registrations": "Mijn inschrijvingen"
   },
   "auth": {
     "enter_email": "Voer uw e-mailadres in",
@@ -45,7 +46,9 @@
     "consent_contact": "Ik ga akkoord met contact voor toekomstige evenementen",
     "submit": "Inschrijven",
     "success": "Inschrijving bevestigd!",
-    "waitlisted": "U staat op de wachtlijst op positie #{{position}}"
+    "waitlisted": "U staat op de wachtlijst op positie #{{position}}",
+    "none_yet": "Nog geen inschrijvingen.",
+    "add_child": "Nog een kind toevoegen"
   },
   "admin": {
     "dashboard": "Admin Dashboard",
