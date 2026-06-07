@@ -49,10 +49,7 @@ export const userPool = new aws.cognito.UserPool(`UserPool`, {
   deletionProtection: $app.stage === "prod" ? "ACTIVE" : "INACTIVE",
   usernameAttributes: ["email"],
   schemas: [
-    { name: "role",   attributeDataType: "String", mutable: true },
-    // dojoId kept for backward compatibility — Cognito schema attributes
-    // cannot be removed once created. Dojo roles now live in DojoMembership.
-    { name: "dojoId", attributeDataType: "String", mutable: true },
+    { name: "role", attributeDataType: "String", mutable: true },
   ],
   lambdaConfig: {
     preSignUp: preSignUp.arn,
