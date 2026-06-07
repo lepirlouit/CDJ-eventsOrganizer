@@ -13,6 +13,12 @@ i18n
     supportedLngs: ["en", "fr", "nl"],
     defaultNS: "common",
     interpolation: { escapeValue: false },
+    detection: {
+      // Check localStorage first, then browser preference
+      order: ["localStorage", "navigator"],
+      caches: ["localStorage"],
+      lookupLocalStorage: "cdj-lang",
+    },
     resources: {
       en: { common: en },
       fr: { common: fr },

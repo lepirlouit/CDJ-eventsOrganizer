@@ -10,6 +10,7 @@ import IconButton from "@mui/material/IconButton";
 import { useTranslation } from "react-i18next";
 import { useAuth, isAnyCoach } from "../../hooks/useAuth";
 import { api } from "../../lib/api";
+import { LanguageSwitcher } from "./LanguageSwitcher";
 
 export function AppShell() {
   const { t } = useTranslation();
@@ -34,6 +35,7 @@ export function AppShell() {
           >
             CoderDojo Events
           </Typography>
+          <LanguageSwitcher />
           {user ? (
             <>
               {isAnyCoach(user) && (
