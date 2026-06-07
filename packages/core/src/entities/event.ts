@@ -1,5 +1,5 @@
 import { Entity } from "electrodb";
-import { DocumentClient, table } from "./table.js";
+import { DocumentClient, table } from "./client.js";
 
 export const EventEntity = new Entity(
   {
