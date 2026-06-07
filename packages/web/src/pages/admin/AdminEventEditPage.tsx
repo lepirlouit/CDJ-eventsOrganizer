@@ -1,5 +1,5 @@
-import React, { useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -16,7 +16,6 @@ import Tooltip from "@mui/material/Tooltip";
 import InfoIcon from "@mui/icons-material/Info";
 import LinearProgress from "@mui/material/LinearProgress";
 import { api } from "../../lib/api";
-import { useAuth } from "../../hooks/useAuth";
 
 const schema = z.object({
   title: z.string().min(1),
@@ -34,11 +33,12 @@ type FormData = z.infer<typeof schema>;
 
 export function AdminEventEditPage() {
   const { id: eventId } = useParams<{ id: string }>();
+  const [searchParams] = useSearchParams();
   const isNew = eventId === "new";
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { user } = useAuth();
   const qc = useQueryClient();
+  const dojoId = searchParams.get("dojoId") ?? "";
 
   const { data: event, isLoading } = useQuery({
     queryKey: ["event", eventId],
@@ -82,7 +82,7 @@ export function AdminEventEditPage() {
         status: data.status,
       };
       return isNew
-        ? api.post(`/admin/dojos/${user?.dojoId}/events`, payload)
+        ? api.post(`/admin/dojos/${dojoId}/events`, payload)
         : api.put(`/admin/events/${eventId}`, payload);
     },
     onSuccess: () => {

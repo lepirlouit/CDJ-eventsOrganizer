@@ -1,13 +1,6 @@
-import {
-  DynamoDBClient,
-  TransactWriteItemsCommand,
-} from "@aws-sdk/client-dynamodb";
-import { marshall } from "@aws-sdk/util-dynamodb";
 import { ulid } from "ulid";
-import { table, db } from "../entities/index.js";
+import { db } from "../entities/index.js";
 import type { Role } from "../types/index.js";
-
-const dynamo = new DynamoDBClient({});
 
 function zeroPad(n: number, width = 8): string {
   return String(n).padStart(width, "0");
@@ -69,6 +62,7 @@ export async function registerParticipant(params: {
     consentPhotos: params.consentPhotos,
     consentContact: params.consentContact,
     isCoachChild: isCoachParent,
+    checkedIn: false as const,
   };
 
   // Try reserved pool first for coach parents
@@ -107,15 +101,11 @@ export async function registerParticipant(params: {
 }
 
 async function tryConfirm(
-  base: Record<string, unknown>,
+  base: Parameters<typeof db.entities.registration.put>[0],
   event: { dojoId: string; eventId: string },
   pool: "coach" | "general"
 ) {
-  await db.entities.registration.put({
-    ...base,
-    status: "confirmed",
-    checkedIn: false,
-  } as Parameters<typeof db.entities.registration.put>[0]).go();
+  await db.entities.registration.put({ ...base, status: "confirmed" }).go();
 
   if (pool === "coach") {
     await db.entities.event.patch({ dojoId: event.dojoId, eventId: event.eventId })
@@ -132,7 +122,7 @@ export async function cancelRegistration(params: {
   registrationId: string;
   eventId: string;
   userId: string;
-  waitlistMode: WaitlistMode;
+  waitlistMode: "auto" | "manual";
 }) {
   const regResult = await db.entities.registration.query
     .byEvent({ eventId: params.eventId })
@@ -159,5 +149,3 @@ export async function cancelRegistration(params: {
 
   return reg;
 }
-
-type WaitlistMode = "auto" | "manual";

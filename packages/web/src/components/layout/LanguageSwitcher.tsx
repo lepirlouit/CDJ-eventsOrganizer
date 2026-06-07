@@ -1,4 +1,3 @@
-import React from "react";
 import { useTranslation } from "react-i18next";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -12,7 +11,7 @@ const LANGS = [
 
 const LangButton = styled(Button, {
   shouldForwardProp: (p) => p !== "active",
-})<{ active?: boolean }>(({ theme, active }) => ({
+})<{ active?: boolean }>(({ active }) => ({
   minWidth: 36,
   padding: "2px 6px",
   fontSize: "0.75rem",

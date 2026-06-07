@@ -1,4 +1,3 @@
-import React from "react";
 import { Navigate } from "react-router-dom";
 import type { GlobalRole } from "@coderdojo/core";
 import { useAuth, isAnyCoach } from "../../hooks/useAuth";

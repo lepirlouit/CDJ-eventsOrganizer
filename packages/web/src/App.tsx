@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -40,7 +40,7 @@ export default function App() {
 
   const user = baseUser ? { ...baseUser, memberships } : null;
 
-  async function fetchMemberships(token: string) {
+  async function fetchMemberships() {
     try {
       const { data } = await api.get("/users/me/memberships");
       setMemberships(data);
@@ -56,14 +56,14 @@ export default function App() {
       setToken(saved);
       setAccessToken(saved);
       setBaseUser(parseIdToken(savedId));
-      fetchMemberships(saved).finally(() => setLoading(false));
+      fetchMemberships().finally(() => setLoading(false));
     } else {
       api.get("/auth/session", { withCredentials: true })
         .then(({ data }) => {
           setToken(data.accessToken);
           setAccessToken(data.accessToken);
           setBaseUser(parseIdToken(data.idToken));
-          return fetchMemberships(data.accessToken);
+          return fetchMemberships();
         })
         .catch(() => {})
         .finally(() => setLoading(false));
@@ -76,7 +76,7 @@ export default function App() {
     setToken(token);
     setAccessToken(token);
     setBaseUser(parseIdToken(idToken));
-    fetchMemberships(token);
+    fetchMemberships();
   }, []);
 
   const logout = useCallback(() => {

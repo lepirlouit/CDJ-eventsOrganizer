@@ -1,12 +1,9 @@
-import React from "react";
 import { Outlet, Link, useNavigate } from "react-router-dom";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
-import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
-import IconButton from "@mui/material/IconButton";
 import { useTranslation } from "react-i18next";
 import { useAuth, isAnyCoach } from "../../hooks/useAuth";
 import { api } from "../../lib/api";

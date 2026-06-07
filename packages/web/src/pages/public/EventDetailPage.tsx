@@ -1,5 +1,4 @@
-import React from "react";
-import { useParams, Link, useNavigate } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import Box from "@mui/material/Box";
@@ -13,13 +12,12 @@ import LinearProgress from "@mui/material/LinearProgress";
 import Alert from "@mui/material/Alert";
 import Stack from "@mui/material/Stack";
 import { api } from "../../lib/api";
-import { useAuth } from "../../hooks/useAuth";
+import { useAuth, isAnyCoach } from "../../hooks/useAuth";
 
 export function EventDetailPage() {
   const { eventId } = useParams<{ eventId: string }>();
   const { t } = useTranslation();
   const { user } = useAuth();
-  const navigate = useNavigate();
   const qc = useQueryClient();
 
   const { data: event, isLoading } = useQuery({
@@ -34,7 +32,7 @@ export function EventDetailPage() {
       api.get(`/events/${eventId}/volunteers`).then((r) =>
         r.data.find((v: any) => v.userId === user?.sub && v.status === "active")
       ),
-    enabled: !!user && (user.role === "coach" || user.role === "lead_coach"),
+    enabled: !!user && isAnyCoach(user),
   });
 
   const volunteerMutation = useMutation({
@@ -50,7 +48,7 @@ export function EventDetailPage() {
   if (isLoading) return <LinearProgress />;
   if (!event) return <Alert severity="error">Event not found</Alert>;
 
-  const isCoach = user?.role === "coach" || user?.role === "lead_coach";
+  const isCoach = isAnyCoach(user);
   const generalAvailable = event.maxCapacity - event.coachReservedSeats - event.registrationCount;
   const coachAvailable = event.coachReservedSeats - event.coachRegistrationCount;
   const isFull = generalAvailable <= 0;

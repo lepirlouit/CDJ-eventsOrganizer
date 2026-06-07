@@ -1,4 +1,3 @@
-import React from "react";
 import Chip from "@mui/material/Chip";
 
 type EventStatus = "draft" | "published" | "cancelled" | "completed";
