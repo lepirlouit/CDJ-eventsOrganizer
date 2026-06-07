@@ -1,0 +1,106 @@
+{
+  "nav": {
+    "home": "Home",
+    "events": "Evenementen",
+    "login": "Inloggen",
+    "dashboard": "Dashboard",
+    "logout": "Uitloggen"
+  },
+  "auth": {
+    "enter_email": "Voer uw e-mailadres in",
+    "check_email": "Controleer uw e-mail",
+    "enter_code": "Voer de 6-cijferige code in die we u hebben gestuurd",
+    "invalid_code": "Ongeldige code, probeer opnieuw",
+    "sign_in": "Inloggen",
+    "verify": "Verifiëren"
+  },
+  "home": {
+    "map_title": "Dojos in België",
+    "see_events": "Bekijk evenementen",
+    "upcoming": "Komende dojos",
+    "no_dojos": "Geen dojos gevonden"
+  },
+  "events": {
+    "title": "Evenementen",
+    "date": "Datum",
+    "location": "Locatie",
+    "capacity": "Capaciteit",
+    "register": "Inschrijven",
+    "full": "Vol",
+    "waitlist": "Op wachtlijst",
+    "coach_reserved_seats": "{{count}} plek(ken) gereserveerd voor kinderen van coaches",
+    "coach_reserved_available": "{{count}} gereserveerde plek(ken) beschikbaar",
+    "available": "{{count}} plek(ken) beschikbaar"
+  },
+  "registration": {
+    "ninja_name": "Naam ninja",
+    "birthdate": "Geboortedatum",
+    "atelier": "Atelier",
+    "needs_computer": "Heeft een computer nodig",
+    "previous_visits": "Eerdere bezoeken",
+    "heard_about": "Hoe heeft u van ons gehoord?",
+    "consent_photos": "Ik geef toestemming voor foto's",
+    "consent_contact": "Ik ga akkoord met contact voor toekomstige evenementen",
+    "submit": "Inschrijven",
+    "success": "Inschrijving bevestigd!",
+    "waitlisted": "U staat op de wachtlijst op positie #{{position}}"
+  },
+  "admin": {
+    "dashboard": "Admin Dashboard",
+    "registrants": "Ingeschrevenen",
+    "waitlist": "Wachtlijst",
+    "export": "CSV exporteren",
+    "promote": "Bevorderen",
+    "event_create": "Evenement aanmaken",
+    "event_form": {
+      "title": "Titel",
+      "description": "Beschrijving",
+      "date": "Datum",
+      "location_address": "Adres",
+      "max_capacity": "Maximale capaciteit",
+      "coach_reserved": "Plaatsen gereserveerd voor kinderen van coaches",
+      "coach_reserved_tip": "Ongebruikte gereserveerde plaatsen worden bij sluiting beschikbaar voor iedereen",
+      "registration_open": "Inschrijving opent",
+      "registration_close": "Inschrijving sluit",
+      "ateliers": "Ateliers",
+      "status": "Status"
+    },
+    "checkin": {
+      "title": "Check-in",
+      "search": "Zoek ninja of ouder…",
+      "checked_in": "Aangemeld",
+      "not_checked_in": "Nog niet aangemeld",
+      "counter": "{{count}} / {{total}} aangemeld",
+      "undo": "Check-in ongedaan maken",
+      "only_confirmed": "Alleen bevestigde inschrijvingen kunnen worden ingecheckt"
+    },
+    "dojo_form": {
+      "name": "Naam dojo",
+      "city": "Stad",
+      "address": "Adres",
+      "latitude": "Breedtegraad",
+      "longitude": "Lengtegraad",
+      "coords_tip": "Voer decimale coördinaten in (bijv. 50.8503, 4.3517)"
+    }
+  },
+  "volunteers": {
+    "title": "Vrijwillige coaches",
+    "sign_up": "Aanmelden als vrijwilliger",
+    "withdraw": "Intrekken",
+    "signed_up": "U bent aangemeld als vrijwilliger",
+    "count": "{{count}} coach(es) als vrijwilliger",
+    "skills": "Vaardigheden / notities",
+    "skills_placeholder": "bijv. Python, Arduino, Scratch…",
+    "no_volunteers": "Nog geen coaches aangemeld"
+  },
+  "common": {
+    "save": "Opslaan",
+    "cancel": "Annuleren",
+    "delete": "Verwijderen",
+    "edit": "Bewerken",
+    "back": "Terug",
+    "loading": "Laden…",
+    "error": "Er is een fout opgetreden",
+    "required": "Dit veld is verplicht"
+  }
+}

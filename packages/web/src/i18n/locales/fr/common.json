@@ -1,0 +1,106 @@
+{
+  "nav": {
+    "home": "Accueil",
+    "events": "Événements",
+    "login": "Se connecter",
+    "dashboard": "Tableau de bord",
+    "logout": "Se déconnecter"
+  },
+  "auth": {
+    "enter_email": "Entrez votre adresse e-mail",
+    "check_email": "Vérifiez votre e-mail",
+    "enter_code": "Entrez le code à 6 chiffres que nous vous avons envoyé",
+    "invalid_code": "Code invalide, veuillez réessayer",
+    "sign_in": "Se connecter",
+    "verify": "Vérifier"
+  },
+  "home": {
+    "map_title": "Dojos en Belgique",
+    "see_events": "Voir les événements",
+    "upcoming": "Dojos à venir",
+    "no_dojos": "Aucun dojo trouvé"
+  },
+  "events": {
+    "title": "Événements",
+    "date": "Date",
+    "location": "Lieu",
+    "capacity": "Capacité",
+    "register": "S'inscrire",
+    "full": "Complet",
+    "waitlist": "Rejoindre la liste d'attente",
+    "coach_reserved_seats": "{{count}} place(s) réservée(s) pour les enfants des coaches",
+    "coach_reserved_available": "{{count}} place(s) réservée(s) disponible(s)",
+    "available": "{{count}} place(s) disponible(s)"
+  },
+  "registration": {
+    "ninja_name": "Nom du ninja",
+    "birthdate": "Date de naissance",
+    "atelier": "Atelier",
+    "needs_computer": "A besoin d'un ordinateur",
+    "previous_visits": "Visites précédentes",
+    "heard_about": "Comment avez-vous entendu parler de nous?",
+    "consent_photos": "J'accepte que des photos soient prises",
+    "consent_contact": "J'accepte d'être contacté pour de futurs événements",
+    "submit": "S'inscrire",
+    "success": "Inscription confirmée!",
+    "waitlisted": "Vous êtes sur la liste d'attente à la position #{{position}}"
+  },
+  "admin": {
+    "dashboard": "Tableau de bord",
+    "registrants": "Inscrits",
+    "waitlist": "Liste d'attente",
+    "export": "Exporter CSV",
+    "promote": "Promouvoir",
+    "event_create": "Créer un événement",
+    "event_form": {
+      "title": "Titre",
+      "description": "Description",
+      "date": "Date",
+      "location_address": "Adresse",
+      "max_capacity": "Capacité maximale",
+      "coach_reserved": "Places réservées pour les enfants des coaches",
+      "coach_reserved_tip": "Les places non utilisées s'ouvrent à tous à la fermeture des inscriptions",
+      "registration_open": "Ouverture des inscriptions",
+      "registration_close": "Clôture des inscriptions",
+      "ateliers": "Ateliers",
+      "status": "Statut"
+    },
+    "checkin": {
+      "title": "Check-in",
+      "search": "Rechercher ninja ou parent…",
+      "checked_in": "Présent",
+      "not_checked_in": "Pas encore",
+      "counter": "{{count}} / {{total}} présents",
+      "undo": "Annuler le check-in",
+      "only_confirmed": "Seules les inscriptions confirmées peuvent être enregistrées"
+    },
+    "dojo_form": {
+      "name": "Nom du dojo",
+      "city": "Ville",
+      "address": "Adresse",
+      "latitude": "Latitude",
+      "longitude": "Longitude",
+      "coords_tip": "Entrez les coordonnées décimales (ex: 50.8503, 4.3517)"
+    }
+  },
+  "volunteers": {
+    "title": "Coaches volontaires",
+    "sign_up": "S'inscrire comme volontaire",
+    "withdraw": "Se désinscrire",
+    "signed_up": "Vous êtes inscrit comme volontaire",
+    "count": "{{count}} coach(es) volontaire(s)",
+    "skills": "Compétences / notes",
+    "skills_placeholder": "ex: Python, Arduino, Scratch…",
+    "no_volunteers": "Aucun coach inscrit pour l'instant"
+  },
+  "common": {
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "back": "Retour",
+    "loading": "Chargement…",
+    "error": "Une erreur s'est produite",
+    "required": "Ce champ est obligatoire"
+  }
+}

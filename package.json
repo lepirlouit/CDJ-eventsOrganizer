@@ -1,0 +1,11 @@
+{
+  "name": "coderdojo-event-organizer",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": ["packages/*"],
+  "scripts": {
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "dev": "sst dev --stage dev",
+    "deploy": "sst deploy --stage prod"
+  }
+}

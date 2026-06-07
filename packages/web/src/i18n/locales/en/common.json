@@ -1,0 +1,106 @@
+{
+  "nav": {
+    "home": "Home",
+    "events": "Events",
+    "login": "Sign in",
+    "dashboard": "Dashboard",
+    "logout": "Sign out"
+  },
+  "auth": {
+    "enter_email": "Enter your email address",
+    "check_email": "Check your email",
+    "enter_code": "Enter the 6-digit code we sent you",
+    "invalid_code": "Invalid code, please try again",
+    "sign_in": "Sign in",
+    "verify": "Verify"
+  },
+  "home": {
+    "map_title": "Dojos in Belgium",
+    "see_events": "See events",
+    "upcoming": "Upcoming dojos",
+    "no_dojos": "No dojos found"
+  },
+  "events": {
+    "title": "Events",
+    "date": "Date",
+    "location": "Location",
+    "capacity": "Capacity",
+    "register": "Register",
+    "full": "Full",
+    "waitlist": "Join waitlist",
+    "coach_reserved_seats": "{{count}} seat(s) reserved for coaches' children",
+    "coach_reserved_available": "{{count}} coach reserved seat(s) available",
+    "available": "{{count}} spot(s) available"
+  },
+  "registration": {
+    "ninja_name": "Ninja's name",
+    "birthdate": "Date of birth",
+    "atelier": "Atelier",
+    "needs_computer": "Needs a computer",
+    "previous_visits": "Previous visits",
+    "heard_about": "How did you hear about us?",
+    "consent_photos": "I consent to photos being taken",
+    "consent_contact": "I agree to be contacted for future events",
+    "submit": "Register",
+    "success": "Registration confirmed!",
+    "waitlisted": "You're on the waitlist at position #{{position}}"
+  },
+  "admin": {
+    "dashboard": "Admin Dashboard",
+    "registrants": "Registrants",
+    "waitlist": "Waitlist",
+    "export": "Export CSV",
+    "promote": "Promote",
+    "event_create": "Create Event",
+    "event_form": {
+      "title": "Title",
+      "description": "Description",
+      "date": "Date",
+      "location_address": "Address",
+      "max_capacity": "Max capacity",
+      "coach_reserved": "Seats reserved for coaches' children",
+      "coach_reserved_tip": "Unused reserved seats open to all at registration close",
+      "registration_open": "Registration opens",
+      "registration_close": "Registration closes",
+      "ateliers": "Ateliers",
+      "status": "Status"
+    },
+    "checkin": {
+      "title": "Check-in",
+      "search": "Search ninja or parent…",
+      "checked_in": "Checked in",
+      "not_checked_in": "Not checked in",
+      "counter": "{{count}} / {{total}} checked in",
+      "undo": "Undo check-in",
+      "only_confirmed": "Only confirmed registrations can be checked in"
+    },
+    "dojo_form": {
+      "name": "Dojo name",
+      "city": "City",
+      "address": "Address",
+      "latitude": "Latitude",
+      "longitude": "Longitude",
+      "coords_tip": "Enter decimal coordinates (e.g. 50.8503, 4.3517)"
+    }
+  },
+  "volunteers": {
+    "title": "Volunteer coaches",
+    "sign_up": "Sign up as volunteer",
+    "withdraw": "Withdraw",
+    "signed_up": "You're signed up as a volunteer",
+    "count": "{{count}} coach(es) volunteering",
+    "skills": "Skills / notes",
+    "skills_placeholder": "e.g. Python, Arduino, Scratch…",
+    "no_volunteers": "No coaches have signed up yet"
+  },
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "back": "Back",
+    "loading": "Loading…",
+    "error": "An error occurred",
+    "required": "This field is required"
+  }
+}
