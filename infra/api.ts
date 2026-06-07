@@ -46,6 +46,7 @@ route("POST", "/auth/logout", "packages/functions/src/auth/logout.handler", { au
 route("GET", "/dojos", "packages/functions/src/dojos/list.handler", { auth: false });
 route("GET", "/dojos/{dojoId}", "packages/functions/src/dojos/get.handler", { auth: false });
 route("GET", "/dojos/{dojoId}/events", "packages/functions/src/events/list.handler", { auth: false });
+route("GET", "/events", "packages/functions/src/events/list-all.handler", { auth: false });
 route("GET", "/events/{eventId}", "packages/functions/src/events/get.handler", { auth: false });
 
 // Parent (auth required)

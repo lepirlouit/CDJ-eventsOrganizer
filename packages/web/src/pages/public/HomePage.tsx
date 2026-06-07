@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback } from "react";
+import React, { useState, useRef, useCallback, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -44,23 +44,29 @@ export function HomePage() {
   const [selectedDojoId, setSelectedDojoId] = useState<string | null>(null);
   const cardRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
-  const { data: dojos = [], isLoading } = useQuery<Dojo[]>({
+  // Single call for all dojos
+  const { data: dojos = [], isLoading: dojosLoading } = useQuery<Dojo[]>({
     queryKey: ["dojos"],
     queryFn: () => api.get("/dojos").then((r) => r.data.filter((d: Dojo) => d.active)),
   });
 
-  const { data: eventsByDojo = {} } = useQuery<Record<string, DojoEvent[]>>({
-    queryKey: ["allDojoEvents", dojos.map((d) => d.dojoId).join(",")],
-    queryFn: async () => {
-      const results = await Promise.all(
-        dojos.map((d) =>
-          api.get(`/dojos/${d.dojoId}/events`).then((r) => ({ dojoId: d.dojoId, events: r.data as DojoEvent[] }))
-        )
-      );
-      return Object.fromEntries(results.map((r) => [r.dojoId, r.events]));
-    },
-    enabled: dojos.length > 0,
+  // Single call for ALL upcoming events across every dojo
+  const { data: allEvents = [], isLoading: eventsLoading } = useQuery<DojoEvent[]>({
+    queryKey: ["upcomingEvents"],
+    queryFn: () => api.get("/events").then((r) => r.data),
   });
+
+  // Group events by dojoId client-side — O(n), no extra requests
+  const eventsByDojo = useMemo(() => {
+    const map: Record<string, DojoEvent[]> = {};
+    for (const ev of allEvents) {
+      if (!map[ev.dojoId]) map[ev.dojoId] = [];
+      map[ev.dojoId].push(ev);
+    }
+    return map;
+  }, [allEvents]);
+
+  const isLoading = dojosLoading || eventsLoading;
 
   const handleMarkerClick = useCallback((dojoId: string) => {
     setSelectedDojoId(dojoId);
