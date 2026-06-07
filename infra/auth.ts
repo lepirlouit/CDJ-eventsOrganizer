@@ -1,5 +1,4 @@
 import { table } from "./storage";
-import { emailIdentity } from "./email";
 
 const preSignUp = new sst.aws.Function(`PreSignUp`, {
   handler: "packages/functions/src/auth/pre-signup.handler",
@@ -13,10 +12,26 @@ const defineAuthChallenge = new sst.aws.Function(`DefineAuthChallenge`, {
 
 const createAuthChallenge = new sst.aws.Function(`CreateAuthChallenge`, {
   handler: "packages/functions/src/auth/create-auth-challenge.handler",
-  link: [table, emailIdentity],
+  link: [table],
   environment: {
     SES_FROM_EMAIL: "noreply@cdj.pirlou.it",
   },
+});
+
+// link: [emailIdentity] only shares properties, it doesn't grant IAM access.
+// Attach an inline policy so the Lambda can call ses:SendEmail.
+new aws.iam.RolePolicy(`CreateAuthChallengeSesPolicy`, {
+  role: createAuthChallenge.nodes.role.name,
+  policy: JSON.stringify({
+    Version: "2012-10-17",
+    Statement: [
+      {
+        Effect: "Allow",
+        Action: ["ses:SendEmail", "ses:SendRawEmail"],
+        Resource: "*",
+      },
+    ],
+  }),
 });
 
 const verifyAuthChallenge = new sst.aws.Function(`VerifyAuthChallenge`, {
