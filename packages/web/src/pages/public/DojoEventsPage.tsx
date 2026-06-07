@@ -5,8 +5,6 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
-import LinearProgress from "@mui/material/LinearProgress";
-import Alert from "@mui/material/Alert";
 import Skeleton from "@mui/material/Skeleton";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { api } from "../../lib/api";

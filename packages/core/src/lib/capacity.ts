@@ -2,6 +2,28 @@ import { ulid } from "ulid";
 import { db } from "../entities/index.js";
 import type { Role } from "../types/index.js";
 
+// Explicit type for the registration base to avoid ElectroDB's overloaded
+// put() signature causing TypeScript to infer the array-batch overload.
+type RegistrationBase = {
+  registrationId: string;
+  eventId: string;
+  dojoId: string;
+  userId: string;
+  ninjaName: string;
+  ninjaBirthdate: string;
+  parentName: string;
+  parentEmail: string;
+  parentPhone?: string;
+  atelierId: string;
+  needsComputer: boolean;
+  previousVisits: number;
+  heardAbout?: string;
+  consentPhotos: boolean;
+  consentContact: boolean;
+  isCoachChild: boolean;
+  checkedIn: false;
+};
+
 function zeroPad(n: number, width = 8): string {
   return String(n).padStart(width, "0");
 }
@@ -45,7 +67,7 @@ export async function registerParticipant(params: {
   const released = isReservedReleased(event);
   const registrationId = ulid();
 
-  const base = {
+  const base: RegistrationBase = {
     registrationId,
     eventId: params.eventId,
     dojoId: params.dojoId,
@@ -62,7 +84,7 @@ export async function registerParticipant(params: {
     consentPhotos: params.consentPhotos,
     consentContact: params.consentContact,
     isCoachChild: isCoachParent,
-    checkedIn: false as const,
+    checkedIn: false,
   };
 
   // Try reserved pool first for coach parents
@@ -101,11 +123,15 @@ export async function registerParticipant(params: {
 }
 
 async function tryConfirm(
-  base: Parameters<typeof db.entities.registration.put>[0],
+  base: RegistrationBase,
   event: { dojoId: string; eventId: string },
   pool: "coach" | "general"
 ) {
-  await db.entities.registration.put({ ...base, status: "confirmed" }).go();
+  // Cast to any: ElectroDB v3's put() has two overloads (single item and batch
+  // array). TypeScript resolves Parameters<typeof put>[0] as the array overload,
+  // making the single-item call appear invalid. The runtime behaviour is correct.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  await (db.entities.registration.put as any)({ ...base, status: "confirmed" }).go();
 
   if (pool === "coach") {
     await db.entities.event.patch({ dojoId: event.dojoId, eventId: event.eventId })
