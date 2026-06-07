@@ -28,7 +28,6 @@ export const userPool = new aws.cognito.UserPool(`UserPool`, {
   name: `coderdojo-${$app.stage}-users`,
   deletionProtection: $app.stage === "prod" ? "ACTIVE" : "INACTIVE",
   usernameAttributes: ["email"],
-  autoVerifiedAttributes: [],
   schemas: [
     { name: "role", attributeDataType: "String", mutable: true },
     { name: "dojoId", attributeDataType: "String", mutable: true },
@@ -36,7 +35,7 @@ export const userPool = new aws.cognito.UserPool(`UserPool`, {
   lambdaConfig: {
     defineAuthChallenge: defineAuthChallenge.arn,
     createAuthChallenge: createAuthChallenge.arn,
-    verifyAuthChallenge: verifyAuthChallenge.arn,
+    verifyAuthChallengeResponse: verifyAuthChallenge.arn,
     postConfirmation: postConfirmation.arn,
   },
   passwordPolicy: {
@@ -67,7 +66,7 @@ const triggers = [
 triggers.forEach(({ fn, source }) => {
   new aws.lambda.Permission(`${fn.name}CognitoPermission`, {
     action: "lambda:InvokeFunction",
-    function: fn.name,
+    function: fn.arn,
     principal: source,
     sourceArn: userPool.arn,
   });
