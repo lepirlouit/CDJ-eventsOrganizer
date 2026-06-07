@@ -10,7 +10,7 @@ const createAuthChallenge = new sst.aws.Function(`CreateAuthChallenge`, {
   handler: "packages/functions/src/auth/create-auth-challenge.handler",
   link: [table, emailIdentity],
   environment: {
-    SES_FROM_EMAIL: "noreply@events.coderdojo.be",
+    SES_FROM_EMAIL: "noreply@cdj.pirlou.it",
   },
 });
 

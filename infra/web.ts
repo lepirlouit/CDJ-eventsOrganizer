@@ -7,6 +7,10 @@ export const web = new sst.aws.StaticSite(`Web`, {
     command: "npm run build",
     output: "dist",
   },
+  domain: {
+    name: "cdj.pirlou.it",
+    dns: sst.aws.dns(),
+  },
   environment: {
     VITE_API_URL: api.url,
     VITE_COGNITO_USER_POOL_ID: userPool.id,
