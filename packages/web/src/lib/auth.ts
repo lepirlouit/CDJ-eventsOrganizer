@@ -9,14 +9,20 @@ const Pool = new CognitoUserPool({
   ClientId: import.meta.env.VITE_COGNITO_CLIENT_ID as string,
 });
 
+// CognitoUser cannot be serialized (structured-clone fails), so we hold it
+// in a module-level variable instead of passing it through router state.
+let _pendingUser: CognitoUser | null = null;
+export const getPendingUser = () => _pendingUser;
+export const clearPendingUser = () => { _pendingUser = null; };
+
 export function initiateAuth(email: string): Promise<CognitoUser> {
   return new Promise((resolve, reject) => {
     const user = new CognitoUser({ Username: email, Pool });
     const authDetails = new AuthenticationDetails({ Username: email });
     user.initiateAuth(authDetails, {
-      onSuccess: () => resolve(user),
+      onSuccess: () => { _pendingUser = user; resolve(user); },
       onFailure: reject,
-      customChallenge: () => resolve(user),
+      customChallenge: () => { _pendingUser = user; resolve(user); },
     });
   });
 }

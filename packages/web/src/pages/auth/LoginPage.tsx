@@ -22,9 +22,8 @@ export function LoginPage() {
     setLoading(true);
     setError(null);
     try {
-      const user = await initiateAuth(email.trim());
-      sessionStorage.setItem("cognitoEmail", email.trim());
-      navigate("/login/verify", { state: { user } });
+      await initiateAuth(email.trim()); // stores CognitoUser in module variable
+      navigate("/login/verify");
     } catch (err: any) {
       setError(err.message ?? t("common.error"));
     } finally {

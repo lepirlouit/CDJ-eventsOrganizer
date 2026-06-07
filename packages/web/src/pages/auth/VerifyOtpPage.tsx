@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
@@ -8,25 +8,32 @@ import Typography from "@mui/material/Typography";
 import Alert from "@mui/material/Alert";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
-import { answerChallenge } from "../../lib/auth";
+import { answerChallenge, getPendingUser, clearPendingUser } from "../../lib/auth";
 import { useAuth } from "../../hooks/useAuth";
 
 export function VerifyOtpPage() {
   const { t } = useTranslation();
-  const { state } = useLocation();
   const navigate = useNavigate();
   const { login } = useAuth();
   const [otp, setOtp] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // Redirect back to login if there is no pending auth session
+  useEffect(() => {
+    if (!getPendingUser()) navigate("/login", { replace: true });
+  }, [navigate]);
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!state?.user) { navigate("/login"); return; }
+    const user = getPendingUser();
+    if (!user) { navigate("/login", { replace: true }); return; }
+
     setLoading(true);
     setError(null);
     try {
-      const { accessToken, idToken } = await answerChallenge(state.user, otp.trim());
+      const { accessToken, idToken } = await answerChallenge(user, otp.trim());
+      clearPendingUser();
       login(accessToken, idToken);
       navigate("/");
     } catch {
