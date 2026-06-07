@@ -1,6 +1,11 @@
 import { table } from "./storage";
 import { emailIdentity } from "./email";
 
+const preSignUp = new sst.aws.Function(`PreSignUp`, {
+  handler: "packages/functions/src/auth/pre-signup.handler",
+  link: [table],
+});
+
 const defineAuthChallenge = new sst.aws.Function(`DefineAuthChallenge`, {
   handler: "packages/functions/src/auth/define-auth-challenge.handler",
   link: [table],
@@ -32,6 +37,7 @@ export const userPool = new aws.cognito.UserPool(`UserPool`, {
     { name: "role", attributeDataType: "String", mutable: true },
   ],
   lambdaConfig: {
+    preSignUp: preSignUp.arn,
     defineAuthChallenge: defineAuthChallenge.arn,
     createAuthChallenge: createAuthChallenge.arn,
     verifyAuthChallengeResponse: verifyAuthChallenge.arn,
@@ -49,13 +55,18 @@ export const userPool = new aws.cognito.UserPool(`UserPool`, {
 export const userPoolClient = new aws.cognito.UserPoolClient(`UserPoolClient`, {
   name: `coderdojo-${$app.stage}-client`,
   userPoolId: userPool.id,
-  explicitAuthFlows: ["ALLOW_CUSTOM_AUTH", "ALLOW_REFRESH_TOKEN_AUTH"],
+  explicitAuthFlows: [
+    "ALLOW_CUSTOM_AUTH",
+    "ALLOW_REFRESH_TOKEN_AUTH",
+    "ALLOW_USER_SRP_AUTH",  // needed for signUp confirmation flow
+  ],
   generateSecret: false,
   preventUserExistenceErrors: "ENABLED",
 });
 
-// Grant Cognito permission to invoke the Lambda triggers
+// Grant Cognito permission to invoke all Lambda triggers
 for (const [name, fn] of [
+  ["PreSignUp",           preSignUp],
   ["DefineAuthChallenge", defineAuthChallenge],
   ["CreateAuthChallenge", createAuthChallenge],
   ["VerifyAuthChallenge", verifyAuthChallenge],
