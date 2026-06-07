@@ -1,9 +1,24 @@
 import { table, exportBucket } from "./storage";
 import { userPool, userPoolClient } from "./auth";
 
+const sesPolicyDoc = JSON.stringify({
+  Version: "2012-10-17",
+  Statement: [
+    { Effect: "Allow", Action: ["ses:SendEmail", "ses:SendRawEmail"], Resource: "*" },
+  ],
+});
+
 const fnDefaults = {
   link: [table, exportBucket, userPool],
   runtime: "nodejs22.x" as const,
+  environment: {
+    SES_FROM_EMAIL: "noreply@cdj.pirlou.it",
+  },
+  transform: {
+    role: (args: any) => {
+      args.inlinePolicies = [{ name: "ses-send-email", policy: sesPolicyDoc }];
+    },
+  },
 };
 
 export const api = new sst.aws.ApiGatewayV2(`Api`, {
