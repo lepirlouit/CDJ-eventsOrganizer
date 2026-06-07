@@ -9,12 +9,13 @@ export const UserEntity = new Entity(
       email: { type: "string", required: true },
       name: { type: "string", required: true },
       phone: { type: "string" },
+      // Global role: only "parent" or "super_admin".
+      // Dojo-specific roles (coach / lead_coach) live in DojoMembership.
       role: {
-        type: ["parent", "coach", "lead_coach", "super_admin"] as const,
+        type: ["parent", "super_admin"] as const,
         required: true,
         default: "parent",
       },
-      dojoId: { type: "string" },
       cognitoSub: { type: "string" },
       preferredLang: {
         type: ["en", "fr", "nl"] as const,
@@ -26,11 +27,6 @@ export const UserEntity = new Entity(
       byId: {
         pk: { field: "pk", composite: ["userId"], template: "USER#${userId}" },
         sk: { field: "sk", composite: [], template: "#META" },
-      },
-      byDojo: {
-        index: "gsi1",
-        pk: { field: "gsi1pk", composite: ["dojoId"], template: "DOJO#${dojoId}" },
-        sk: { field: "gsi1sk", composite: ["userId"], template: "USER#${userId}" },
       },
       byEmail: {
         index: "gsi2",

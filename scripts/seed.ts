@@ -12,12 +12,13 @@ import { Resource } from "sst";
 import { ulid } from "ulid";
 
 // ── Entities (inline to avoid depending on built package) ───────────────────
-import { DojoEntity }          from "../packages/core/src/entities/dojo.js";
-import { EventEntity }         from "../packages/core/src/entities/event.js";
-import { RegistrationEntity }  from "../packages/core/src/entities/registration.js";
-import { UserEntity }          from "../packages/core/src/entities/user.js";
-import { WaitlistEntryEntity } from "../packages/core/src/entities/waitlist-entry.js";
-import { EventVolunteerEntity } from "../packages/core/src/entities/event-volunteer.js";
+import { DojoEntity }            from "../packages/core/src/entities/dojo.js";
+import { EventEntity }           from "../packages/core/src/entities/event.js";
+import { RegistrationEntity }    from "../packages/core/src/entities/registration.js";
+import { UserEntity }            from "../packages/core/src/entities/user.js";
+import { WaitlistEntryEntity }   from "../packages/core/src/entities/waitlist-entry.js";
+import { EventVolunteerEntity }  from "../packages/core/src/entities/event-volunteer.js";
+import { DojoMembershipEntity }  from "../packages/core/src/entities/dojo-membership.js";
 
 const client = DynamoDBDocumentClient.from(new DynamoDBClient({}), {
   marshallOptions: { removeUndefinedValues: true },
@@ -32,6 +33,7 @@ const db = new Service(
     registration: RegistrationEntity,
     waitlistEntry: WaitlistEntryEntity,
     eventVolunteer: EventVolunteerEntity,
+    dojoMembership: DojoMembershipEntity,
   },
   { client, table: tableName }
 );
@@ -190,13 +192,20 @@ async function seed() {
     // Create a lead-coach user for this dojo
     const coachId = ulid();
     const coachEmail = `coach.${dojoData.city.toLowerCase().replace(/[^a-z]/g, "")}@coderdojo.be`;
+    const isFrench = ["Liège", "Namur", "Ath"].includes(dojoData.city);
     await db.entities.user.put({
       userId: coachId,
       email: coachEmail,
       name: `Lead Coach ${dojoData.city}`,
-      role: "lead_coach",
+      role: "parent",   // global role; dojo role lives in DojoMembership
+      preferredLang: isFrench ? "fr" : "nl",
+    }).go();
+
+    // Grant lead_coach role in this dojo via DojoMembership
+    await db.entities.dojoMembership.put({
+      userId: coachId,
       dojoId,
-      preferredLang: dojoData.city === "Liège" || dojoData.city === "Namur" || dojoData.city === "Ath" ? "fr" : "nl",
+      role: "lead_coach",
     }).go();
 
     // Create 2 upcoming events per dojo

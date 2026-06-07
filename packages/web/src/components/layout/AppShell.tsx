@@ -8,7 +8,7 @@ import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import IconButton from "@mui/material/IconButton";
 import { useTranslation } from "react-i18next";
-import { useAuth } from "../../hooks/useAuth";
+import { useAuth, isAnyCoach } from "../../hooks/useAuth";
 import { api } from "../../lib/api";
 
 export function AppShell() {
@@ -36,17 +36,17 @@ export function AppShell() {
           </Typography>
           {user ? (
             <>
-              {(user.role === "coach" || user.role === "lead_coach") && (
+              {isAnyCoach(user) && (
                 <Button color="inherit" component={Link} to="/dashboard/admin">
                   {t("nav.dashboard")}
                 </Button>
               )}
-              {user.role === "parent" && (
+              {!isAnyCoach(user) && user.globalRole === "parent" && (
                 <Button color="inherit" component={Link} to="/dashboard/registrations">
                   {t("nav.dashboard")}
                 </Button>
               )}
-              {user.role === "super_admin" && (
+              {user.globalRole === "super_admin" && (
                 <Button color="inherit" component={Link} to="/dashboard/superadmin">
                   {t("nav.dashboard")}
                 </Button>

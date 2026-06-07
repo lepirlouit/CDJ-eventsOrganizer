@@ -77,6 +77,13 @@ route("POST", "/events/{eventId}/volunteers", "packages/functions/src/volunteers
 route("DELETE", "/events/{eventId}/volunteers/me", "packages/functions/src/volunteers/withdraw.handler");
 route("GET", "/admin/events/{eventId}/volunteers", "packages/functions/src/volunteers/list.handler");
 
+// Dojo membership management
+route("GET",    "/admin/dojos/{dojoId}/members",              "packages/functions/src/members/list.handler");
+route("POST",   "/admin/dojos/{dojoId}/members/{userId}",     "packages/functions/src/members/add.handler");
+route("DELETE", "/admin/dojos/{dojoId}/members/{userId}",     "packages/functions/src/members/remove.handler");
+route("PUT",    "/admin/dojos/{dojoId}/members/{userId}/role","packages/functions/src/members/update-role.handler");
+route("GET",    "/users/me/memberships",                      "packages/functions/src/members/my-memberships.handler");
+
 // Super Admin
 route("POST", "/admin/dojos", "packages/functions/src/dojos/create.handler");
 route("PUT", "/admin/dojos/{dojoId}", "packages/functions/src/dojos/update.handler");

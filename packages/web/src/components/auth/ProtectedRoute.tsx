@@ -1,16 +1,19 @@
 import React from "react";
 import { Navigate } from "react-router-dom";
-import type { Role } from "@coderdojo/core";
-import { useAuth } from "../../hooks/useAuth";
+import type { GlobalRole } from "@coderdojo/core";
+import { useAuth, isAnyCoach } from "../../hooks/useAuth";
 import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
 
 interface Props {
-  roles?: Role[];
+  /** Restrict to specific global roles (parent / super_admin). */
+  roles?: GlobalRole[];
+  /** Allow any user that has at least one coach/lead_coach membership. */
+  requireAnyCoach?: boolean;
   children: React.ReactNode;
 }
 
-export function ProtectedRoute({ roles, children }: Props) {
+export function ProtectedRoute({ roles, requireAnyCoach, children }: Props) {
   const { user, loading } = useAuth();
 
   if (loading) {
@@ -22,7 +25,10 @@ export function ProtectedRoute({ roles, children }: Props) {
   }
 
   if (!user) return <Navigate to="/login" replace />;
-  if (roles && !roles.includes(user.role)) return <Navigate to="/" replace />;
+
+  if (requireAnyCoach && !isAnyCoach(user)) return <Navigate to="/" replace />;
+
+  if (roles && !roles.includes(user.globalRole)) return <Navigate to="/" replace />;
 
   return <>{children}</>;
 }

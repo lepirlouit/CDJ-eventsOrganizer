@@ -1,17 +1,18 @@
 import type { APIGatewayProxyHandlerV2 } from "aws-lambda";
-import { db, ok, err, getClaims, isLeadCoachOrAbove, sendEmail, promotedFromWaitlistEmail } from "@coderdojo/core";
+import { db, ok, err, getClaims, requireDojoLeadCoach, sendEmail, promotedFromWaitlistEmail } from "@coderdojo/core";
 import { ulid } from "ulid";
 
 export const handler: APIGatewayProxyHandlerV2 = async (event) => {
   const claims = getClaims(event as any);
-  if (!isLeadCoachOrAbove(claims["custom:role"])) return err("Forbidden", 403);
-
   const { eventId, id: waitlistId } = event.pathParameters ?? {};
   if (!eventId || !waitlistId) return err("Missing eventId or id", 400);
 
   const eventResult = await db.entities.event.query.byId({ eventId }).go();
   const ev = eventResult.data[0];
   if (!ev) return err("Event not found", 404);
+
+  const allowed = await requireDojoLeadCoach(db, claims.sub, ev.dojoId, claims);
+  if (!allowed) return err("Forbidden", 403);
 
   const waitlistItems = await db.entities.waitlistEntry.query.byEvent({ eventId })
     .where(({ status }, op) => op.eq(status, "waiting"))
@@ -43,12 +44,10 @@ export const handler: APIGatewayProxyHandlerV2 = async (event) => {
   }).go();
 
   await db.entities.waitlistEntry.patch({ eventId, positionPadded: entry.positionPadded, waitlistId: entry.waitlistId })
-    .set({ status: "promoted" })
-    .go();
+    .set({ status: "promoted" }).go();
 
   await db.entities.event.patch({ dojoId: ev.dojoId, eventId })
-    .add({ registrationCount: 1, waitlistCount: -1 })
-    .go();
+    .add({ registrationCount: 1, waitlistCount: -1 }).go();
 
   const template = promotedFromWaitlistEmail("en", {
     parentName: entry.parentName,

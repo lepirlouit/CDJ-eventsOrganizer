@@ -30,7 +30,6 @@ export const userPool = new aws.cognito.UserPool(`UserPool`, {
   usernameAttributes: ["email"],
   schemas: [
     { name: "role", attributeDataType: "String", mutable: true },
-    { name: "dojoId", attributeDataType: "String", mutable: true },
   ],
   lambdaConfig: {
     defineAuthChallenge: defineAuthChallenge.arn,
