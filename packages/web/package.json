@@ -12,6 +12,7 @@
   "dependencies": {
     "@coderdojo/core": "*",
     "@mui/material": "^6.0.0",
+    "@mui/icons-material": "^6.0.0",
     "@mui/x-data-grid": "^7.0.0",
     "@mui/x-date-pickers": "^7.0.0",
     "@emotion/react": "^11.13.0",

@@ -11,6 +11,7 @@ import { ProtectedRoute } from "./components/auth/ProtectedRoute";
 
 // Public pages
 import { HomePage } from "./pages/public/HomePage";
+import { DojoEventsPage } from "./pages/public/DojoEventsPage";
 import { EventDetailPage } from "./pages/public/EventDetailPage";
 
 // Auth pages
@@ -87,6 +88,7 @@ export default function App() {
             <Routes>
               <Route element={<AppShell />}>
                 <Route path="/" element={<HomePage />} />
+                <Route path="/dojos/:dojoId/events" element={<DojoEventsPage />} />
                 <Route path="/events/:eventId" element={<EventDetailPage />} />
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/login/verify" element={<VerifyOtpPage />} />

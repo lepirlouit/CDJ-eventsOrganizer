@@ -9,7 +9,7 @@
     "./*": "./src/*.ts"
   },
   "dependencies": {
-    "electrodb": "^2.16.0",
+    "electrodb": "^3.9.0",
     "@aws-sdk/client-dynamodb": "^3.600.0",
     "@aws-sdk/lib-dynamodb": "^3.600.0",
     "@aws-sdk/client-ses": "^3.600.0",
@@ -19,6 +19,6 @@
   "devDependencies": {
     "typescript": "^5.5.0",
     "@types/node": "^20.0.0",
-    "sst": "ion"
+    "sst": "^4.15.2"
   }
 }

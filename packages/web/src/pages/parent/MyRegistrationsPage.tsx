@@ -7,9 +7,9 @@ import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardActions from "@mui/material/CardActions";
 import Button from "@mui/material/Button";
-import Chip from "@mui/material/Chip";
 import LinearProgress from "@mui/material/LinearProgress";
 import { api } from "../../lib/api";
+import { RegistrationStatusChip } from "../../components/registrations/RegistrationStatusChip";
 
 export function MyRegistrationsPage() {
   const { t } = useTranslation();
@@ -36,14 +36,13 @@ export function MyRegistrationsPage() {
         registrations.map((reg: any) => (
           <Card key={reg.registrationId} sx={{ mb: 2 }}>
             <CardContent>
-              <Box display="flex" alignItems="center" gap={1} mb={1}>
+              <Box display="flex" alignItems="center" gap={1} mb={1} flexWrap="wrap">
                 <Typography fontWeight={600}>{reg.ninjaName}</Typography>
-                <Chip
-                  label={reg.status}
-                  size="small"
-                  color={reg.status === "confirmed" ? "success" : "warning"}
+                <RegistrationStatusChip
+                  status={reg.status}
+                  isCoachChild={reg.isCoachChild}
+                  checkedIn={reg.checkedIn}
                 />
-                {reg.isCoachChild && <Chip label="Coach reserved" size="small" color="info" />}
               </Box>
               <Typography variant="body2" color="text.secondary">
                 Event: {reg.eventId} · Atelier: {reg.atelierId}

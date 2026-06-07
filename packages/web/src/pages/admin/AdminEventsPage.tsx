@@ -11,10 +11,10 @@ import TableCell from "@mui/material/TableCell";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import Chip from "@mui/material/Chip";
 import LinearProgress from "@mui/material/LinearProgress";
 import { api } from "../../lib/api";
 import { useAuth } from "../../hooks/useAuth";
+import { EventStatusChip } from "../../components/admin/EventStatusChip";
 
 export function AdminEventsPage() {
   const { t } = useTranslation();
@@ -59,11 +59,7 @@ export function AdminEventsPage() {
               <TableRow key={ev.eventId}>
                 <TableCell>{ev.title}</TableCell>
                 <TableCell>{new Date(ev.date).toLocaleDateString()}</TableCell>
-                <TableCell>
-                  <Chip label={ev.status} size="small"
-                    color={ev.status === "published" ? "success" : ev.status === "cancelled" ? "error" : "default"}
-                  />
-                </TableCell>
+                <TableCell><EventStatusChip status={ev.status} /></TableCell>
                 <TableCell>{ev.registrationCount} / {ev.maxCapacity - ev.coachReservedSeats}</TableCell>
                 <TableCell>
                   <Button size="small" component={Link} to={`/dashboard/admin/events/${ev.eventId}/registrants`}>

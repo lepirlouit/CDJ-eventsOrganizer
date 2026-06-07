@@ -54,3 +54,8 @@ Thumbs.db
 
 # CDK / SST generated
 cdk.out/
+sst-env.d.ts
+packages/*/sst-env.d.ts
+
+# npm lock (generated on install)
+package-lock.json

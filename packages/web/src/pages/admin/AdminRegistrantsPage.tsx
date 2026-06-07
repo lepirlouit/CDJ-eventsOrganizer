@@ -11,10 +11,10 @@ import TableCell from "@mui/material/TableCell";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import Chip from "@mui/material/Chip";
 import LinearProgress from "@mui/material/LinearProgress";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { api } from "../../lib/api";
+import { RegistrationStatusChip } from "../../components/registrations/RegistrationStatusChip";
 
 export function AdminRegistrantsPage() {
   const { id: eventId } = useParams<{ id: string }>();
@@ -60,17 +60,14 @@ export function AdminRegistrantsPage() {
           <TableBody>
             {registrations.map((reg: any) => (
               <TableRow key={reg.registrationId} sx={{ opacity: reg.status === "waitlisted" ? 0.7 : 1 }}>
-                <TableCell>
-                  <Box display="flex" alignItems="center" gap={0.5}>
-                    {reg.ninjaName}
-                    {reg.isCoachChild && <Chip label="Coach" size="small" color="info" />}
-                  </Box>
-                </TableCell>
+                <TableCell>{reg.ninjaName}</TableCell>
                 <TableCell>{reg.parentName}</TableCell>
                 <TableCell>{reg.atelierId}</TableCell>
                 <TableCell>
-                  <Chip label={reg.status} size="small"
-                    color={reg.status === "confirmed" ? "success" : "warning"}
+                  <RegistrationStatusChip
+                    status={reg.status}
+                    isCoachChild={reg.isCoachChild}
+                    checkedIn={reg.checkedIn}
                   />
                 </TableCell>
                 <TableCell>
