@@ -138,6 +138,14 @@ const DOJOS = [
     latitude: 50.9976,
     longitude: 3.3253,
   },
+  {
+    name: "CoderDojo Forest",
+    city: "Forest",
+    address: "Place Saint-Denis 16, 1190 Forest",
+    latitude: 50.8165,
+    longitude: 4.3418,
+    coachEmail: "1190@coderdojobelgium.be",
+  },
 ];
 
 const ATELIERS = [
@@ -191,7 +199,8 @@ async function seed() {
 
     // Create a lead-coach user for this dojo
     const coachId = ulid();
-    const coachEmail = `coach.${dojoData.city.toLowerCase().replace(/[^a-z]/g, "")}@coderdojo.be`;
+    const coachEmail = (dojoData as any).coachEmail
+      ?? `coach.${dojoData.city.toLowerCase().replace(/[^a-z]/g, "")}@coderdojo.be`;
     const isFrench = ["Liège", "Namur", "Ath"].includes(dojoData.city);
     await db.entities.user.put({
       userId: coachId,
@@ -294,6 +303,7 @@ async function seed() {
   console.log("   Lead-coach emails : coach.<city>@coderdojo.be");
   console.log(`   Dojos created     : ${DOJOS.length}`);
   console.log(`   Events created    : ${DOJOS.length * 2}`);
+  console.log("   1190@coderdojobelgium.be is lead coach of CoderDojo Forest");
 }
 
 seed().catch((err) => {
