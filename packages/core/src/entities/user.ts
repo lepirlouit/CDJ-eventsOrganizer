@@ -22,6 +22,24 @@ export const UserEntity = new Entity(
         required: true,
         default: "en",
       },
+      // Parent profile — prefilled on the registration form
+      parentName:    { type: "string" },
+      parentPhone:   { type: "string" },
+      heardAbout:    { type: "string" },
+      consentPhotos: { type: "boolean" },
+      consentContact: { type: "boolean" },
+      // Saved children list — name + birthdate per child
+      savedChildren: {
+        type: "list",
+        items: {
+          type: "map",
+          properties: {
+            name:           { type: "string", required: true },
+            birthdate:      { type: "string", required: true },
+            previousVisits: { type: "number" },
+          },
+        },
+      },
     },
     indexes: {
       byId: {

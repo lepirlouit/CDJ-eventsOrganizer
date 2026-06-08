@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useForm, useFieldArray, Controller } from "react-hook-form";
@@ -56,12 +57,18 @@ export function RegisterPage() {
   const navigate = useNavigate();
   const { user } = useAuth();
 
-  const { data: event, isLoading } = useQuery({
+  const { data: event, isLoading: eventLoading } = useQuery({
     queryKey: ["event", eventId],
     queryFn: () => api.get(`/events/${eventId}`).then((r) => r.data),
   });
 
-  const { register, handleSubmit, control, formState: { errors } } = useForm<FormData>({
+  const { data: profile, isLoading: profileLoading } = useQuery({
+    queryKey: ["myProfile"],
+    queryFn: () => api.get("/users/me").then((r) => r.data),
+    enabled: !!user,
+  });
+
+  const { register, handleSubmit, control, reset, formState: { errors } } = useForm<FormData>({
     resolver: zodResolver(schema),
     defaultValues: {
       parentEmail: user?.email ?? "",
@@ -71,8 +78,32 @@ export function RegisterPage() {
 
   const { fields, append, remove } = useFieldArray({ control, name: "children" });
 
+  // Prefill from saved profile once it loads
+  useEffect(() => {
+    if (!profile) return;
+    const savedKids = (profile.savedChildren ?? []) as { name: string; birthdate: string; previousVisits?: number }[];
+    reset({
+      parentName:     profile.parentName ?? "",
+      parentEmail:    profile.email ?? user?.email ?? "",
+      parentPhone:    profile.parentPhone ?? "",
+      heardAbout:     profile.heardAbout ?? "",
+      consentPhotos:  profile.consentPhotos ?? false,
+      consentContact: profile.consentContact ?? false,
+      children: savedKids.length > 0
+        ? savedKids.map((c) => ({
+            ninjaName:      c.name,
+            ninjaBirthdate: c.birthdate,
+            atelierId:      "",          // event-specific, not saved
+            needsComputer:  false,
+            previousVisits: c.previousVisits ?? 0,
+          }))
+        : [emptyChild()],
+    });
+  }, [profile, reset, user?.email]);
+
   const mutation = useMutation({
     mutationFn: async (data: FormData) => {
+      // Submit one registration per child
       const results = [];
       for (const child of data.children) {
         const result = await api.post(`/events/${eventId}/registrations`, {
@@ -90,12 +121,27 @@ export function RegisterPage() {
         });
         results.push(result.data);
       }
+
+      // Silently save profile for next time (fire-and-forget)
+      api.put("/users/me", {
+        parentName:     data.parentName,
+        parentPhone:    data.parentPhone,
+        heardAbout:     data.heardAbout,
+        consentPhotos:  data.consentPhotos,
+        consentContact: data.consentContact,
+        savedChildren:  data.children.map((c) => ({
+          name:           c.ninjaName,
+          birthdate:      c.ninjaBirthdate,
+          previousVisits: c.previousVisits,
+        })),
+      }).catch(() => {/* best-effort */});
+
       return results;
     },
     onSuccess: () => navigate("/dashboard/registrations"),
   });
 
-  if (isLoading) return <LinearProgress />;
+  if (eventLoading || profileLoading) return <LinearProgress />;
   if (!event) return <Alert severity="error">Event not found</Alert>;
 
   const ateliers: { atelierId: string; name: string }[] = event.ateliers ?? [];
@@ -148,7 +194,7 @@ export function RegisterPage() {
 
         {/* ── Children ──────────────────────────────────────── */}
         {fields.map((field, idx) => (
-          <Paper key={field.id} sx={{ p: 3, mb: 2, position: "relative" }}>
+          <Paper key={field.id} sx={{ p: 3, mb: 2 }}>
             <Box display="flex" alignItems="center" justifyContent="space-between" mb={2}>
               <Box display="flex" alignItems="center" gap={1}>
                 <Typography variant="h6">
@@ -224,7 +270,7 @@ export function RegisterPage() {
           disabled={mutation.isPending}
         >
           {mutation.isPending
-            ? `Registering ${fields.length} child${fields.length > 1 ? "ren" : ""}…`
+            ? `${t("registration.submit")}…`
             : t("registration.submit")}
         </Button>
       </form>
