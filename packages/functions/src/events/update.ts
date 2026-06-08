@@ -1,5 +1,5 @@
 import type { APIGatewayProxyHandlerV2 } from "aws-lambda";
-import { db, ok, err, getClaims, requireDojoLeadCoach, sendEmail, volunteerEventCancelledEmail } from "@coderdojo/core";
+import { db, ok, err, getClaims, requireDojoLeadCoach, sendEmail, volunteerEventCancelledEmail, getUserLang } from "@coderdojo/core";
 
 export const handler: APIGatewayProxyHandlerV2 = async (event) => {
   const claims = getClaims(event as any);
@@ -36,7 +36,8 @@ export const handler: APIGatewayProxyHandlerV2 = async (event) => {
         .map(async (v) => {
           await db.entities.eventVolunteer.patch({ eventId, userId: v.userId })
             .set({ status: "withdrawn" }).go();
-          const template = volunteerEventCancelledEmail("en", {
+          const lang = await getUserLang(db, v.userId);
+          const template = volunteerEventCancelledEmail(lang, {
             coachName: v.coachName,
             eventTitle: existing.title,
           });

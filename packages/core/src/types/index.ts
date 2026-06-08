@@ -103,3 +103,9 @@ export async function requireDojoLeadCoach(
   const role = await getDojoRole(db, userId, dojoId, claims);
   return role === "lead_coach";
 }
+
+/** Returns the user's preferredLang from DynamoDB, falling back to "en". */
+export async function getUserLang(db: any, userId: string): Promise<Lang> {
+  const result = await db.entities.user.query.byId({ userId }).go();
+  return (result.data[0]?.preferredLang ?? "en") as Lang;
+}

@@ -1,6 +1,9 @@
 import type { APIGatewayProxyHandlerV2 } from "aws-lambda";
-import { db, ok, err, getClaims, sendEmail, registrationConfirmedEmail, waitlistedEmail } from "@coderdojo/core";
-import { registerParticipant } from "@coderdojo/core";
+import {
+  db, ok, err, getClaims, sendEmail,
+  registrationConfirmedEmail, waitlistedEmail,
+  getUserLang, registerParticipant,
+} from "@coderdojo/core";
 
 export const handler: APIGatewayProxyHandlerV2 = async (event) => {
   const claims = getClaims(event as any);
@@ -41,21 +44,22 @@ export const handler: APIGatewayProxyHandlerV2 = async (event) => {
       consentContact: consentContact ?? false,
     });
 
+    const lang = await getUserLang(db, claims.sub);
     const atelierName = ev.ateliers?.find((a) => a.atelierId === atelierId)?.name ?? atelierId;
 
     if (result.status === "confirmed") {
-      const template = registrationConfirmedEmail("en", {
+      const template = registrationConfirmedEmail(lang, {
         parentName,
         ninjaName,
         eventTitle: ev.title,
         eventDate: ev.date,
         eventAddress: ev.location?.address ?? "",
         atelierName,
-        cancellationUrl: `${process.env.WEB_URL}/dashboard/registrations`,
+        cancellationUrl: `${process.env.WEB_URL ?? ""}/dashboard/registrations`,
       });
       await sendEmail({ to: parentEmail, ...template }).catch(console.error);
     } else {
-      const template = waitlistedEmail("en", {
+      const template = waitlistedEmail(lang, {
         parentName,
         ninjaName,
         eventTitle: ev.title,

@@ -1,5 +1,5 @@
 import type { APIGatewayProxyHandlerV2 } from "aws-lambda";
-import { db, ok, err, getClaims, cancelRegistration, sendEmail, promotedFromWaitlistEmail } from "@coderdojo/core";
+import { db, ok, err, getClaims, cancelRegistration, sendEmail, promotedFromWaitlistEmail, getUserLang } from "@coderdojo/core";
 import { ulid } from "ulid";
 
 export const handler: APIGatewayProxyHandlerV2 = async (event) => {
@@ -68,7 +68,8 @@ export const handler: APIGatewayProxyHandlerV2 = async (event) => {
         .add({ registrationCount: 1, waitlistCount: -1 })
         .go();
 
-      const template = promotedFromWaitlistEmail("en", {
+      const lang = await getUserLang(db, first.userId);
+      const template = promotedFromWaitlistEmail(lang, {
         parentName: first.parentName,
         ninjaName: first.ninjaName,
         eventTitle: ev.title,

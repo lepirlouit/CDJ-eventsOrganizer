@@ -1,5 +1,5 @@
 import type { APIGatewayProxyHandlerV2 } from "aws-lambda";
-import { db, ok, err, getClaims, requireDojoLeadCoach, sendEmail, promotedFromWaitlistEmail } from "@coderdojo/core";
+import { db, ok, err, getClaims, requireDojoLeadCoach, sendEmail, promotedFromWaitlistEmail, getUserLang } from "@coderdojo/core";
 import { ulid } from "ulid";
 
 export const handler: APIGatewayProxyHandlerV2 = async (event) => {
@@ -49,7 +49,8 @@ export const handler: APIGatewayProxyHandlerV2 = async (event) => {
   await db.entities.event.patch({ dojoId: ev.dojoId, eventId })
     .add({ registrationCount: 1, waitlistCount: -1 }).go();
 
-  const template = promotedFromWaitlistEmail("en", {
+  const lang = await getUserLang(db, entry.userId);
+  const template = promotedFromWaitlistEmail(lang, {
     parentName: entry.parentName,
     ninjaName: entry.ninjaName,
     eventTitle: ev.title,
