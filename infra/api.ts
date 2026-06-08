@@ -16,7 +16,12 @@ const fnDefaults = {
   },
   transform: {
     role: (args: any) => {
-      args.inlinePolicies = [{ name: "ses-send-email", policy: sesPolicyDoc }];
+      // Append — never replace. SST adds its own inline policies for dev-mode
+      // AppSync EventConnect; overwriting them breaks live Lambda reload.
+      args.inlinePolicies = [
+        ...(args.inlinePolicies ?? []),
+        { name: "ses-send-email", policy: sesPolicyDoc },
+      ];
     },
   },
 };
