@@ -6,6 +6,7 @@ import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
 import Skeleton from "@mui/material/Skeleton";
+import Alert from "@mui/material/Alert";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { api } from "../../lib/api";
 import { EventCard } from "../../components/events/EventCard";
