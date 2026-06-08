@@ -1,11 +1,17 @@
 import { table, exportBucket } from "./storage";
 import { userPool, userPoolClient } from "./auth";
 
-const sesPolicyDoc = JSON.stringify({
-  Version: "2012-10-17",
-  Statement: [
-    { Effect: "Allow", Action: ["ses:SendEmail", "ses:SendRawEmail"], Resource: "*" },
-  ],
+// One shared managed policy; attached to each function's role via
+// RolePolicyAttachment inside route() — avoids touching transform.role
+// which would conflict with SST's own inline policies (e.g. AppSync EventConnect).
+const sesPolicy = new aws.iam.Policy(`SesSendEmailPolicy`, {
+  name: `coderdojo-${$app.stage}-ses-send`,
+  policy: JSON.stringify({
+    Version: "2012-10-17",
+    Statement: [
+      { Effect: "Allow", Action: ["ses:SendEmail", "ses:SendRawEmail"], Resource: "*" },
+    ],
+  }),
 });
 
 const fnDefaults = {
@@ -13,16 +19,6 @@ const fnDefaults = {
   runtime: "nodejs22.x" as const,
   environment: {
     SES_FROM_EMAIL: "noreply@cdj.pirlou.it",
-  },
-  transform: {
-    role: (args: any) => {
-      // Append — never replace. SST adds its own inline policies for dev-mode
-      // AppSync EventConnect; overwriting them breaks live Lambda reload.
-      args.inlinePolicies = [
-        ...(args.inlinePolicies ?? []),
-        { name: "ses-send-email", policy: sesPolicyDoc },
-      ];
-    },
   },
 };
 
@@ -48,10 +44,14 @@ function route(
   handler: string,
   options: { auth?: boolean } = { auth: true }
 ) {
-  const fn = new sst.aws.Function(
-    `Fn${method}${path.replace(/\//g, "_").replace(/[{}]/g, "")}`,
-    { ...fnDefaults, handler }
-  );
+  const name = `Fn${method}${path.replace(/\//g, "_").replace(/[{}]/g, "")}`;
+  const fn = new sst.aws.Function(name, { ...fnDefaults, handler });
+
+  new aws.iam.RolePolicyAttachment(`${name}SesAttach`, {
+    role: fn.nodes.role.name,
+    policyArn: sesPolicy.arn,
+  });
+
   api.route(`${method} ${path}`, fn.arn, {
     auth: options.auth ? { jwt: { authorizer: auth.id } } : undefined,
   });
