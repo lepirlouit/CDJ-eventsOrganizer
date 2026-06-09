@@ -178,6 +178,10 @@ declare module "sst" {
       "name": string
       "type": "sst.aws.Function"
     }
+    "PreSignUp": {
+      "name": string
+      "type": "sst.aws.Function"
+    }
     "VerifyAuthChallenge": {
       "name": string
       "type": "sst.aws.Function"

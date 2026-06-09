@@ -68,7 +68,8 @@
       "registration_open": "Ouverture des inscriptions",
       "registration_close": "Clôture des inscriptions",
       "ateliers": "Ateliers",
-      "status": "Statut"
+      "status": "Statut",
+      "pick_location": "Utiliser un lieu enregistré :"
     },
     "checkin": {
       "title": "Check-in",

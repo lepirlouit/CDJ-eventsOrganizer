@@ -13,6 +13,22 @@ export const DojoEntity = new Entity(
       active: { type: "boolean", required: true, default: true },
       latitude: { type: "number" },
       longitude: { type: "number" },
+      // Multiple venues where this dojo can host events
+      locations: {
+        type: "list",
+        items: {
+          type: "map",
+          properties: {
+            locationId: { type: "string", required: true },
+            name:       { type: "string", required: true },
+            address:    { type: "string", required: true },
+            city:       { type: "string", required: true },
+            latitude:   { type: "number" },
+            longitude:  { type: "number" },
+            mapsUrl:    { type: "string" },
+          },
+        },
+      },
     },
     indexes: {
       byId: {

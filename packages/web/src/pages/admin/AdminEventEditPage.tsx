@@ -12,8 +12,7 @@ import Typography from "@mui/material/Typography";
 import MenuItem from "@mui/material/MenuItem";
 import Paper from "@mui/material/Paper";
 import Alert from "@mui/material/Alert";
-import Tooltip from "@mui/material/Tooltip";
-import InfoIcon from "@mui/icons-material/Info";
+import Divider from "@mui/material/Divider";
 import LinearProgress from "@mui/material/LinearProgress";
 import { api } from "../../lib/api";
 
@@ -31,6 +30,13 @@ const schema = z.object({
 });
 type FormData = z.infer<typeof schema>;
 
+interface DojoLocation {
+  locationId: string;
+  name: string;
+  address: string;
+  city: string;
+}
+
 export function AdminEventEditPage() {
   const { id: eventId } = useParams<{ id: string }>();
   const [searchParams] = useSearchParams();
@@ -46,7 +52,16 @@ export function AdminEventEditPage() {
     enabled: !isNew && !!eventId,
   });
 
-  const { register, handleSubmit, control, reset, formState: { errors } } = useForm<FormData>({
+  // Load dojo locations for the picker
+  const resolvedDojoId = dojoId || event?.dojoId || "";
+  const { data: dojo } = useQuery({
+    queryKey: ["dojo", resolvedDojoId],
+    queryFn: () => api.get(`/dojos/${resolvedDojoId}`).then((r) => r.data),
+    enabled: !!resolvedDojoId,
+  });
+  const dojoLocations: DojoLocation[] = dojo?.locations ?? [];
+
+  const { register, handleSubmit, control, reset, setValue, formState: { errors } } = useForm<FormData>({
     resolver: zodResolver(schema),
     defaultValues: { status: "draft", coachReservedSeats: 0, maxCapacity: 30 },
   });
@@ -67,6 +82,11 @@ export function AdminEventEditPage() {
       });
     }
   }, [event, reset]);
+
+  function applyLocation(loc: DojoLocation) {
+    setValue("locationAddress", loc.address);
+    setValue("locationCity", loc.city);
+  }
 
   const mutation = useMutation({
     mutationFn: (data: FormData) => {
@@ -104,22 +124,41 @@ export function AdminEventEditPage() {
           <TextField label={t("admin.event_form.title")} fullWidth sx={{ mb: 2 }} {...register("title")} error={!!errors.title} required />
           <TextField label={t("admin.event_form.description")} fullWidth multiline rows={3} sx={{ mb: 2 }} {...register("description")} />
           <TextField label={t("admin.event_form.date")} type="date" fullWidth sx={{ mb: 2 }} InputLabelProps={{ shrink: true }} {...register("date")} error={!!errors.date} required />
+
+          {/* Location picker — pre-fills address fields from saved dojo locations */}
+          {dojoLocations.length > 0 && (
+            <Box sx={{ mb: 2 }}>
+              <Typography variant="body2" color="text.secondary" mb={1}>
+                {t("admin.event_form.pick_location")}
+              </Typography>
+              <Box display="flex" flexWrap="wrap" gap={1}>
+                {dojoLocations.map((loc) => (
+                  <Button
+                    key={loc.locationId}
+                    variant="outlined"
+                    size="small"
+                    onClick={() => applyLocation(loc)}
+                  >
+                    {loc.name}
+                  </Button>
+                ))}
+              </Box>
+              <Divider sx={{ mt: 2, mb: 1 }} />
+            </Box>
+          )}
+
           <TextField label={t("admin.event_form.location_address")} fullWidth sx={{ mb: 2 }} {...register("locationAddress")} error={!!errors.locationAddress} required />
           <TextField label="City" fullWidth sx={{ mb: 2 }} {...register("locationCity")} error={!!errors.locationCity} required />
           <TextField label={t("admin.event_form.max_capacity")} type="number" fullWidth sx={{ mb: 2 }} {...register("maxCapacity")} error={!!errors.maxCapacity} required />
-          <Box display="flex" alignItems="center" gap={1} mb={2}>
-            <TextField
-              label={t("admin.event_form.coach_reserved")}
-              type="number"
-              fullWidth
-              {...register("coachReservedSeats")}
-              error={!!errors.coachReservedSeats}
-              helperText={t("admin.event_form.coach_reserved_tip")}
-            />
-            <Tooltip title={t("admin.event_form.coach_reserved_tip")}>
-              <InfoIcon color="action" sx={{ mt: -2 }} />
-            </Tooltip>
-          </Box>
+          <TextField
+            label={t("admin.event_form.coach_reserved")}
+            type="number"
+            fullWidth
+            sx={{ mb: 2 }}
+            {...register("coachReservedSeats")}
+            error={!!errors.coachReservedSeats}
+            helperText={t("admin.event_form.coach_reserved_tip")}
+          />
           <TextField label={t("admin.event_form.registration_open")} type="datetime-local" fullWidth sx={{ mb: 2 }} InputLabelProps={{ shrink: true }} {...register("registrationOpenAt")} required />
           <TextField label={t("admin.event_form.registration_close")} type="datetime-local" fullWidth sx={{ mb: 2 }} InputLabelProps={{ shrink: true }} {...register("registrationCloseAt")} required />
           <Controller

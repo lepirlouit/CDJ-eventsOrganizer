@@ -12,6 +12,6 @@
     "typecheck": "npm run typecheck --workspaces --if-present",
     "dev": "sst dev --stage dev",
     "deploy": "sst deploy --stage prod",
-    "seed": "sst shell --stage dev npx tsx scripts/seed.ts"
+    "seed": "sst shell --stage prod npx tsx scripts/seed.ts"
   }
 }

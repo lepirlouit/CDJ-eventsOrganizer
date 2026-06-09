@@ -68,7 +68,8 @@
       "registration_open": "Inschrijving opent",
       "registration_close": "Inschrijving sluit",
       "ateliers": "Ateliers",
-      "status": "Status"
+      "status": "Status",
+      "pick_location": "Gebruik een opgeslagen locatie:"
     },
     "checkin": {
       "title": "Check-in",

@@ -68,7 +68,8 @@
       "registration_open": "Registration opens",
       "registration_close": "Registration closes",
       "ateliers": "Ateliers",
-      "status": "Status"
+      "status": "Status",
+      "pick_location": "Use a saved venue:"
     },
     "checkin": {
       "title": "Check-in",
