@@ -292,14 +292,14 @@ async function seed() {
   const adminId = ulid();
   await db.entities.user.put({
     userId: adminId,
-    email: "admin@coderdojo.be",
+    email: "benoit+cdjadmin@debiolley.be",
     name: "Super Admin",
     role: "super_admin",
     preferredLang: "fr",
   }).go();
 
   console.log("\n✅  Seed complete!\n");
-  console.log("   Super-admin email : admin@coderdojo.be");
+  console.log("   Super-admin email : benoit+cdjadmin@debiolley.be");
   console.log("   Lead-coach emails : coach.<city>@coderdojo.be");
   console.log(`   Dojos created     : ${DOJOS.length}`);
   console.log(`   Events created    : ${DOJOS.length * 2}`);
