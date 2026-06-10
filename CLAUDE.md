@@ -61,6 +61,7 @@ Resources are defined in `infra/` and wired together in `sst.config.ts`. Depende
 - **Entities** (`src/entities/`): seven ElectroDB entities sharing a single DynamoDB table. Each entity file imports `DocumentClient` and `table` from `client.ts` (not from `table.ts`) to avoid a circular ESM import. `table.ts` composes all entities into an ElectroDB `Service` (`db`).
 - **Capacity logic** (`src/lib/capacity.ts`): `registerParticipant()` handles the dual-pool capacity split (general vs. coach-reserved seats) and falls through to the waitlist. Uses an explicit `RegistrationBase` type and casts `db.entities.registration.put` to `any` because ElectroDB v3's overloaded `put()` causes TypeScript to infer the array-batch overload.
 - **Types** (`src/types/index.ts`): `getDojoRole()`, `requireDojoCoach()`, `requireDojoLeadCoach()` — DB-based auth helpers used by all Lambda handlers. Role checks never trust JWT claims for dojo-specific authorization.
+- **userId vs Cognito sub**: `User.userId` is a DynamoDB ULID. `claims.sub` is the Cognito sub — a different value. `DojoMembership` stores the ULID. Always use `getDbUserId(db, claims)` (email lookup → ULID) when querying `DojoMembership` by the caller's identity. Do NOT pass `claims.sub` directly as a DojoMembership userId.
 
 ### Data model — key relationships
 

@@ -62,17 +62,29 @@ export function isSuperAdmin(claims: JwtClaims): boolean {
 }
 
 /**
+ * Resolve the DynamoDB ULID userId from the JWT claims.
+ * DojoMembership (and User queries by byId) use the ULID, not the Cognito sub.
+ * claims.sub is the Cognito sub — always look up via email instead.
+ */
+async function resolveDbUserId(db: any, claims: JwtClaims): Promise<string | null> {
+  const result = await db.entities.user.query.byEmail({ email: claims.email }).go();
+  return result.data[0]?.userId ?? null;
+}
+
+/**
  * Look up the caller's membership in a specific dojo.
  * Super-admins bypass the check and are treated as lead_coach everywhere.
  */
 export async function getDojoRole(
   db: any,
-  userId: string,
+  _cognitoSub: string,   // kept for signature compat; use claims.email internally
   dojoId: string,
   claims: JwtClaims
 ): Promise<DojoRole | null> {
   if (isSuperAdmin(claims)) return "lead_coach";
-  const result = await db.entities.dojoMembership.get({ userId, dojoId }).go();
+  const dbUserId = await resolveDbUserId(db, claims);
+  if (!dbUserId) return null;
+  const result = await db.entities.dojoMembership.get({ userId: dbUserId, dojoId }).go();
   return (result.data?.role as DojoRole) ?? null;
 }
 
@@ -104,8 +116,13 @@ export async function requireDojoLeadCoach(
   return role === "lead_coach";
 }
 
-/** Returns the user's preferredLang from DynamoDB, falling back to "en". */
+/** Returns the user's preferredLang from DynamoDB by their DynamoDB ULID userId. */
 export async function getUserLang(db: any, userId: string): Promise<Lang> {
   const result = await db.entities.user.query.byId({ userId }).go();
   return (result.data[0]?.preferredLang ?? "en") as Lang;
+}
+
+/** Returns the caller's DynamoDB ULID userId from JWT claims (via email lookup). */
+export async function getDbUserId(db: any, claims: JwtClaims): Promise<string | null> {
+  return resolveDbUserId(db, claims);
 }

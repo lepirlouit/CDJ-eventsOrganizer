@@ -3,24 +3,26 @@ import { db, ok, err, getClaims, isSuperAdmin, requireDojoLeadCoach } from "@cod
 
 export const handler: APIGatewayProxyHandlerV2 = async (event) => {
   const claims = getClaims(event as any);
-  const { dojoId, userId } = event.pathParameters ?? {};
-  if (!dojoId || !userId) return err("Missing dojoId or userId", 400);
+  const { dojoId } = event.pathParameters ?? {};
+  if (!dojoId) return err("Missing dojoId", 400);
 
   const body = JSON.parse(event.body ?? "{}");
-  const { role } = body;
+  const { role, email } = body;
   if (!["coach", "lead_coach"].includes(role)) return err("role must be coach or lead_coach", 400);
+  if (!email) return err("email required", 400);
 
   // Only super_admin or lead_coach of the dojo can add members
   if (!isSuperAdmin(claims)) {
-    const callerUserId = claims.sub;
-    const allowed = await requireDojoLeadCoach(db, callerUserId, dojoId, claims);
+    const allowed = await requireDojoLeadCoach(db, claims.sub, dojoId, claims);
     if (!allowed) return err("Forbidden", 403);
   }
 
-  const userResult = await db.entities.user.query.byId({ userId }).go();
-  if (!userResult.data[0]) return err("User not found", 404);
+  // Look up the target user by email to get their DynamoDB ULID userId
+  const userResult = await db.entities.user.query.byEmail({ email }).go();
+  const user = userResult.data[0];
+  if (!user) return err("User not found — they must log in at least once first", 404);
 
-  await db.entities.dojoMembership.put({ userId, dojoId, role }).go();
+  await db.entities.dojoMembership.put({ userId: user.userId, dojoId, role }).go();
 
-  return ok({ userId, dojoId, role }, 201);
+  return ok({ userId: user.userId, email: user.email, name: user.name, dojoId, role }, 201);
 };

@@ -105,7 +105,7 @@ route("DELETE", "/admin/dojos/{dojoId}/locations/{locationId}",   "packages/func
 
 // Dojo membership management
 route("GET",    "/admin/dojos/{dojoId}/members",              "packages/functions/src/members/list.handler");
-route("POST",   "/admin/dojos/{dojoId}/members/{userId}",     "packages/functions/src/members/add.handler");
+route("POST",   "/admin/dojos/{dojoId}/members/add",          "packages/functions/src/members/add.handler");
 route("DELETE", "/admin/dojos/{dojoId}/members/{userId}",     "packages/functions/src/members/remove.handler");
 route("PUT",    "/admin/dojos/{dojoId}/members/{userId}/role","packages/functions/src/members/update-role.handler");
 route("GET",    "/users/me/memberships",                      "packages/functions/src/members/my-memberships.handler");

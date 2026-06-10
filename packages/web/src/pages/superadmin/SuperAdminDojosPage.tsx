@@ -55,7 +55,25 @@ export function SuperAdminDojosPage() {
   const qc = useQueryClient();
   const [dojoOpen, setDojoOpen] = useState(false);
   const [editingDojo, setEditingDojo] = useState<Dojo | null>(null);
-  const [locDojo, setLocDojo] = useState<Dojo | null>(null); // dojo whose locations are being managed
+  const [locDojo, setLocDojo] = useState<Dojo | null>(null);   // dojo whose locations are being managed
+  const [memberDojo, setMemberDojo] = useState<Dojo | null>(null); // dojo whose members are being managed
+
+  // ── Member management ─────────────────────────────────────────────────────
+  const [memberEmail, setMemberEmail] = useState("");
+  const [memberRole, setMemberRole] = useState("coach");
+  const { data: dojoMembers = [] } = useQuery<{ userId: string; name: string; email: string; role: string }[]>({
+    queryKey: ["dojoMembers", memberDojo?.dojoId],
+    queryFn: () => api.get(`/admin/dojos/${memberDojo!.dojoId}/members`).then((r) => r.data),
+    enabled: !!memberDojo,
+  });
+  const addMemberMutation = useMutation({
+    mutationFn: () => api.post(`/admin/dojos/${memberDojo!.dojoId}/members/add`, { email: memberEmail, role: memberRole }),
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ["dojoMembers", memberDojo?.dojoId] }); setMemberEmail(""); },
+  });
+  const removeMemberMutation = useMutation({
+    mutationFn: (userId: string) => api.delete(`/admin/dojos/${memberDojo!.dojoId}/members/${userId}`),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["dojoMembers", memberDojo?.dojoId] }),
+  });
 
   const { data: dojos = [], isLoading } = useQuery<Dojo[]>({
     queryKey: ["dojos"],
@@ -131,7 +149,8 @@ export function SuperAdminDojosPage() {
                 </TableCell>
                 <TableCell>
                   <Button size="small" onClick={() => openEditDojo(dojo)}>{t("common.edit")}</Button>
-                  <Button size="small" onClick={() => setLocDojo(dojo)}>Locations</Button>
+                  <Button size="small" onClick={() => setLocDojo(dojo)}>Venues</Button>
+                  <Button size="small" onClick={() => setMemberDojo(dojo)}>Coaches</Button>
                 </TableCell>
               </TableRow>
             ))}
@@ -203,6 +222,44 @@ export function SuperAdminDojosPage() {
         <DialogActions>
           <Button onClick={() => { setLocDojo(null); locForm.reset(); }}>{t("common.cancel")}</Button>
           <Button type="submit" form="loc-form" variant="contained" disabled={addLocMutation.isPending}>Add venue</Button>
+        </DialogActions>
+      </Dialog>
+      {/* ── Coach members dialog ─────────────────────────────────────────── */}
+      <Dialog open={!!memberDojo} onClose={() => setMemberDojo(null)} maxWidth="sm" fullWidth>
+        <DialogTitle>Coaches — {memberDojo?.name}</DialogTitle>
+        <DialogContent>
+          {dojoMembers.length === 0 ? (
+            <Typography color="text.secondary" mb={2}>No coaches yet.</Typography>
+          ) : (
+            <Box mb={2}>
+              {dojoMembers.map((m) => (
+                <Box key={m.userId} display="flex" alignItems="center" justifyContent="space-between" py={1} borderBottom="1px solid" borderColor="divider">
+                  <Box>
+                    <Typography fontWeight={600}>{m.name} <Chip label={m.role} size="small" color={m.role === "lead_coach" ? "primary" : "default"} sx={{ ml: 0.5 }} /></Typography>
+                    <Typography variant="body2" color="text.secondary">{m.email}</Typography>
+                  </Box>
+                  <IconButton size="small" color="error" onClick={() => removeMemberMutation.mutate(m.userId)} disabled={removeMemberMutation.isPending}>
+                    <DeleteIcon fontSize="small" />
+                  </IconButton>
+                </Box>
+              ))}
+            </Box>
+          )}
+          <Divider sx={{ mb: 2 }} />
+          <Typography variant="subtitle2" mb={1}>Add coach</Typography>
+          <Typography variant="caption" color="text.secondary" display="block" mb={1}>
+            The person must have logged in at least once before you can add them.
+          </Typography>
+          <TextField label="Email address" fullWidth size="small" sx={{ mb: 1.5 }} value={memberEmail} onChange={(e) => setMemberEmail(e.target.value)} />
+          <TextField select label="Role" fullWidth size="small" value={memberRole} onChange={(e) => setMemberRole(e.target.value)}>
+            <MenuItem value="coach">Coach</MenuItem>
+            <MenuItem value="lead_coach">Lead Coach</MenuItem>
+          </TextField>
+          {addMemberMutation.isError && <Typography color="error" variant="caption" mt={1} display="block">User not found — ask them to log in first.</Typography>}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setMemberDojo(null)}>{t("common.cancel")}</Button>
+          <Button variant="contained" disabled={!memberEmail || addMemberMutation.isPending} onClick={() => addMemberMutation.mutate()}>Add</Button>
         </DialogActions>
       </Dialog>
     </Box>
