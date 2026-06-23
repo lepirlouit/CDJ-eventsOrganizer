@@ -44,12 +44,18 @@ const postConfirmation = new sst.aws.Function(`PostConfirmation`, {
   link: [table],
 });
 
+const preTokenGeneration = new sst.aws.Function(`PreTokenGeneration`, {
+  handler: "packages/functions/src/auth/pre-token-generation.handler",
+  link: [table],
+});
+
 export const userPool = new aws.cognito.UserPool(`UserPool`, {
   name: `coderdojo-${$app.stage}-users`,
   deletionProtection: $app.stage === "prod" ? "ACTIVE" : "INACTIVE",
   usernameAttributes: ["email"],
   schemas: [
     { name: "role", attributeDataType: "String", mutable: true },
+    { name: "lang", attributeDataType: "String", mutable: true },
   ],
   lambdaConfig: {
     preSignUp: preSignUp.arn,
@@ -57,6 +63,7 @@ export const userPool = new aws.cognito.UserPool(`UserPool`, {
     createAuthChallenge: createAuthChallenge.arn,
     verifyAuthChallengeResponse: verifyAuthChallenge.arn,
     postConfirmation: postConfirmation.arn,
+    preTokenGeneration: preTokenGeneration.arn,
   },
   passwordPolicy: {
     minimumLength: 8,
@@ -79,13 +86,27 @@ export const userPoolClient = new aws.cognito.UserPoolClient(`UserPoolClient`, {
   preventUserExistenceErrors: "ENABLED",
 });
 
+// Allow PreSignUp to update user attributes for returning users
+new aws.iam.RolePolicy(`PreSignUpCognitoPolicy`, {
+  role: preSignUp.nodes.role.name,
+  policy: $interpolate`{
+    "Version": "2012-10-17",
+    "Statement": [{
+      "Effect": "Allow",
+      "Action": "cognito-idp:AdminUpdateUserAttributes",
+      "Resource": "${userPool.arn}"
+    }]
+  }`,
+});
+
 // Grant Cognito permission to invoke all Lambda triggers
 for (const [name, fn] of [
-  ["PreSignUp",           preSignUp],
-  ["DefineAuthChallenge", defineAuthChallenge],
-  ["CreateAuthChallenge", createAuthChallenge],
-  ["VerifyAuthChallenge", verifyAuthChallenge],
-  ["PostConfirmation",    postConfirmation],
+  ["PreSignUp",            preSignUp],
+  ["DefineAuthChallenge",  defineAuthChallenge],
+  ["CreateAuthChallenge",  createAuthChallenge],
+  ["VerifyAuthChallenge",  verifyAuthChallenge],
+  ["PostConfirmation",     postConfirmation],
+  ["PreTokenGeneration",   preTokenGeneration],
 ] as const) {
   new aws.lambda.Permission(`${name}CognitoPermission`, {
     action: "lambda:InvokeFunction",
