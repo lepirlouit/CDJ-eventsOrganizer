@@ -21,11 +21,10 @@ export const handler: APIGatewayProxyHandlerV2 = async (event) => {
   const { skills, notes } = body;
 
   const existing = await db.entities.eventVolunteer.query.byEvent({ eventId })
-    .where(({ userId, status }, op) =>
-      op.and(op.eq(userId, claims.sub), op.eq(status, "active"))
-    ).go();
-
-  if (existing.data.length > 0) return err("Already signed up as volunteer", 409);
+    .where(({ userId }, op) => op.eq(userId, claims.sub))
+    .go();
+  const alreadyActive = existing.data.some((v) => v.status === "active");
+  if (alreadyActive) return err("Already signed up as volunteer", 409);
 
   await db.entities.eventVolunteer.put({
     eventId,
