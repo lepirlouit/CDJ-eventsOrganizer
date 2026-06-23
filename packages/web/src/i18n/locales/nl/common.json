@@ -53,6 +53,7 @@
   "admin": {
     "dashboard": "Admin Dashboard",
     "registrants": "Ingeschrevenen",
+    "laptops_needed": "{{count}} laptop(s) nodig",
     "waitlist": "Wachtlijst",
     "export": "CSV exporteren",
     "promote": "Bevorderen",

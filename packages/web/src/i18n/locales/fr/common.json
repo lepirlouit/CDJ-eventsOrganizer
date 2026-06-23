@@ -53,6 +53,7 @@
   "admin": {
     "dashboard": "Tableau de bord",
     "registrants": "Inscrits",
+    "laptops_needed": "{{count}} ordinateur(s) nécessaire(s)",
     "waitlist": "Liste d'attente",
     "export": "Exporter CSV",
     "promote": "Promouvoir",

@@ -53,6 +53,7 @@
   "admin": {
     "dashboard": "Admin Dashboard",
     "registrants": "Registrants",
+    "laptops_needed": "{{count}} laptop(s) needed",
     "waitlist": "Waitlist",
     "export": "Export CSV",
     "promote": "Promote",

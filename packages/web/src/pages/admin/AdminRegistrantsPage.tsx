@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
+import Chip from "@mui/material/Chip";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -12,6 +13,7 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import LinearProgress from "@mui/material/LinearProgress";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import LaptopIcon from "@mui/icons-material/Laptop";
 import { api } from "../../lib/api";
 import { RegistrationStatusChip } from "../../components/registrations/RegistrationStatusChip";
 
@@ -28,11 +30,23 @@ export function AdminRegistrantsPage() {
 
   const confirmed = registrations.filter((r: any) => r.status === "confirmed");
   const waitlisted = registrations.filter((r: any) => r.status === "waitlisted");
+  const laptopCount = confirmed.filter((r: any) => r.needsComputer).length;
 
   return (
     <Box>
-      <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
-        <Typography variant="h5" fontWeight={700}>{t("admin.registrants")}</Typography>
+      <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+        <Box display="flex" alignItems="center" gap={2}>
+          <Typography variant="h5" fontWeight={700}>{t("admin.registrants")}</Typography>
+          {laptopCount > 0 && (
+            <Chip
+              icon={<LaptopIcon />}
+              label={t("admin.laptops_needed", { count: laptopCount })}
+              color="warning"
+              size="small"
+              variant="outlined"
+            />
+          )}
+        </Box>
         <Box display="flex" gap={1}>
           <Button variant="contained" component={Link} to={`/dashboard/admin/events/${eventId}/checkin`}>
             {t("admin.checkin.title")} ({confirmed.filter((r: any) => r.checkedIn).length}/{confirmed.length})
@@ -53,6 +67,7 @@ export function AdminRegistrantsPage() {
               <TableCell>Parent</TableCell>
               <TableCell>Atelier</TableCell>
               <TableCell>Status</TableCell>
+              <TableCell><LaptopIcon fontSize="small" titleAccess={t("registration.needs_computer")} /></TableCell>
               <TableCell>Check-in</TableCell>
             </TableRow>
           </TableHead>
@@ -68,6 +83,9 @@ export function AdminRegistrantsPage() {
                     isCoachChild={reg.isCoachChild}
                     checkedIn={reg.checkedIn}
                   />
+                </TableCell>
+                <TableCell>
+                  {reg.needsComputer && <LaptopIcon fontSize="small" color="action" />}
                 </TableCell>
                 <TableCell>
                   {reg.checkedIn && <CheckCircleIcon color="success" fontSize="small" />}
