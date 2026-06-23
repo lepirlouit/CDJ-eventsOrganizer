@@ -2,6 +2,8 @@ import { useTranslation } from "react-i18next";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import { styled } from "@mui/material/styles";
+import { useAuth } from "../../hooks/useAuth";
+import { api } from "../../lib/api";
 
 const LANGS = [
   { code: "fr", label: "FR" },
@@ -25,7 +27,15 @@ const LangButton = styled(Button, {
 
 export function LanguageSwitcher() {
   const { i18n } = useTranslation();
+  const { user } = useAuth();
   const current = i18n.resolvedLanguage ?? i18n.language;
+
+  function handleChange(code: string) {
+    i18n.changeLanguage(code);
+    if (user) {
+      api.put("/users/me", { preferredLang: code }).catch(() => {});
+    }
+  }
 
   return (
     <Box display="flex" gap={0.25} mr={1}>
@@ -33,7 +43,7 @@ export function LanguageSwitcher() {
         <LangButton
           key={code}
           active={current.startsWith(code)}
-          onClick={() => i18n.changeLanguage(code)}
+          onClick={() => handleChange(code)}
           disableRipple={current.startsWith(code)}
         >
           {label}

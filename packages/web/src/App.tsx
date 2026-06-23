@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
+import i18n from "./i18n/config";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -42,8 +43,15 @@ export default function App() {
 
   async function fetchMemberships() {
     try {
-      const { data } = await api.get("/users/me/memberships");
-      setMemberships(data);
+      const [{ data: memberships }, { data: profile }] = await Promise.all([
+        api.get("/users/me/memberships"),
+        api.get("/users/me"),
+      ]);
+      setMemberships(memberships);
+      // Sync stored language preference to i18n (cross-device consistency)
+      if (profile.preferredLang && profile.preferredLang !== "en") {
+        i18n.changeLanguage(profile.preferredLang);
+      }
     } catch {
       setMemberships([]);
     }
