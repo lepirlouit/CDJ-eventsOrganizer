@@ -18,7 +18,9 @@ export const handler: APIGatewayProxyHandlerV2 = async (event) => {
   if (!user) return err("User not found", 404);
 
   const body = JSON.parse(event.body ?? "{}");
-  const { skills, notes } = body;
+  const { skills, notes, lang: rawLang } = body;
+  const base = (rawLang ?? "").split("-")[0];
+  const lang = base === "fr" || base === "nl" ? base : (user.preferredLang ?? "en");
 
   const existing = await db.entities.eventVolunteer.query.byEvent({ eventId })
     .where(({ userId }, op) => op.eq(userId, claims.sub))
@@ -38,7 +40,7 @@ export const handler: APIGatewayProxyHandlerV2 = async (event) => {
     status: "active",
   }).go();
 
-  const template = volunteerConfirmedEmail(user.preferredLang ?? "en", {
+  const template = volunteerConfirmedEmail(lang as "en" | "fr" | "nl", {
     coachName: user.name,
     eventTitle: ev.title,
     eventDate: ev.date,

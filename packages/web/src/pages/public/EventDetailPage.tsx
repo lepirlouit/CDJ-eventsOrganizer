@@ -16,7 +16,7 @@ import { useAuth, isAnyCoach } from "../../hooks/useAuth";
 
 export function EventDetailPage() {
   const { eventId } = useParams<{ eventId: string }>();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { user } = useAuth();
   const qc = useQueryClient();
 
@@ -36,7 +36,7 @@ export function EventDetailPage() {
   });
 
   const volunteerMutation = useMutation({
-    mutationFn: () => api.post(`/events/${eventId}/volunteers`),
+    mutationFn: () => api.post(`/events/${eventId}/volunteers`, { lang: i18n.language }),
     onSuccess: () => qc.invalidateQueries({ queryKey: ["myVolunteer", eventId] }),
   });
 
