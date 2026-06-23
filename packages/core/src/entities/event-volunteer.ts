@@ -18,6 +18,9 @@ export const EventVolunteerEntity = new Entity(
         required: true,
         default: "active",
       },
+      checkedIn: { type: "boolean", default: false },
+      checkedInAt: { type: "string" },
+      checkedInBy: { type: "string" },
     },
     indexes: {
       byEvent: {

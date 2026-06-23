@@ -103,6 +103,7 @@ route("DELETE", "/admin/events/{eventId}/registrations/{registrationId}/checkin"
 route("POST", "/events/{eventId}/volunteers", "packages/functions/src/volunteers/create.handler");
 route("DELETE", "/events/{eventId}/volunteers/me", "packages/functions/src/volunteers/withdraw.handler");
 route("GET", "/admin/events/{eventId}/volunteers", "packages/functions/src/volunteers/list.handler");
+route("PATCH", "/admin/events/{eventId}/volunteers/{userId}/checkin", "packages/functions/src/volunteers/checkin.handler");
 
 // Dojo locations (lead_coach / super_admin)
 route("POST",   "/admin/dojos/{dojoId}/locations",                "packages/functions/src/locations/add.handler");
