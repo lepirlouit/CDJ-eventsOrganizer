@@ -11,7 +11,7 @@ import CardContent from "@mui/material/CardContent";
 import { initiateAuth } from "../../lib/auth";
 
 export function LoginPage() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
@@ -22,7 +22,7 @@ export function LoginPage() {
     setLoading(true);
     setError(null);
     try {
-      await initiateAuth(email.trim()); // stores CognitoUser in module variable
+      await initiateAuth(email.trim(), i18n.language); // stores CognitoUser in module variable
       navigate("/login/verify");
     } catch (err: any) {
       setError(err.message ?? t("common.error"));

@@ -1,6 +1,7 @@
 import {
   CognitoUser,
   CognitoUserPool,
+  CognitoUserAttribute,
   AuthenticationDetails,
 } from "amazon-cognito-identity-js";
 
@@ -20,12 +21,16 @@ export const clearPendingUser = () => { _pendingUser = null; };
  * The PreSignUp Lambda auto-confirms them, so no verification step needed.
  * If the user already exists, UsernameExistsException is swallowed.
  */
-function ensureUserExists(email: string): Promise<void> {
+function ensureUserExists(email: string, lang: string): Promise<void> {
   return new Promise((resolve) => {
     // The password is never used for authentication (CUSTOM_AUTH only).
     // It just satisfies the Cognito signUp API requirement.
     const dummyPassword = `Cdj-${btoa(email).slice(0, 16)}`;
-    Pool.signUp(email, dummyPassword, [], [], (err) => {
+    // Pass lang as a user attribute so PreSignUp can relay it for returning
+    // users via adminUpdateUserAttributes — Cognito doesn't forward clientMetadata
+    // to CreateAuthChallenge, but userAttributes ARE available there.
+    const attrs = [new CognitoUserAttribute({ Name: "custom:lang", Value: lang })];
+    Pool.signUp(email, dummyPassword, attrs, [], (err) => {
       // Ignore "user already exists" — that is the happy path for returning users
       if (err && err.name !== "UsernameExistsException") {
         console.warn("SignUp warning:", err.message);
@@ -35,15 +40,18 @@ function ensureUserExists(email: string): Promise<void> {
   });
 }
 
-export async function initiateAuth(email: string): Promise<CognitoUser> {
+export async function initiateAuth(email: string, langHint = "en"): Promise<CognitoUser> {
+  // Normalise "fr-BE" → "fr" etc.; fall back to "en" for unknown codes.
+  const base = langHint.split("-")[0];
+  const lang = base === "fr" || base === "nl" ? base : "en";
+
   // Ensure the user exists in Cognito before starting the custom auth flow.
   // Without this, preventUserExistenceErrors causes Cognito to pass a random
   // UUID as event.userName in CreateAuthChallenge, making SES fail.
-  await ensureUserExists(email);
+  await ensureUserExists(email, lang);
 
   return new Promise((resolve, reject) => {
     const user = new CognitoUser({ Username: email, Pool });
-    const lang = localStorage.getItem("cdj-lang") ?? "en";
     const authDetails = new AuthenticationDetails({
       Username: email,
       ClientMetadata: { lang },

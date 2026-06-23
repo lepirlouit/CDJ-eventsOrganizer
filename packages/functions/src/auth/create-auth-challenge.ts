@@ -21,7 +21,11 @@ export const handler: CreateAuthChallengeTriggerHandler = async (event) => {
     return event;
   }
 
-  const lang = (event.request.clientMetadata?.lang as "en" | "fr" | "nl") ?? "en";
+  // clientMetadata from InitiateAuth is NOT forwarded by Cognito when
+  // preventUserExistenceErrors is enabled. Read lang from userAttributes instead —
+  // PreSignUp stores it there via adminUpdateUserAttributes on each login.
+  const rawLang = event.request.userAttributes["custom:lang"] ?? "en";
+  const lang: "en" | "fr" | "nl" = rawLang === "fr" ? "fr" : rawLang === "nl" ? "nl" : "en";
   const email = event.request.userAttributes.email ?? event.userName;
 
   const template = otpEmail(lang, otp);

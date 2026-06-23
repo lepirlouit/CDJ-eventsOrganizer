@@ -2,7 +2,6 @@ import type { DefineAuthChallengeTriggerHandler } from "aws-lambda";
 
 export const handler: DefineAuthChallengeTriggerHandler = async (event) => {
   const { session } = event.request;
-
   if (session.length === 0) {
     event.response.issueTokens = false;
     event.response.failAuthentication = false;
