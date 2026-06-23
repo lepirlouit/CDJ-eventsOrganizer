@@ -12,11 +12,12 @@ export const handler: APIGatewayProxyHandlerV2 = async (event) => {
   if (child.userId !== claims.sub) return err("Forbidden", 403);
 
   const body = JSON.parse(event.body ?? "{}");
-  const { name, birthdate, previousVisits, notes } = body;
+  const { name, birthdate, gender, previousVisits, notes } = body;
 
   const updates: Record<string, unknown> = {};
   if (name !== undefined)           updates.name = name;
   if (birthdate !== undefined)      updates.birthdate = birthdate;
+  if (gender !== undefined)         updates.gender = gender;
   if (previousVisits !== undefined) updates.previousVisits = previousVisits;
   if (notes !== undefined)          updates.notes = notes;
 

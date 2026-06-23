@@ -2,7 +2,7 @@ import type { APIGatewayProxyHandlerV2 } from "aws-lambda";
 import {
   db, ok, err, getClaims, sendEmail,
   registrationConfirmedEmail, waitlistedEmail,
-  getUserLang, registerParticipant,
+  getUserLang, registerParticipant, namesMatch,
 } from "@coderdojo/core";
 
 export const handler: APIGatewayProxyHandlerV2 = async (event) => {
@@ -14,7 +14,7 @@ export const handler: APIGatewayProxyHandlerV2 = async (event) => {
   const {
     childId, parentName, parentEmail, parentPhone,
     atelierId, needsComputer, previousVisits, heardAbout,
-    consentPhotos, consentContact,
+    consentPhotos, consentContact, customAnswers,
   } = body;
 
   if (!childId || !parentName || !parentEmail || !atelierId) {
@@ -31,9 +31,26 @@ export const handler: APIGatewayProxyHandlerV2 = async (event) => {
   const ninjaName = child.name;
   const ninjaBirthdate = child.birthdate;
 
+  // A child's name must differ from the parent's — guards against accidentally
+  // registering the guardian as the participant.
+  if (namesMatch(ninjaName, parentName)) {
+    return err("The child's name must be different from the parent's name", 400);
+  }
+
   const eventResult = await db.entities.event.query.byId({ eventId }).go();
   const ev = eventResult.data[0];
   if (!ev) return err("Event not found", 404);
+
+  // Validate the dojo's active custom questions: required ones must be answered.
+  const questionsResult = await db.entities.customQuestion.query.byDojo({ dojoId: ev.dojoId }).go();
+  const activeQuestions = questionsResult.data.filter((q) => q.active);
+  const answers: Record<string, unknown> = customAnswers ?? {};
+  for (const q of activeQuestions) {
+    if (!q.required) continue;
+    const a = answers[q.questionId];
+    const missing = a === undefined || a === null || a === "" || (q.type === "checkbox" && a !== true);
+    if (missing) return err(`Missing answer for required question: ${q.label}`, 400);
+  }
 
   try {
     const result = await registerParticipant({
@@ -45,6 +62,7 @@ export const handler: APIGatewayProxyHandlerV2 = async (event) => {
       registeredByUserId: claims.sub,
       ninjaName,
       ninjaBirthdate,
+      ninjaGender: child.gender,
       parentName,
       parentEmail,
       parentPhone,
@@ -54,6 +72,7 @@ export const handler: APIGatewayProxyHandlerV2 = async (event) => {
       heardAbout,
       consentPhotos: consentPhotos ?? false,
       consentContact: consentContact ?? false,
+      customAnswers: activeQuestions.length > 0 ? answers : undefined,
     });
 
     const lang = await getUserLang(db, claims.sub);

@@ -5,7 +5,7 @@ import { ulid } from "ulid";
 export const handler: APIGatewayProxyHandlerV2 = async (event) => {
   const claims = getClaims(event as any);
   const body = JSON.parse(event.body ?? "{}");
-  const { name, birthdate, previousVisits, notes } = body;
+  const { name, birthdate, gender, previousVisits, notes } = body;
   if (!name || !birthdate) return err("name and birthdate are required", 400);
 
   const childId = ulid();
@@ -14,6 +14,7 @@ export const handler: APIGatewayProxyHandlerV2 = async (event) => {
     userId: claims.sub,
     name,
     birthdate,
+    ...(gender !== undefined && { gender }),
     ...(previousVisits !== undefined && { previousVisits }),
     ...(notes !== undefined && { notes }),
   }).go();

@@ -22,7 +22,7 @@ export const handler: APIGatewayProxyHandlerV2 = async (event) => {
 
   // Batch-get authoritative child profiles for the distinct childIds present.
   const childIds = [...new Set(regs.map((r) => r.childId).filter(Boolean) as string[])];
-  const childById = new Map<string, { name: string; birthdate: string; participantId?: string }>();
+  const childById = new Map<string, { name: string; birthdate: string; participantId?: string; gender?: string }>();
   if (childIds.length > 0) {
     const got = await db.entities.child.get(childIds.map((childId) => ({ childId }))).go();
     for (const c of got.data) childById.set(c.childId, c);
@@ -65,10 +65,20 @@ export const handler: APIGatewayProxyHandlerV2 = async (event) => {
   const participants = [...groups.values()].map((g) => {
     const key = `${normalize(g.name)}|${g.birthdate}`;
     const confirmed = g.registrations.filter((r) => r.status === "confirmed").length;
+    // Most recent registration carries the freshest contact details.
+    const latest = [...g.registrations].sort((a, b) =>
+      b.registrationId.localeCompare(a.registrationId))[0];
+    const gender =
+      g.childIds.map((id) => childById.get(id)?.gender).find(Boolean) ??
+      latest?.ninjaGender;
     return {
       participantId: g.participantId,
       name: g.name,
       birthdate: g.birthdate,
+      gender,
+      parentName: latest?.parentName,
+      parentEmail: latest?.parentEmail,
+      parentPhone: latest?.parentPhone,
       childIds: g.childIds,
       visits: g.registrations.length,
       confirmedVisits: confirmed,

@@ -23,17 +23,18 @@ export const handler: APIGatewayProxyHandlerV2 = async (event) => {
     .go();
 
   const headers = [
-    "registrationId", "childId", "status", "ninjaName", "ninjaBirthdate", "parentName",
-    "parentEmail", "parentPhone", "registeredByUserId", "atelierId", "needsComputer",
-    "previousVisits", "heardAbout", "consentPhotos", "consentContact", "isCoachChild",
-    "checkedIn", "checkedInAt",
+    "registrationId", "childId", "status", "ninjaName", "ninjaBirthdate", "ninjaGender",
+    "parentName", "parentEmail", "parentPhone", "registeredByUserId", "atelierId",
+    "needsComputer", "previousVisits", "heardAbout", "consentPhotos", "consentContact",
+    "isCoachChild", "customAnswers", "checkedIn", "checkedInAt",
   ];
 
   const rows = result.data.map((r) =>
     headers.map((h) => {
       const val = (r as Record<string, unknown>)[h];
       if (val === undefined || val === null) return "";
-      return `"${String(val).replace(/"/g, '""')}"`;
+      const str = typeof val === "object" ? JSON.stringify(val) : String(val);
+      return `"${str.replace(/"/g, '""')}"`;
     }).join(",")
   );
 

@@ -7,8 +7,16 @@ export const handler: APIGatewayProxyHandlerV2 = async (event) => {
   if (!dojoId || !userId) return err("Missing dojoId or userId", 400);
 
   const body = JSON.parse(event.body ?? "{}");
-  const { role } = body;
-  if (!["coach", "lead_coach"].includes(role)) return err("role must be coach or lead_coach", 400);
+  const { role, canCheckIn } = body;
+  if (role !== undefined && !["coach", "lead_coach"].includes(role)) {
+    return err("role must be coach or lead_coach", 400);
+  }
+  if (canCheckIn !== undefined && typeof canCheckIn !== "boolean") {
+    return err("canCheckIn must be a boolean", 400);
+  }
+  if (role === undefined && canCheckIn === undefined) {
+    return err("Nothing to update", 400);
+  }
 
   if (!isSuperAdmin(claims)) {
     const allowed = await requireDojoLeadCoach(db, claims.sub, dojoId, claims);
@@ -18,6 +26,10 @@ export const handler: APIGatewayProxyHandlerV2 = async (event) => {
   const existing = await db.entities.dojoMembership.get({ userId, dojoId }).go();
   if (!existing.data) return err("Membership not found", 404);
 
-  await db.entities.dojoMembership.patch({ userId, dojoId }).set({ role }).go();
-  return ok({ userId, dojoId, role });
+  const updates: Record<string, unknown> = {};
+  if (role !== undefined) updates.role = role;
+  if (canCheckIn !== undefined) updates.canCheckIn = canCheckIn;
+
+  await db.entities.dojoMembership.patch({ userId, dojoId }).set(updates as any).go();
+  return ok({ userId, dojoId, ...updates });
 };
