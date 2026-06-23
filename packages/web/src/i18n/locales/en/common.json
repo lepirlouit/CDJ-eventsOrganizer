@@ -5,7 +5,8 @@
     "login": "Sign in",
     "dashboard": "Dashboard",
     "logout": "Sign out",
-    "my_registrations": "My Registrations"
+    "my_registrations": "My Registrations",
+    "my_children": "My Children"
   },
   "auth": {
     "enter_email": "Enter your email address",
@@ -50,6 +51,18 @@
     "none_yet": "No registrations yet.",
     "add_child": "Add another child"
   },
+  "children": {
+    "title": "My Children",
+    "add": "Add a child",
+    "edit": "Edit child",
+    "delete": "Delete",
+    "name": "Name",
+    "birthdate": "Date of birth",
+    "no_children": "You haven't added any children yet.",
+    "select_prompt": "Select at least one child to register.",
+    "add_new": "Add a new child",
+    "confirm_delete": "Delete this child? Past registrations are kept."
+  },
   "admin": {
     "dashboard": "Admin Dashboard",
     "registrants": "Registrants",
@@ -88,6 +101,20 @@
       "latitude": "Latitude",
       "longitude": "Longitude",
       "coords_tip": "Enter decimal coordinates (e.g. 50.8503, 4.3517)"
+    },
+    "child_history": {
+      "title": "Registration history",
+      "view_history": "View history",
+      "none": "No registrations found."
+    },
+    "participants": {
+      "title": "Unique participants",
+      "unique_count": "{{count}} unique participant(s)",
+      "visits": "Visits",
+      "registered_by": "Registered by",
+      "merge_candidate": "Possible duplicate",
+      "merge": "Merge",
+      "merge_confirm": "Merge these profiles into one participant?"
     }
   },
   "volunteers": {

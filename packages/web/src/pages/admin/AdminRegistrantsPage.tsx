@@ -31,6 +31,7 @@ export function AdminRegistrantsPage() {
   const confirmed = registrations.filter((r: any) => r.status === "confirmed");
   const waitlisted = registrations.filter((r: any) => r.status === "waitlisted");
   const laptopCount = confirmed.filter((r: any) => r.needsComputer).length;
+  const dojoId = registrations[0]?.dojoId;
 
   return (
     <Box>
@@ -57,6 +58,11 @@ export function AdminRegistrantsPage() {
           <Button variant="outlined" component={Link} to={`/dashboard/admin/events/${eventId}/volunteers`}>
             {t("volunteers.title")}
           </Button>
+          {dojoId && (
+            <Button variant="outlined" component={Link} to={`/dashboard/admin/dojos/${dojoId}/participants`}>
+              {t("admin.participants.title")}
+            </Button>
+          )}
         </Box>
       </Box>
       <Paper>
@@ -74,7 +80,13 @@ export function AdminRegistrantsPage() {
           <TableBody>
             {registrations.map((reg: any) => (
               <TableRow key={reg.registrationId} sx={{ opacity: reg.status === "waitlisted" ? 0.7 : 1 }}>
-                <TableCell>{reg.ninjaName}</TableCell>
+                <TableCell>
+                  {reg.childId ? (
+                    <Link to={`/dashboard/admin/children/${reg.childId}`}>{reg.ninjaName}</Link>
+                  ) : (
+                    reg.ninjaName
+                  )}
+                </TableCell>
                 <TableCell>{reg.parentName}</TableCell>
                 <TableCell>{reg.atelierId}</TableCell>
                 <TableCell>

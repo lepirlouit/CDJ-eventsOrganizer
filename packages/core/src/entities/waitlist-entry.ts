@@ -9,6 +9,8 @@ export const WaitlistEntryEntity = new Entity(
       eventId: { type: "string", required: true },
       dojoId: { type: "string", required: true },
       userId: { type: "string", required: true },
+      childId: { type: "string" },
+      registeredByUserId: { type: "string" },
       position: { type: "number", required: true },
       positionPadded: { type: "string", required: true },
       ninjaName: { type: "string", required: true },

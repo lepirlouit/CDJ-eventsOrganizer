@@ -9,6 +9,8 @@ type RegistrationBase = {
   eventId: string;
   dojoId: string;
   userId: string;
+  childId?: string;
+  registeredByUserId?: string;
   ninjaName: string;
   ninjaBirthdate: string;
   parentName: string;
@@ -41,6 +43,8 @@ export async function registerParticipant(params: {
   dojoId: string;
   userId: string;
   callerRole: Role;
+  childId?: string;
+  registeredByUserId?: string;
   ninjaName: string;
   ninjaBirthdate: string;
   parentName: string;
@@ -72,6 +76,8 @@ export async function registerParticipant(params: {
     eventId: params.eventId,
     dojoId: params.dojoId,
     userId: params.userId,
+    childId: params.childId,
+    registeredByUserId: params.registeredByUserId,
     ninjaName: params.ninjaName,
     ninjaBirthdate: params.ninjaBirthdate,
     parentName: params.parentName,

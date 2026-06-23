@@ -81,10 +81,21 @@ route("PUT", "/users/me", "packages/functions/src/users/update-me.handler");
 route("GET", "/users/me/registrations", "packages/functions/src/registrations/list-mine.handler");
 route("DELETE", "/registrations/{registrationId}", "packages/functions/src/registrations/cancel.handler");
 
+// Children (parent's saved participant profiles)
+route("GET", "/users/me/children", "packages/functions/src/children/list.handler");
+route("POST", "/users/me/children", "packages/functions/src/children/create.handler");
+route("PUT", "/users/me/children/{childId}", "packages/functions/src/children/update.handler");
+route("DELETE", "/users/me/children/{childId}", "packages/functions/src/children/delete.handler");
+
 // Coach / Lead Coach
 route("GET", "/admin/dojos/{dojoId}/events", "packages/functions/src/events/list-admin.handler");
 route("GET", "/admin/events/{eventId}/registrations", "packages/functions/src/registrations/list.handler");
 route("GET", "/admin/events/{eventId}/registrations/export", "packages/functions/src/registrations/export-csv.handler");
+
+// Unique participants (cross-event child identity / merge)
+route("GET", "/admin/children/{childId}/registrations", "packages/functions/src/children/history.handler");
+route("GET", "/admin/dojos/{dojoId}/participants", "packages/functions/src/participants/list.handler");
+route("POST", "/admin/participants/merge", "packages/functions/src/participants/merge.handler");
 route("GET", "/admin/events/{eventId}/waitlist", "packages/functions/src/waitlist/list.handler");
 route("POST", "/admin/dojos/{dojoId}/events", "packages/functions/src/events/create.handler");
 route("PUT", "/admin/events/{eventId}", "packages/functions/src/events/update.handler");

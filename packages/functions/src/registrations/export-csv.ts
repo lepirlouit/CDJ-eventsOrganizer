@@ -23,9 +23,9 @@ export const handler: APIGatewayProxyHandlerV2 = async (event) => {
     .go();
 
   const headers = [
-    "registrationId", "status", "ninjaName", "ninjaBirthdate", "parentName",
-    "parentEmail", "parentPhone", "atelierId", "needsComputer", "previousVisits",
-    "heardAbout", "consentPhotos", "consentContact", "isCoachChild",
+    "registrationId", "childId", "status", "ninjaName", "ninjaBirthdate", "parentName",
+    "parentEmail", "parentPhone", "registeredByUserId", "atelierId", "needsComputer",
+    "previousVisits", "heardAbout", "consentPhotos", "consentContact", "isCoachChild",
     "checkedIn", "checkedInAt",
   ];
 

@@ -5,4 +5,5 @@ export { RegistrationEntity } from "./registration.js";
 export { WaitlistEntryEntity } from "./waitlist-entry.js";
 export { EventVolunteerEntity } from "./event-volunteer.js";
 export { DojoMembershipEntity } from "./dojo-membership.js";
+export { ChildEntity } from "./child.js";
 export { db, DocumentClient, table } from "./table.js";

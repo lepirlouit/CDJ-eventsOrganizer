@@ -9,6 +9,10 @@ export const RegistrationEntity = new Entity(
       eventId: { type: "string", required: true },
       dojoId: { type: "string", required: true },
       userId: { type: "string", required: true },
+      // Stable participant id (optional for legacy rows; always set on new writes).
+      childId: { type: "string" },
+      // Cognito sub of the guardian who performed this signup (mum vs dad).
+      registeredByUserId: { type: "string" },
       ninjaName: { type: "string", required: true },
       ninjaBirthdate: { type: "string", required: true },
       parentName: { type: "string", required: true },
@@ -44,6 +48,12 @@ export const RegistrationEntity = new Entity(
         index: "gsi2",
         pk: { field: "gsi2pk", composite: ["userId"], template: "USER#${userId}" },
         sk: { field: "gsi2sk", composite: ["registrationId"], template: "REG#${registrationId}" },
+      },
+      // Sparse: only registrations created with a childId participate.
+      byChild: {
+        index: "gsi3",
+        pk: { field: "gsi3pk", composite: ["childId"], template: "CHILD#${childId}" },
+        sk: { field: "gsi3sk", composite: ["registrationId"], template: "REG#${registrationId}" },
       },
     },
   },

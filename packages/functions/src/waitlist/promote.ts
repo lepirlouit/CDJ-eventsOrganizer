@@ -27,6 +27,8 @@ export const handler: APIGatewayProxyHandlerV2 = async (event) => {
     eventId: entry.eventId,
     dojoId: entry.dojoId,
     userId: entry.userId,
+    childId: entry.childId,
+    registeredByUserId: entry.registeredByUserId,
     ninjaName: entry.ninjaName,
     ninjaBirthdate: entry.ninjaBirthdate,
     parentName: entry.parentName,

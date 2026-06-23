@@ -5,7 +5,8 @@
     "login": "Inloggen",
     "dashboard": "Dashboard",
     "logout": "Uitloggen",
-    "my_registrations": "Mijn inschrijvingen"
+    "my_registrations": "Mijn inschrijvingen",
+    "my_children": "Mijn kinderen"
   },
   "auth": {
     "enter_email": "Voer uw e-mailadres in",
@@ -50,6 +51,18 @@
     "none_yet": "Nog geen inschrijvingen.",
     "add_child": "Nog een kind toevoegen"
   },
+  "children": {
+    "title": "Mijn kinderen",
+    "add": "Kind toevoegen",
+    "edit": "Kind bewerken",
+    "delete": "Verwijderen",
+    "name": "Naam",
+    "birthdate": "Geboortedatum",
+    "no_children": "U heeft nog geen kinderen toegevoegd.",
+    "select_prompt": "Selecteer minstens één kind om in te schrijven.",
+    "add_new": "Een nieuw kind toevoegen",
+    "confirm_delete": "Dit kind verwijderen? Eerdere inschrijvingen blijven bewaard."
+  },
   "admin": {
     "dashboard": "Admin Dashboard",
     "registrants": "Ingeschrevenen",
@@ -88,6 +101,20 @@
       "latitude": "Breedtegraad",
       "longitude": "Lengtegraad",
       "coords_tip": "Voer decimale coördinaten in (bijv. 50.8503, 4.3517)"
+    },
+    "child_history": {
+      "title": "Inschrijvingsgeschiedenis",
+      "view_history": "Geschiedenis bekijken",
+      "none": "Geen inschrijvingen gevonden."
+    },
+    "participants": {
+      "title": "Unieke deelnemers",
+      "unique_count": "{{count}} unieke deelnemer(s)",
+      "visits": "Bezoeken",
+      "registered_by": "Ingeschreven door",
+      "merge_candidate": "Mogelijk duplicaat",
+      "merge": "Samenvoegen",
+      "merge_confirm": "Deze profielen samenvoegen tot één deelnemer?"
     }
   },
   "volunteers": {

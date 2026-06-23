@@ -17,11 +17,14 @@ import { EventDetailPage }       from "./pages/public/EventDetailPage";
 import { LoginPage }             from "./pages/auth/LoginPage";
 import { VerifyOtpPage }         from "./pages/auth/VerifyOtpPage";
 import { MyRegistrationsPage }   from "./pages/parent/MyRegistrationsPage";
+import { MyChildrenPage }        from "./pages/parent/MyChildrenPage";
 import { RegisterPage }          from "./pages/parent/RegisterPage";
 import { AdminDashboardPage }    from "./pages/admin/AdminDashboardPage";
 import { AdminEventsPage }       from "./pages/admin/AdminEventsPage";
 import { AdminEventEditPage }    from "./pages/admin/AdminEventEditPage";
 import { AdminRegistrantsPage }  from "./pages/admin/AdminRegistrantsPage";
+import { AdminChildHistoryPage } from "./pages/admin/AdminChildHistoryPage";
+import { AdminParticipantsPage } from "./pages/admin/AdminParticipantsPage";
 import { AdminWaitlistPage }     from "./pages/admin/AdminWaitlistPage";
 import { AdminCheckinPage }      from "./pages/admin/AdminCheckinPage";
 import { AdminVolunteersPage }   from "./pages/admin/AdminVolunteersPage";
@@ -115,6 +118,9 @@ export default function App() {
                 <Route path="/dashboard/registrations" element={
                   <ProtectedRoute><MyRegistrationsPage /></ProtectedRoute>
                 } />
+                <Route path="/dashboard/children" element={
+                  <ProtectedRoute><MyChildrenPage /></ProtectedRoute>
+                } />
                 <Route path="/dashboard/admin" element={
                   <ProtectedRoute requireAnyCoach><AdminDashboardPage /></ProtectedRoute>
                 } />
@@ -126,6 +132,12 @@ export default function App() {
                 } />
                 <Route path="/dashboard/admin/events/:id/registrants" element={
                   <ProtectedRoute requireAnyCoach><AdminRegistrantsPage /></ProtectedRoute>
+                } />
+                <Route path="/dashboard/admin/children/:childId" element={
+                  <ProtectedRoute requireAnyCoach><AdminChildHistoryPage /></ProtectedRoute>
+                } />
+                <Route path="/dashboard/admin/dojos/:dojoId/participants" element={
+                  <ProtectedRoute requireAnyCoach><AdminParticipantsPage /></ProtectedRoute>
                 } />
                 <Route path="/dashboard/admin/events/:id/waitlist" element={
                   <ProtectedRoute requireAnyCoach><AdminWaitlistPage /></ProtectedRoute>

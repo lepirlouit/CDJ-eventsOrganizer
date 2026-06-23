@@ -5,7 +5,8 @@
     "login": "Se connecter",
     "dashboard": "Tableau de bord",
     "logout": "Se déconnecter",
-    "my_registrations": "Mes inscriptions"
+    "my_registrations": "Mes inscriptions",
+    "my_children": "Mes enfants"
   },
   "auth": {
     "enter_email": "Entrez votre adresse e-mail",
@@ -50,6 +51,18 @@
     "none_yet": "Aucune inscription pour le moment.",
     "add_child": "Ajouter un autre enfant"
   },
+  "children": {
+    "title": "Mes enfants",
+    "add": "Ajouter un enfant",
+    "edit": "Modifier l'enfant",
+    "delete": "Supprimer",
+    "name": "Nom",
+    "birthdate": "Date de naissance",
+    "no_children": "Vous n'avez pas encore ajouté d'enfant.",
+    "select_prompt": "Sélectionnez au moins un enfant à inscrire.",
+    "add_new": "Ajouter un nouvel enfant",
+    "confirm_delete": "Supprimer cet enfant ? Les inscriptions passées sont conservées."
+  },
   "admin": {
     "dashboard": "Tableau de bord",
     "registrants": "Inscrits",
@@ -88,6 +101,20 @@
       "latitude": "Latitude",
       "longitude": "Longitude",
       "coords_tip": "Entrez les coordonnées décimales (ex: 50.8503, 4.3517)"
+    },
+    "child_history": {
+      "title": "Historique des inscriptions",
+      "view_history": "Voir l'historique",
+      "none": "Aucune inscription trouvée."
+    },
+    "participants": {
+      "title": "Participants uniques",
+      "unique_count": "{{count}} participant(s) unique(s)",
+      "visits": "Visites",
+      "registered_by": "Inscrit par",
+      "merge_candidate": "Doublon possible",
+      "merge": "Fusionner",
+      "merge_confirm": "Fusionner ces profils en un seul participant ?"
     }
   },
   "volunteers": {

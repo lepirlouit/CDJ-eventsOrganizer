@@ -118,6 +118,10 @@ declare module "sst" {
       "name": string
       "type": "sst.aws.Function"
     }
+    "FnPATCH_admin_events_eventId_volunteers_userId_checkin": {
+      "name": string
+      "type": "sst.aws.Function"
+    }
     "FnPOST_admin_dojos": {
       "name": string
       "type": "sst.aws.Function"

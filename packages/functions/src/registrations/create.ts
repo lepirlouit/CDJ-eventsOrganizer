@@ -12,14 +12,24 @@ export const handler: APIGatewayProxyHandlerV2 = async (event) => {
 
   const body = JSON.parse(event.body ?? "{}");
   const {
-    ninjaName, ninjaBirthdate, parentName, parentEmail, parentPhone,
+    childId, parentName, parentEmail, parentPhone,
     atelierId, needsComputer, previousVisits, heardAbout,
     consentPhotos, consentContact,
   } = body;
 
-  if (!ninjaName || !ninjaBirthdate || !parentName || !parentEmail || !atelierId) {
+  if (!childId || !parentName || !parentEmail || !atelierId) {
     return err("Required fields missing", 400);
   }
+
+  // Load the saved child — its name/birthdate are authoritative, giving the
+  // registration a stable participant identity instead of client-typed values.
+  const childResult = await db.entities.child.query.byId({ childId }).go();
+  const child = childResult.data[0];
+  if (!child) return err("Child not found", 404);
+  if (child.userId !== claims.sub) return err("Forbidden", 403);
+
+  const ninjaName = child.name;
+  const ninjaBirthdate = child.birthdate;
 
   const eventResult = await db.entities.event.query.byId({ eventId }).go();
   const ev = eventResult.data[0];
@@ -31,6 +41,8 @@ export const handler: APIGatewayProxyHandlerV2 = async (event) => {
       dojoId: ev.dojoId,
       userId: claims.sub,
       callerRole: claims["custom:role"],
+      childId,
+      registeredByUserId: claims.sub,
       ninjaName,
       ninjaBirthdate,
       parentName,
@@ -38,7 +50,7 @@ export const handler: APIGatewayProxyHandlerV2 = async (event) => {
       parentPhone,
       atelierId,
       needsComputer: needsComputer ?? false,
-      previousVisits: previousVisits ?? 0,
+      previousVisits: previousVisits ?? child.previousVisits ?? 0,
       heardAbout,
       consentPhotos: consentPhotos ?? false,
       consentContact: consentContact ?? false,

@@ -46,9 +46,14 @@ export function AppShell() {
                 </Button>
               )}
               {(isAnyCoach(user) || user.globalRole === "parent") && (
-                <Button color="inherit" component={Link} to="/dashboard/registrations">
-                  {t("nav.my_registrations")}
-                </Button>
+                <>
+                  <Button color="inherit" component={Link} to="/dashboard/children">
+                    {t("nav.my_children")}
+                  </Button>
+                  <Button color="inherit" component={Link} to="/dashboard/registrations">
+                    {t("nav.my_registrations")}
+                  </Button>
+                </>
               )}
               <Button color="inherit" onClick={handleLogout}>
                 {t("nav.logout")}
