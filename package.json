@@ -2,16 +2,27 @@
   "name": "coderdojo-event-organizer",
   "version": "1.0.0",
   "private": true,
-  "workspaces": ["packages/*"],
+  "workspaces": [
+    "packages/*"
+  ],
   "devDependencies": {
+    "@testing-library/react": "^16.3.2",
+    "@testing-library/user-event": "^14.6.1",
+    "jsdom": "^29.1.1",
     "sst": "^4.15.2",
+    "tsx": "^4.15.0",
     "typescript": "^5.5.0",
-    "tsx": "^4.15.0"
+    "vitest": "^4.1.9"
   },
   "scripts": {
     "typecheck": "npm run typecheck --workspaces --if-present",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "dev": "sst dev --stage dev",
     "deploy": "sst deploy --stage prod",
-    "seed": "sst shell --stage prod npx tsx scripts/seed.ts"
+    "deploy:test": "sst deploy --stage test",
+    "remove:test": "sst remove --stage test",
+    "seed": "sst shell --stage prod npx tsx scripts/seed.ts",
+    "seed:test": "sst shell --stage test npx tsx scripts/seed.ts"
   }
 }
