@@ -77,6 +77,7 @@ route("GET", "/users/me/registrations", "packages/functions/src/registrations/li
 route("DELETE", "/registrations/{registrationId}", "packages/functions/src/registrations/cancel.handler");
 
 // Coach / Lead Coach
+route("GET", "/admin/dojos/{dojoId}/events", "packages/functions/src/events/list-admin.handler");
 route("GET", "/admin/events/{eventId}/registrations", "packages/functions/src/registrations/list.handler");
 route("GET", "/admin/events/{eventId}/registrations/export", "packages/functions/src/registrations/export-csv.handler");
 route("GET", "/admin/events/{eventId}/waitlist", "packages/functions/src/waitlist/list.handler");

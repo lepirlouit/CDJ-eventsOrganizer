@@ -28,7 +28,7 @@ export function AdminEventsPage() {
 
   const { data: events = [], isLoading } = useQuery({
     queryKey: ["adminEvents", dojoId],
-    queryFn: () => api.get(`/dojos/${dojoId}/events`).then((r) => r.data),
+    queryFn: () => api.get(`/admin/dojos/${dojoId}/events`).then((r) => r.data),
     enabled: !!dojoId,
   });
 

@@ -40,14 +40,14 @@ export function AppShell() {
                   {t("nav.dashboard")}
                 </Button>
               )}
-              {!isAnyCoach(user) && user.globalRole === "parent" && (
-                <Button color="inherit" component={Link} to="/dashboard/registrations">
-                  {t("nav.dashboard")}
-                </Button>
-              )}
               {user.globalRole === "super_admin" && (
                 <Button color="inherit" component={Link} to="/dashboard/superadmin">
-                  {t("nav.dashboard")}
+                  Super Admin
+                </Button>
+              )}
+              {(isAnyCoach(user) || user.globalRole === "parent") && (
+                <Button color="inherit" component={Link} to="/dashboard/registrations">
+                  {t("nav.my_registrations")}
                 </Button>
               )}
               <Button color="inherit" onClick={handleLogout}>
