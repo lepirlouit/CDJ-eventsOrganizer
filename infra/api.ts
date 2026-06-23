@@ -14,11 +14,16 @@ const sesPolicy = new aws.iam.Policy(`SesSendEmailPolicy`, {
   }),
 });
 
+const WEB_URL = $app.stage === "prod"
+  ? "https://cdj.pirlou.it"
+  : "http://localhost:5173";
+
 const fnDefaults = {
   link: [table, exportBucket, userPool],
   runtime: "nodejs22.x" as const,
   environment: {
     SES_FROM_EMAIL: "noreply@cdj.pirlou.it",
+    WEB_URL,
   },
 };
 
