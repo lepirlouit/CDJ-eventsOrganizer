@@ -29,6 +29,7 @@ import { AdminWaitlistPage }     from "./pages/admin/AdminWaitlistPage";
 import { AdminCheckinPage }      from "./pages/admin/AdminCheckinPage";
 import { AdminVolunteersPage }   from "./pages/admin/AdminVolunteersPage";
 import { SuperAdminDojosPage }   from "./pages/superadmin/SuperAdminDojosPage";
+import { SuperAdminStatsPage }   from "./pages/superadmin/SuperAdminStatsPage";
 
 const queryClient = new QueryClient({
   defaultOptions: { queries: { staleTime: 30_000, retry: 1 } },
@@ -150,6 +151,9 @@ export default function App() {
                 } />
                 <Route path="/dashboard/superadmin" element={
                   <ProtectedRoute roles={["super_admin"]}><SuperAdminDojosPage /></ProtectedRoute>
+                } />
+                <Route path="/dashboard/superadmin/stats" element={
+                  <ProtectedRoute roles={["super_admin"]}><SuperAdminStatsPage /></ProtectedRoute>
                 } />
               </Route>
             </Routes>

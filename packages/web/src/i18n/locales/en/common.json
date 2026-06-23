@@ -6,7 +6,8 @@
     "dashboard": "Dashboard",
     "logout": "Sign out",
     "my_registrations": "My Registrations",
-    "my_children": "My Children"
+    "my_children": "My Children",
+    "statistics": "Statistics"
   },
   "auth": {
     "enter_email": "Enter your email address",
@@ -22,7 +23,13 @@
     "upcoming": "Upcoming dojos",
     "no_dojos": "No dojos found",
     "search_placeholder": "Search by city or dojo name…",
-    "no_results": "No dojos match your search"
+    "no_results": "No dojos match your search",
+    "contact": "Contact",
+    "contact_help": "Your message will be sent to this dojo's coaches.",
+    "contact_name": "Your name",
+    "contact_email": "Your email",
+    "contact_message": "Message",
+    "contact_send": "Send message"
   },
   "events": {
     "title": "Events",
@@ -39,6 +46,7 @@
   "registration": {
     "ninja_name": "Ninja's name",
     "birthdate": "Date of birth",
+    "phone": "Phone",
     "atelier": "Atelier",
     "needs_computer": "Needs a computer",
     "previous_visits": "Previous visits",
@@ -49,7 +57,8 @@
     "success": "Registration confirmed!",
     "waitlisted": "You're on the waitlist at position #{{position}}",
     "none_yet": "No registrations yet.",
-    "add_child": "Add another child"
+    "add_child": "Add another child",
+    "child_name_equals_parent": "A child's name must be different from the parent's name."
   },
   "children": {
     "title": "My Children",
@@ -58,10 +67,17 @@
     "delete": "Delete",
     "name": "Name",
     "birthdate": "Date of birth",
+    "gender": "Gender",
+    "gender_unspecified": "Prefer not to specify",
+    "gender_boy": "Boy",
+    "gender_girl": "Girl",
+    "gender_other": "Other",
+    "gender_prefer_not_to_say": "Prefer not to say",
     "no_children": "You haven't added any children yet.",
     "select_prompt": "Select at least one child to register.",
     "add_new": "Add a new child",
-    "confirm_delete": "Delete this child? Past registrations are kept."
+    "confirm_delete": "Delete this child? Past registrations are kept.",
+    "gender_unknown": "Unknown"
   },
   "admin": {
     "dashboard": "Admin Dashboard",
@@ -115,6 +131,50 @@
       "merge_candidate": "Possible duplicate",
       "merge": "Merge",
       "merge_confirm": "Merge these profiles into one participant?"
+    },
+    "members": {
+      "title": "Coaches",
+      "can_checkin": "Can check in",
+      "add": "Add coach",
+      "role": "Role"
+    },
+    "tracks": {
+      "manage": "Manage tracks",
+      "event_tracks": "Tracks for this event",
+      "none_configured": "No tracks configured for this dojo yet.",
+      "max_seats": "Max seats",
+      "name": "Track name",
+      "active": "Active",
+      "add": "Add track",
+      "help": "Tracks are reusable activities you can offer at events (e.g. Scratch, Python). Deactivated tracks stay on past events but can't be selected for new ones."
+    },
+    "questions": {
+      "manage": "Manage questions",
+      "add": "Add question",
+      "label": "Question",
+      "type": "Type",
+      "options": "Options",
+      "options_help": "Comma-separated choices",
+      "required": "Required",
+      "type_text": "Text",
+      "type_select": "Dropdown",
+      "type_checkbox": "Checkbox",
+      "help": "Custom questions appear on the registration form for this dojo's events and are answered per child."
+    },
+    "email": {
+      "title": "Email participants",
+      "help": "Sends to everyone who registered at this dojo and agreed to be contacted.",
+      "audience": "Recipients",
+      "audience_all": "All past participants",
+      "audience_last": "Last event only",
+      "subject": "Subject",
+      "message": "Message",
+      "send": "Send",
+      "sent": "Sent to {{count}} recipient(s)"
+    },
+    "newsletter": {
+      "title": "Newsletter",
+      "help": "Sends to every coach and lead coach across all dojos."
     }
   },
   "volunteers": {
@@ -136,5 +196,20 @@
     "loading": "Loading…",
     "error": "An error occurred",
     "required": "This field is required"
+  },
+  "stats": {
+    "title": "Statistics",
+    "total": "Total registrations",
+    "by_gender": "By gender",
+    "per_dojo": "Per dojo",
+    "dojo": "Dojo",
+    "total_col": "Total"
+  },
+  "privacy": {
+    "title": "Privacy",
+    "help": "Download all the personal data we hold for you, or permanently erase it.",
+    "export": "Download my data",
+    "erase": "Erase my data",
+    "erase_confirm": "Permanently erase your personal data? Your registrations are kept anonymously for event records. This cannot be undone."
   }
 }

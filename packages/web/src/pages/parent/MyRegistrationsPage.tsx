@@ -8,6 +8,8 @@ import CardActions from "@mui/material/CardActions";
 import Button from "@mui/material/Button";
 import LinearProgress from "@mui/material/LinearProgress";
 import Chip from "@mui/material/Chip";
+import Divider from "@mui/material/Divider";
+import { useAuth } from "../../hooks/useAuth";
 import { api } from "../../lib/api";
 import { RegistrationStatusChip } from "../../components/registrations/RegistrationStatusChip";
 
@@ -32,6 +34,23 @@ interface Event {
 export function MyRegistrationsPage() {
   const { t } = useTranslation();
   const qc = useQueryClient();
+  const { logout } = useAuth();
+
+  // ── GDPR: download my data / erase my data ─────────────────────────────────
+  async function downloadMyData() {
+    const { data } = await api.get("/users/me/data-export");
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "my-coderdojo-data.json";
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+  const eraseMutation = useMutation({
+    mutationFn: () => api.delete("/users/me"),
+    onSuccess: () => logout(),
+  });
 
   const { data: registrations = [], isLoading: regsLoading } = useQuery<Registration[]>({
     queryKey: ["myRegistrations"],
@@ -105,6 +124,24 @@ export function MyRegistrationsPage() {
           );
         })
       )}
+
+      {/* ── Privacy / GDPR ────────────────────────────────────────────────── */}
+      <Divider sx={{ my: 4 }} />
+      <Typography variant="h6" mb={1}>{t("privacy.title")}</Typography>
+      <Typography variant="body2" color="text.secondary" mb={2}>{t("privacy.help")}</Typography>
+      <Box display="flex" gap={2} flexWrap="wrap">
+        <Button variant="outlined" onClick={downloadMyData}>{t("privacy.export")}</Button>
+        <Button
+          variant="outlined"
+          color="error"
+          disabled={eraseMutation.isPending}
+          onClick={() => {
+            if (window.confirm(t("privacy.erase_confirm"))) eraseMutation.mutate();
+          }}
+        >
+          {t("privacy.erase")}
+        </Button>
+      </Box>
     </Box>
   );
 }

@@ -6,7 +6,8 @@
     "dashboard": "Tableau de bord",
     "logout": "Se déconnecter",
     "my_registrations": "Mes inscriptions",
-    "my_children": "Mes enfants"
+    "my_children": "Mes enfants",
+    "statistics": "Statistiques"
   },
   "auth": {
     "enter_email": "Entrez votre adresse e-mail",
@@ -22,7 +23,13 @@
     "upcoming": "Dojos à venir",
     "no_dojos": "Aucun dojo trouvé",
     "search_placeholder": "Rechercher par ville ou nom de dojo…",
-    "no_results": "Aucun dojo ne correspond à votre recherche"
+    "no_results": "Aucun dojo ne correspond à votre recherche",
+    "contact": "Contacter",
+    "contact_help": "Votre message sera envoyé aux coaches de ce dojo.",
+    "contact_name": "Votre nom",
+    "contact_email": "Votre e-mail",
+    "contact_message": "Message",
+    "contact_send": "Envoyer le message"
   },
   "events": {
     "title": "Événements",
@@ -39,6 +46,7 @@
   "registration": {
     "ninja_name": "Nom du ninja",
     "birthdate": "Date de naissance",
+    "phone": "Téléphone",
     "atelier": "Atelier",
     "needs_computer": "A besoin d'un ordinateur",
     "previous_visits": "Visites précédentes",
@@ -49,7 +57,8 @@
     "success": "Inscription confirmée!",
     "waitlisted": "Vous êtes sur la liste d'attente à la position #{{position}}",
     "none_yet": "Aucune inscription pour le moment.",
-    "add_child": "Ajouter un autre enfant"
+    "add_child": "Ajouter un autre enfant",
+    "child_name_equals_parent": "Le nom de l'enfant doit être différent de celui du parent."
   },
   "children": {
     "title": "Mes enfants",
@@ -58,10 +67,17 @@
     "delete": "Supprimer",
     "name": "Nom",
     "birthdate": "Date de naissance",
+    "gender": "Sexe",
+    "gender_unspecified": "Ne pas préciser",
+    "gender_boy": "Garçon",
+    "gender_girl": "Fille",
+    "gender_other": "Autre",
+    "gender_prefer_not_to_say": "Je préfère ne pas répondre",
     "no_children": "Vous n'avez pas encore ajouté d'enfant.",
     "select_prompt": "Sélectionnez au moins un enfant à inscrire.",
     "add_new": "Ajouter un nouvel enfant",
-    "confirm_delete": "Supprimer cet enfant ? Les inscriptions passées sont conservées."
+    "confirm_delete": "Supprimer cet enfant ? Les inscriptions passées sont conservées.",
+    "gender_unknown": "Inconnu"
   },
   "admin": {
     "dashboard": "Tableau de bord",
@@ -115,6 +131,50 @@
       "merge_candidate": "Doublon possible",
       "merge": "Fusionner",
       "merge_confirm": "Fusionner ces profils en un seul participant ?"
+    },
+    "members": {
+      "title": "Coachs",
+      "can_checkin": "Peut enregistrer",
+      "add": "Ajouter un coach",
+      "role": "Rôle"
+    },
+    "tracks": {
+      "manage": "Gérer les ateliers",
+      "event_tracks": "Ateliers pour cet événement",
+      "none_configured": "Aucun atelier configuré pour ce dojo.",
+      "max_seats": "Places max",
+      "name": "Nom de l'atelier",
+      "active": "Actif",
+      "add": "Ajouter un atelier",
+      "help": "Les ateliers sont des activités réutilisables proposées lors des événements (ex : Scratch, Python). Les ateliers désactivés restent sur les événements passés mais ne peuvent plus être sélectionnés."
+    },
+    "questions": {
+      "manage": "Gérer les questions",
+      "add": "Ajouter une question",
+      "label": "Question",
+      "type": "Type",
+      "options": "Options",
+      "options_help": "Choix séparés par des virgules",
+      "required": "Obligatoire",
+      "type_text": "Texte",
+      "type_select": "Liste déroulante",
+      "type_checkbox": "Case à cocher",
+      "help": "Les questions personnalisées apparaissent sur le formulaire d'inscription des événements de ce dojo et sont remplies par enfant."
+    },
+    "email": {
+      "title": "Envoyer aux participants",
+      "help": "Envoyé à toutes les personnes inscrites à ce dojo ayant accepté d'être contactées.",
+      "audience": "Destinataires",
+      "audience_all": "Tous les anciens participants",
+      "audience_last": "Dernier événement seulement",
+      "subject": "Objet",
+      "message": "Message",
+      "send": "Envoyer",
+      "sent": "Envoyé à {{count}} destinataire(s)"
+    },
+    "newsletter": {
+      "title": "Newsletter",
+      "help": "Envoyé à tous les coaches et lead coaches de tous les dojos."
     }
   },
   "volunteers": {
@@ -136,5 +196,20 @@
     "loading": "Chargement…",
     "error": "Une erreur s'est produite",
     "required": "Ce champ est obligatoire"
+  },
+  "stats": {
+    "title": "Statistiques",
+    "total": "Total des inscriptions",
+    "by_gender": "Par sexe",
+    "per_dojo": "Par dojo",
+    "dojo": "Dojo",
+    "total_col": "Total"
+  },
+  "privacy": {
+    "title": "Confidentialité",
+    "help": "Téléchargez toutes les données personnelles que nous détenons à votre sujet, ou effacez-les définitivement.",
+    "export": "Télécharger mes données",
+    "erase": "Effacer mes données",
+    "erase_confirm": "Effacer définitivement vos données personnelles ? Vos inscriptions sont conservées de façon anonyme pour les registres. Action irréversible."
   }
 }

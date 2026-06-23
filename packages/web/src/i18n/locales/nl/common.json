@@ -6,7 +6,8 @@
     "dashboard": "Dashboard",
     "logout": "Uitloggen",
     "my_registrations": "Mijn inschrijvingen",
-    "my_children": "Mijn kinderen"
+    "my_children": "Mijn kinderen",
+    "statistics": "Statistieken"
   },
   "auth": {
     "enter_email": "Voer uw e-mailadres in",
@@ -22,7 +23,13 @@
     "upcoming": "Komende dojos",
     "no_dojos": "Geen dojos gevonden",
     "search_placeholder": "Zoeken op stad of naam…",
-    "no_results": "Geen dojos komen overeen met uw zoekopdracht"
+    "no_results": "Geen dojos komen overeen met uw zoekopdracht",
+    "contact": "Contact",
+    "contact_help": "Uw bericht wordt naar de coaches van deze dojo gestuurd.",
+    "contact_name": "Uw naam",
+    "contact_email": "Uw e-mail",
+    "contact_message": "Bericht",
+    "contact_send": "Bericht verzenden"
   },
   "events": {
     "title": "Evenementen",
@@ -39,6 +46,7 @@
   "registration": {
     "ninja_name": "Naam ninja",
     "birthdate": "Geboortedatum",
+    "phone": "Telefoon",
     "atelier": "Atelier",
     "needs_computer": "Heeft een computer nodig",
     "previous_visits": "Eerdere bezoeken",
@@ -49,7 +57,8 @@
     "success": "Inschrijving bevestigd!",
     "waitlisted": "U staat op de wachtlijst op positie #{{position}}",
     "none_yet": "Nog geen inschrijvingen.",
-    "add_child": "Nog een kind toevoegen"
+    "add_child": "Nog een kind toevoegen",
+    "child_name_equals_parent": "De naam van het kind moet verschillen van die van de ouder."
   },
   "children": {
     "title": "Mijn kinderen",
@@ -58,10 +67,17 @@
     "delete": "Verwijderen",
     "name": "Naam",
     "birthdate": "Geboortedatum",
+    "gender": "Geslacht",
+    "gender_unspecified": "Liever niet opgeven",
+    "gender_boy": "Jongen",
+    "gender_girl": "Meisje",
+    "gender_other": "Anders",
+    "gender_prefer_not_to_say": "Zeg ik liever niet",
     "no_children": "U heeft nog geen kinderen toegevoegd.",
     "select_prompt": "Selecteer minstens één kind om in te schrijven.",
     "add_new": "Een nieuw kind toevoegen",
-    "confirm_delete": "Dit kind verwijderen? Eerdere inschrijvingen blijven bewaard."
+    "confirm_delete": "Dit kind verwijderen? Eerdere inschrijvingen blijven bewaard.",
+    "gender_unknown": "Onbekend"
   },
   "admin": {
     "dashboard": "Admin Dashboard",
@@ -115,6 +131,50 @@
       "merge_candidate": "Mogelijk duplicaat",
       "merge": "Samenvoegen",
       "merge_confirm": "Deze profielen samenvoegen tot één deelnemer?"
+    },
+    "members": {
+      "title": "Coaches",
+      "can_checkin": "Mag inchecken",
+      "add": "Coach toevoegen",
+      "role": "Rol"
+    },
+    "tracks": {
+      "manage": "Tracks beheren",
+      "event_tracks": "Tracks voor dit evenement",
+      "none_configured": "Nog geen tracks ingesteld voor deze dojo.",
+      "max_seats": "Max plaatsen",
+      "name": "Naam track",
+      "active": "Actief",
+      "add": "Track toevoegen",
+      "help": "Tracks zijn herbruikbare activiteiten die je bij evenementen kunt aanbieden (bijv. Scratch, Python). Gedeactiveerde tracks blijven op eerdere evenementen maar kunnen niet meer worden geselecteerd."
+    },
+    "questions": {
+      "manage": "Vragen beheren",
+      "add": "Vraag toevoegen",
+      "label": "Vraag",
+      "type": "Type",
+      "options": "Opties",
+      "options_help": "Door komma's gescheiden keuzes",
+      "required": "Verplicht",
+      "type_text": "Tekst",
+      "type_select": "Keuzelijst",
+      "type_checkbox": "Selectievakje",
+      "help": "Aangepaste vragen verschijnen op het inschrijfformulier voor evenementen van deze dojo en worden per kind beantwoord."
+    },
+    "email": {
+      "title": "Deelnemers e-mailen",
+      "help": "Verzonden naar iedereen die zich bij deze dojo heeft ingeschreven en akkoord ging met contact.",
+      "audience": "Ontvangers",
+      "audience_all": "Alle eerdere deelnemers",
+      "audience_last": "Alleen laatste evenement",
+      "subject": "Onderwerp",
+      "message": "Bericht",
+      "send": "Verzenden",
+      "sent": "Verzonden naar {{count}} ontvanger(s)"
+    },
+    "newsletter": {
+      "title": "Nieuwsbrief",
+      "help": "Verzonden naar elke coach en lead coach van alle dojos."
     }
   },
   "volunteers": {
@@ -136,5 +196,20 @@
     "loading": "Laden…",
     "error": "Er is een fout opgetreden",
     "required": "Dit veld is verplicht"
+  },
+  "stats": {
+    "title": "Statistieken",
+    "total": "Totaal inschrijvingen",
+    "by_gender": "Per geslacht",
+    "per_dojo": "Per dojo",
+    "dojo": "Dojo",
+    "total_col": "Totaal"
+  },
+  "privacy": {
+    "title": "Privacy",
+    "help": "Download alle persoonsgegevens die we van u bewaren, of wis ze permanent.",
+    "export": "Mijn gegevens downloaden",
+    "erase": "Mijn gegevens wissen",
+    "erase_confirm": "Uw persoonsgegevens permanent wissen? Uw inschrijvingen blijven anoniem bewaard voor de administratie. Dit kan niet ongedaan worden gemaakt."
   }
 }

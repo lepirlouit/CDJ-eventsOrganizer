@@ -18,6 +18,9 @@ interface Participant {
   participantId: string;
   name: string;
   birthdate: string;
+  gender?: "boy" | "girl" | "other" | "prefer_not_to_say";
+  parentName?: string;
+  parentPhone?: string;
   childIds: string[];
   visits: number;
   confirmedVisits: number;
@@ -64,6 +67,8 @@ export function AdminParticipantsPage() {
             <TableRow>
               <TableCell>{t("children.name")}</TableCell>
               <TableCell>{t("children.birthdate")}</TableCell>
+              <TableCell>{t("children.gender")}</TableCell>
+              <TableCell>{t("registration.phone")}</TableCell>
               <TableCell>{t("admin.participants.visits")}</TableCell>
               <TableCell />
             </TableRow>
@@ -92,6 +97,8 @@ export function AdminParticipantsPage() {
                     </Box>
                   </TableCell>
                   <TableCell>{new Date(p.birthdate).toLocaleDateString()}</TableCell>
+                  <TableCell>{p.gender ? t(`children.gender_${p.gender}`) : "—"}</TableCell>
+                  <TableCell>{p.parentPhone || "—"}</TableCell>
                   <TableCell>{p.confirmedVisits}</TableCell>
                   <TableCell align="right">
                     {p.mergeCandidate && mergeChildIds.length > 1 && (

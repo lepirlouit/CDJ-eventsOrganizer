@@ -14,15 +14,21 @@ import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
 import TextField from "@mui/material/TextField";
+import MenuItem from "@mui/material/MenuItem";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
 import { api } from "../../lib/api";
 
+type Gender = "boy" | "girl" | "other" | "prefer_not_to_say";
+
+const GENDERS: Gender[] = ["boy", "girl", "other", "prefer_not_to_say"];
+
 interface Child {
   childId: string;
   name: string;
   birthdate: string;
+  gender?: Gender;
   previousVisits?: number;
 }
 
@@ -117,10 +123,25 @@ export function MyChildrenPage() {
             label={t("children.birthdate")}
             type="date"
             fullWidth
+            sx={{ mb: 2 }}
             InputLabelProps={{ shrink: true }}
             value={editing?.birthdate ?? ""}
             onChange={(e) => setEditing((p) => (p ? { ...p, birthdate: e.target.value } : p))}
           />
+          <TextField
+            select
+            label={t("children.gender")}
+            fullWidth
+            value={editing?.gender ?? ""}
+            onChange={(e) =>
+              setEditing((p) => (p ? { ...p, gender: (e.target.value || undefined) as Gender | undefined } : p))
+            }
+          >
+            <MenuItem value="">{t("children.gender_unspecified")}</MenuItem>
+            {GENDERS.map((g) => (
+              <MenuItem key={g} value={g}>{t(`children.gender_${g}`)}</MenuItem>
+            ))}
+          </TextField>
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpen(false)}>{t("common.cancel")}</Button>

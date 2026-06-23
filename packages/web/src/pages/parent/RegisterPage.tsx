@@ -34,16 +34,31 @@ const parentSchema = z.object({
 });
 type ParentForm = z.infer<typeof parentSchema>;
 
+type Gender = "boy" | "girl" | "other" | "prefer_not_to_say";
+const GENDERS: Gender[] = ["boy", "girl", "other", "prefer_not_to_say"];
+
 interface Child {
   childId: string;
   name: string;
   birthdate: string;
+  gender?: Gender;
   previousVisits?: number;
+}
+
+interface CustomQuestion {
+  questionId: string;
+  label: string;
+  type: "text" | "select" | "checkbox";
+  options?: string[];
+  required: boolean;
+  active: boolean;
+  order: number;
 }
 
 interface Selection {
   atelierId: string;
   needsComputer: boolean;
+  answers: Record<string, unknown>;
 }
 
 export function RegisterPage() {
@@ -70,6 +85,13 @@ export function RegisterPage() {
     enabled: !!user,
   });
 
+  const { data: questions = [] } = useQuery<CustomQuestion[]>({
+    queryKey: ["dojoQuestions", event?.dojoId],
+    queryFn: () => api.get(`/dojos/${event.dojoId}/questions`).then((r) => r.data),
+    enabled: !!event?.dojoId,
+  });
+  const activeQuestions = questions.filter((q) => q.active).sort((a, b) => a.order - b.order);
+
   const { register, handleSubmit, control, reset, formState: { errors } } = useForm<ParentForm>({
     resolver: zodResolver(parentSchema),
     defaultValues: { parentEmail: user?.email ?? "", consentPhotos: false, consentContact: false },
@@ -83,6 +105,7 @@ export function RegisterPage() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [newName, setNewName] = useState("");
   const [newBirthdate, setNewBirthdate] = useState("");
+  const [newGender, setNewGender] = useState<Gender | "">("");
 
   // Prefill parent fields from the saved profile once it loads.
   useEffect(() => {
@@ -98,14 +121,15 @@ export function RegisterPage() {
   }, [profile, reset, user?.email]);
 
   const addChildMutation = useMutation({
-    mutationFn: (c: { name: string; birthdate: string }) =>
+    mutationFn: (c: { name: string; birthdate: string; gender?: Gender }) =>
       api.post("/users/me/children", c).then((r) => r.data as Child),
     onSuccess: (child) => {
       qc.invalidateQueries({ queryKey: ["myChildren"] });
-      setSelected((s) => ({ ...s, [child.childId]: { atelierId: "", needsComputer: false } }));
+      setSelected((s) => ({ ...s, [child.childId]: { atelierId: "", needsComputer: false, answers: {} } }));
       setDialogOpen(false);
       setNewName("");
       setNewBirthdate("");
+      setNewGender("");
     },
   });
 
@@ -123,6 +147,7 @@ export function RegisterPage() {
           heardAbout:     parent.heardAbout,
           consentPhotos:  parent.consentPhotos,
           consentContact: parent.consentContact,
+          customAnswers:  sel.answers,
         });
       }
       // Persist parent profile for next time (best-effort; children live in their own entity now).
@@ -141,7 +166,7 @@ export function RegisterPage() {
     setSelected((s) => {
       const next = { ...s };
       if (next[childId]) delete next[childId];
-      else next[childId] = { atelierId: "", needsComputer: false };
+      else next[childId] = { atelierId: "", needsComputer: false, answers: {} };
       return next;
     });
   }
@@ -150,6 +175,22 @@ export function RegisterPage() {
     const entries = Object.entries(selected);
     if (entries.length === 0) { setChildError(t("children.select_prompt")); return; }
     if (entries.some(([, sel]) => !sel.atelierId)) { setChildError(t("common.required")); return; }
+    // A child's name must differ from the parent's (mirrors the backend rule).
+    const norm = (s: string) => s.trim().toLowerCase().replace(/\s+/g, " ");
+    const parentNorm = norm(parent.parentName);
+    const clash = entries.some(([childId]) =>
+      norm(children.find((c) => c.childId === childId)?.name ?? "") === parentNorm
+    );
+    if (clash) { setChildError(t("registration.child_name_equals_parent")); return; }
+    // Required custom questions must be answered for every selected child.
+    const requiredQs = activeQuestions.filter((q) => q.required);
+    const answersMissing = entries.some(([, sel]) =>
+      requiredQs.some((q) => {
+        const a = sel.answers[q.questionId];
+        return a === undefined || a === null || a === "" || (q.type === "checkbox" && a !== true);
+      })
+    );
+    if (answersMissing) { setChildError(t("common.required")); return; }
     setChildError(null);
     submitMutation.mutate(parent);
   }
@@ -157,7 +198,10 @@ export function RegisterPage() {
   if (eventLoading || profileLoading || childrenLoading) return <LinearProgress />;
   if (!event) return <Alert severity="error">Event not found</Alert>;
 
-  const ateliers: { atelierId: string; name: string }[] = event.ateliers ?? [];
+  const ateliers: { atelierId: string; name: string; maxSeats?: number }[] = event.ateliers ?? [];
+  const atelierCounts: Record<string, number> = event.atelierCounts ?? {};
+  const atelierFull = (a: { atelierId: string; maxSeats?: number }) =>
+    a.maxSeats !== undefined && a.maxSeats !== null && (atelierCounts[a.atelierId] ?? 0) >= a.maxSeats;
 
   return (
     <Box maxWidth={680} mx="auto">
@@ -235,7 +279,9 @@ export function RegisterPage() {
                     error={!!childError && !sel.atelierId}
                   >
                     {ateliers.map((a) => (
-                      <MenuItem key={a.atelierId} value={a.atelierId}>{a.name}</MenuItem>
+                      <MenuItem key={a.atelierId} value={a.atelierId} disabled={atelierFull(a)}>
+                        {a.name}{atelierFull(a) ? ` — ${t("events.full")}` : ""}
+                      </MenuItem>
                     ))}
                   </TextField>
                   <FormControlLabel
@@ -249,6 +295,53 @@ export function RegisterPage() {
                     }
                     label={t("registration.needs_computer")}
                   />
+
+                  {/* ── Dojo custom questions ───────────────────────── */}
+                  {activeQuestions.map((q) => {
+                    const setAnswer = (value: unknown) =>
+                      setSelected((s) => ({
+                        ...s,
+                        [c.childId]: { ...s[c.childId], answers: { ...s[c.childId].answers, [q.questionId]: value } },
+                      }));
+                    if (q.type === "checkbox") {
+                      return (
+                        <FormControlLabel
+                          key={q.questionId}
+                          control={
+                            <Checkbox
+                              checked={sel.answers[q.questionId] === true}
+                              onChange={(e) => setAnswer(e.target.checked)}
+                            />
+                          }
+                          label={q.label + (q.required ? " *" : "")}
+                        />
+                      );
+                    }
+                    if (q.type === "select") {
+                      return (
+                        <TextField
+                          key={q.questionId}
+                          select fullWidth sx={{ mt: 2 }}
+                          label={q.label + (q.required ? " *" : "")}
+                          value={(sel.answers[q.questionId] as string) ?? ""}
+                          onChange={(e) => setAnswer(e.target.value)}
+                        >
+                          {(q.options ?? []).map((opt) => (
+                            <MenuItem key={opt} value={opt}>{opt}</MenuItem>
+                          ))}
+                        </TextField>
+                      );
+                    }
+                    return (
+                      <TextField
+                        key={q.questionId}
+                        fullWidth sx={{ mt: 2 }}
+                        label={q.label + (q.required ? " *" : "")}
+                        value={(sel.answers[q.questionId] as string) ?? ""}
+                        onChange={(e) => setAnswer(e.target.value)}
+                      />
+                    );
+                  })}
                 </Box>
               )}
             </Paper>
@@ -288,17 +381,27 @@ export function RegisterPage() {
             value={newName} onChange={(e) => setNewName(e.target.value)}
           />
           <TextField
-            label={t("children.birthdate")} type="date" fullWidth
+            label={t("children.birthdate")} type="date" fullWidth sx={{ mb: 2 }}
             InputLabelProps={{ shrink: true }}
             value={newBirthdate} onChange={(e) => setNewBirthdate(e.target.value)}
           />
+          <TextField
+            select label={t("children.gender")} fullWidth
+            value={newGender}
+            onChange={(e) => setNewGender(e.target.value as Gender | "")}
+          >
+            <MenuItem value="">{t("children.gender_unspecified")}</MenuItem>
+            {GENDERS.map((g) => (
+              <MenuItem key={g} value={g}>{t(`children.gender_${g}`)}</MenuItem>
+            ))}
+          </TextField>
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setDialogOpen(false)}>{t("common.cancel")}</Button>
           <Button
             variant="contained"
             disabled={!newName || !newBirthdate || addChildMutation.isPending}
-            onClick={() => addChildMutation.mutate({ name: newName, birthdate: newBirthdate })}
+            onClick={() => addChildMutation.mutate({ name: newName, birthdate: newBirthdate, gender: newGender || undefined })}
           >
             {t("common.save")}
           </Button>

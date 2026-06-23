@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm, Controller } from "react-hook-form";
@@ -13,6 +13,8 @@ import MenuItem from "@mui/material/MenuItem";
 import Paper from "@mui/material/Paper";
 import Alert from "@mui/material/Alert";
 import Divider from "@mui/material/Divider";
+import Checkbox from "@mui/material/Checkbox";
+import FormControlLabel from "@mui/material/FormControlLabel";
 import LinearProgress from "@mui/material/LinearProgress";
 import { api } from "../../lib/api";
 
@@ -37,6 +39,15 @@ interface DojoLocation {
   city: string;
 }
 
+interface DojoTrack {
+  trackId: string;
+  name: string;
+  active: boolean;
+}
+
+// Per-track selection state for the event: whether it's enabled and its seat cap.
+type TrackSelection = Record<string, { selected: boolean; maxSeats: string }>;
+
 export function AdminEventEditPage() {
   const { id: eventId } = useParams<{ id: string }>();
   const [searchParams] = useSearchParams();
@@ -60,6 +71,19 @@ export function AdminEventEditPage() {
     enabled: !!resolvedDojoId,
   });
   const dojoLocations: DojoLocation[] = dojo?.locations ?? [];
+  const dojoTracks: DojoTrack[] = (dojo?.tracks ?? []).filter((tr: DojoTrack) => tr.active);
+
+  // Available track options = active dojo tracks, plus any tracks already on the
+  // event (so editing an event keeps tracks even if they were since deactivated).
+  const eventAteliers: { atelierId: string; name: string; maxSeats?: number }[] = event?.ateliers ?? [];
+  const trackOptions = [
+    ...dojoTracks.map((tr) => ({ atelierId: tr.trackId, name: tr.name })),
+    ...eventAteliers
+      .filter((a) => !dojoTracks.some((tr) => tr.trackId === a.atelierId))
+      .map((a) => ({ atelierId: a.atelierId, name: a.name })),
+  ];
+
+  const [tracks, setTracks] = useState<TrackSelection>({});
 
   const { register, handleSubmit, control, reset, setValue, formState: { errors } } = useForm<FormData>({
     resolver: zodResolver(schema),
@@ -80,6 +104,12 @@ export function AdminEventEditPage() {
         registrationCloseAt: event.registrationCloseAt?.slice(0, 16) ?? "",
         status: event.status,
       });
+      // Prefill track selection from the event's existing ateliers.
+      const sel: TrackSelection = {};
+      for (const a of event.ateliers ?? []) {
+        sel[a.atelierId] = { selected: true, maxSeats: a.maxSeats != null ? String(a.maxSeats) : "" };
+      }
+      setTracks(sel);
     }
   }, [event, reset]);
 
@@ -90,6 +120,12 @@ export function AdminEventEditPage() {
 
   const mutation = useMutation({
     mutationFn: (data: FormData) => {
+      const selectedAteliers = Object.entries(tracks)
+        .filter(([, v]) => v.selected)
+        .map(([atelierId, v]) => ({
+          atelierId,
+          ...(v.maxSeats.trim() !== "" && { maxSeats: Number(v.maxSeats) }),
+        }));
       const payload = {
         title: data.title,
         description: data.description,
@@ -100,6 +136,7 @@ export function AdminEventEditPage() {
         registrationOpenAt: new Date(data.registrationOpenAt).toISOString(),
         registrationCloseAt: new Date(data.registrationCloseAt).toISOString(),
         status: data.status,
+        ...(selectedAteliers.length > 0 && { ateliers: selectedAteliers }),
       };
       return isNew
         ? api.post(`/admin/dojos/${dojoId}/events`, payload)
@@ -161,6 +198,54 @@ export function AdminEventEditPage() {
           />
           <TextField label={t("admin.event_form.registration_open")} type="datetime-local" fullWidth sx={{ mb: 2 }} InputLabelProps={{ shrink: true }} {...register("registrationOpenAt")} required />
           <TextField label={t("admin.event_form.registration_close")} type="datetime-local" fullWidth sx={{ mb: 2 }} InputLabelProps={{ shrink: true }} {...register("registrationCloseAt")} required />
+          {/* ── Tracks selectable per event, each with an optional seat limit ── */}
+          <Divider sx={{ mb: 2 }} />
+          <Typography variant="subtitle1" mb={1}>{t("admin.tracks.event_tracks")}</Typography>
+          {trackOptions.length === 0 ? (
+            <Typography variant="body2" color="text.secondary" mb={2}>
+              {t("admin.tracks.none_configured")}
+            </Typography>
+          ) : (
+            <Box mb={3}>
+              {trackOptions.map((tr) => {
+                const sel = tracks[tr.atelierId];
+                return (
+                  <Box key={tr.atelierId} display="flex" alignItems="center" gap={2} mb={1}>
+                    <FormControlLabel
+                      sx={{ flex: 1 }}
+                      control={
+                        <Checkbox
+                          checked={!!sel?.selected}
+                          onChange={(e) =>
+                            setTracks((s) => ({
+                              ...s,
+                              [tr.atelierId]: { selected: e.target.checked, maxSeats: s[tr.atelierId]?.maxSeats ?? "" },
+                            }))
+                          }
+                        />
+                      }
+                      label={tr.name}
+                    />
+                    <TextField
+                      label={t("admin.tracks.max_seats")}
+                      type="number"
+                      size="small"
+                      sx={{ width: 140 }}
+                      disabled={!sel?.selected}
+                      value={sel?.maxSeats ?? ""}
+                      onChange={(e) =>
+                        setTracks((s) => ({
+                          ...s,
+                          [tr.atelierId]: { selected: s[tr.atelierId]?.selected ?? false, maxSeats: e.target.value },
+                        }))
+                      }
+                    />
+                  </Box>
+                );
+              })}
+            </Box>
+          )}
+
           <Controller
             name="status"
             control={control}

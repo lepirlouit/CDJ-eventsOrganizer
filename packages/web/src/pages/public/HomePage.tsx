@@ -1,5 +1,5 @@
 import { useState, useRef, useCallback, useMemo } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import Grid from "@mui/material/Grid";
@@ -16,6 +16,10 @@ import InputAdornment from "@mui/material/InputAdornment";
 import SearchIcon from "@mui/icons-material/Search";
 import ClearIcon from "@mui/icons-material/Clear";
 import IconButton from "@mui/material/IconButton";
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import DialogContent from "@mui/material/DialogContent";
+import DialogActions from "@mui/material/DialogActions";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useTheme } from "@mui/material/styles";
 import { api } from "../../lib/api";
@@ -49,6 +53,19 @@ export function HomePage() {
   const [selectedDojoId, setSelectedDojoId] = useState<string | null>(null);
   const [search, setSearch] = useState("");
   const cardRefs = useRef<Record<string, HTMLDivElement | null>>({});
+
+  // ── Contact a dojo ──────────────────────────────────────────────────────────
+  const [contactDojo, setContactDojo] = useState<Dojo | null>(null);
+  const [contactForm, setContactForm] = useState({ visitorName: "", visitorEmail: "", message: "" });
+  const contactMutation = useMutation({
+    mutationFn: () => api.post(`/dojos/${contactDojo!.dojoId}/contact`, contactForm),
+    onSuccess: () => { setContactDojo(null); setContactForm({ visitorName: "", visitorEmail: "", message: "" }); },
+  });
+  function openContact(dojo: Dojo, e: React.MouseEvent) {
+    e.stopPropagation();
+    setContactForm({ visitorName: "", visitorEmail: "", message: "" });
+    setContactDojo(dojo);
+  }
 
   // Single call for all dojos
   const { data: dojos = [], isLoading: dojosLoading } = useQuery<Dojo[]>({
@@ -198,6 +215,9 @@ export function HomePage() {
                     >
                       {t("home.see_events")}
                     </Button>
+                    <Button size="small" onClick={(e) => openContact(dojo, e)}>
+                      {t("home.contact")}
+                    </Button>
                   </CardActions>
                 </Card>
               );
@@ -205,6 +225,47 @@ export function HomePage() {
           )}
         </Grid>
       </Grid>
+
+      {/* ── Contact dojo dialog ───────────────────────────────────────────── */}
+      <Dialog open={!!contactDojo} onClose={() => setContactDojo(null)} fullWidth maxWidth="sm">
+        <DialogTitle>{t("home.contact")} — {contactDojo?.name}</DialogTitle>
+        <DialogContent>
+          <Typography variant="caption" color="text.secondary" display="block" mb={2}>
+            {t("home.contact_help")}
+          </Typography>
+          <TextField
+            label={t("home.contact_name")} fullWidth size="small" sx={{ mb: 2 }}
+            value={contactForm.visitorName}
+            onChange={(e) => setContactForm((f) => ({ ...f, visitorName: e.target.value }))}
+          />
+          <TextField
+            label={t("home.contact_email")} type="email" fullWidth size="small" sx={{ mb: 2 }}
+            value={contactForm.visitorEmail}
+            onChange={(e) => setContactForm((f) => ({ ...f, visitorEmail: e.target.value }))}
+          />
+          <TextField
+            label={t("home.contact_message")} fullWidth multiline rows={5}
+            value={contactForm.message}
+            onChange={(e) => setContactForm((f) => ({ ...f, message: e.target.value }))}
+          />
+          {contactMutation.isError && (
+            <Typography color="error" variant="caption" mt={1} display="block">{t("common.error")}</Typography>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setContactDojo(null)}>{t("common.cancel")}</Button>
+          <Button
+            variant="contained"
+            disabled={
+              !contactForm.visitorName.trim() || !contactForm.visitorEmail.trim() ||
+              !contactForm.message.trim() || contactMutation.isPending
+            }
+            onClick={() => contactMutation.mutate()}
+          >
+            {t("home.contact_send")}
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 }

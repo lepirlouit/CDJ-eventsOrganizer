@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link as RouterLink } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -22,6 +23,8 @@ import DialogActions from "@mui/material/DialogActions";
 import TextField from "@mui/material/TextField";
 import Divider from "@mui/material/Divider";
 import Chip from "@mui/material/Chip";
+import Switch from "@mui/material/Switch";
+import FormControlLabel from "@mui/material/FormControlLabel";
 import LinearProgress from "@mui/material/LinearProgress";
 import CircularProgress from "@mui/material/CircularProgress";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -75,10 +78,18 @@ export function SuperAdminDojosPage() {
   const [dojoLocating, setDojoLocating] = useState(false);
   const [locLocating, setLocLocating] = useState(false);
 
+  // ── Newsletter to all coaches ───────────────────────────────────────────────
+  const [newsletterOpen, setNewsletterOpen] = useState(false);
+  const [newsletter, setNewsletter] = useState({ subject: "", message: "" });
+  const newsletterMutation = useMutation({
+    mutationFn: () => api.post("/admin/newsletter", newsletter),
+    onSuccess: () => { setNewsletterOpen(false); setNewsletter({ subject: "", message: "" }); },
+  });
+
   // ── Member management ─────────────────────────────────────────────────────
   const [memberEmail, setMemberEmail] = useState("");
   const [memberRole, setMemberRole] = useState("coach");
-  const { data: dojoMembers = [] } = useQuery<{ userId: string; name: string; email: string; role: string }[]>({
+  const { data: dojoMembers = [] } = useQuery<{ userId: string; name: string; email: string; role: string; canCheckIn?: boolean }[]>({
     queryKey: ["dojoMembers", memberDojo?.dojoId],
     queryFn: () => api.get(`/admin/dojos/${memberDojo!.dojoId}/members`).then((r) => r.data),
     enabled: !!memberDojo,
@@ -86,6 +97,11 @@ export function SuperAdminDojosPage() {
   const addMemberMutation = useMutation({
     mutationFn: () => api.post(`/admin/dojos/${memberDojo!.dojoId}/members/add`, { email: memberEmail, role: memberRole }),
     onSuccess: () => { qc.invalidateQueries({ queryKey: ["dojoMembers", memberDojo?.dojoId] }); setMemberEmail(""); },
+  });
+  const updateMemberMutation = useMutation({
+    mutationFn: (v: { userId: string; canCheckIn: boolean }) =>
+      api.put(`/admin/dojos/${memberDojo!.dojoId}/members/${v.userId}/role`, { canCheckIn: v.canCheckIn }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["dojoMembers", memberDojo?.dojoId] }),
   });
   const removeMemberMutation = useMutation({
     mutationFn: (userId: string) => api.delete(`/admin/dojos/${memberDojo!.dojoId}/members/${userId}`),
@@ -156,7 +172,11 @@ export function SuperAdminDojosPage() {
     <Box>
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
         <Typography variant="h5" fontWeight={700}>Dojos (Super Admin)</Typography>
-        <Button variant="contained" onClick={openCreateDojo}>Create Dojo</Button>
+        <Box display="flex" gap={1}>
+          <Button component={RouterLink} to="/dashboard/superadmin/stats" variant="outlined">{t("stats.title")}</Button>
+          <Button variant="outlined" onClick={() => setNewsletterOpen(true)}>{t("admin.newsletter.title")}</Button>
+          <Button variant="contained" onClick={openCreateDojo}>Create Dojo</Button>
+        </Box>
       </Box>
 
       <Paper>
@@ -300,9 +320,25 @@ export function SuperAdminDojosPage() {
                     <Typography fontWeight={600}>{m.name} <Chip label={m.role} size="small" color={m.role === "lead_coach" ? "primary" : "default"} sx={{ ml: 0.5 }} /></Typography>
                     <Typography variant="body2" color="text.secondary">{m.email}</Typography>
                   </Box>
-                  <IconButton size="small" color="error" onClick={() => removeMemberMutation.mutate(m.userId)} disabled={removeMemberMutation.isPending}>
-                    <DeleteIcon fontSize="small" />
-                  </IconButton>
+                  <Box display="flex" alignItems="center">
+                    {m.role === "coach" && (
+                      <FormControlLabel
+                        sx={{ mr: 0 }}
+                        control={
+                          <Switch
+                            size="small"
+                            checked={m.canCheckIn !== false}
+                            onChange={(e) => updateMemberMutation.mutate({ userId: m.userId, canCheckIn: e.target.checked })}
+                            disabled={updateMemberMutation.isPending}
+                          />
+                        }
+                        label={<Typography variant="caption">{t("admin.members.can_checkin")}</Typography>}
+                      />
+                    )}
+                    <IconButton size="small" color="error" onClick={() => removeMemberMutation.mutate(m.userId)} disabled={removeMemberMutation.isPending}>
+                      <DeleteIcon fontSize="small" />
+                    </IconButton>
+                  </Box>
                 </Box>
               ))}
             </Box>
@@ -322,6 +358,41 @@ export function SuperAdminDojosPage() {
         <DialogActions>
           <Button onClick={() => setMemberDojo(null)}>{t("common.cancel")}</Button>
           <Button variant="contained" disabled={!memberEmail || addMemberMutation.isPending} onClick={() => addMemberMutation.mutate()}>Add</Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* ── Newsletter to all coaches ─────────────────────────────────────── */}
+      <Dialog open={newsletterOpen} onClose={() => setNewsletterOpen(false)} fullWidth maxWidth="sm">
+        <DialogTitle>{t("admin.newsletter.title")}</DialogTitle>
+        <DialogContent>
+          <Typography variant="caption" color="text.secondary" display="block" mb={2}>
+            {t("admin.newsletter.help")}
+          </Typography>
+          <TextField
+            label={t("admin.email.subject")} fullWidth size="small" sx={{ mb: 2 }}
+            value={newsletter.subject}
+            onChange={(e) => setNewsletter((n) => ({ ...n, subject: e.target.value }))}
+          />
+          <TextField
+            label={t("admin.email.message")} fullWidth multiline rows={6}
+            value={newsletter.message}
+            onChange={(e) => setNewsletter((n) => ({ ...n, message: e.target.value }))}
+          />
+          {newsletterMutation.isSuccess && (
+            <Typography color="success.main" variant="caption" mt={1} display="block">
+              {t("admin.email.sent", { count: (newsletterMutation.data?.data?.sent ?? 0) as number })}
+            </Typography>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setNewsletterOpen(false)}>{t("common.cancel")}</Button>
+          <Button
+            variant="contained"
+            disabled={!newsletter.subject.trim() || !newsletter.message.trim() || newsletterMutation.isPending}
+            onClick={() => newsletterMutation.mutate()}
+          >
+            {t("admin.email.send")}
+          </Button>
         </DialogActions>
       </Dialog>
     </Box>
