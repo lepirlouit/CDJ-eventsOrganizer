@@ -30,7 +30,7 @@ export function EventDetailPage() {
     queryKey: ["myVolunteer", eventId],
     queryFn: () =>
       api.get(`/admin/events/${eventId}/volunteers`).then((r) =>
-        r.data.find((v: any) => v.userId === user?.sub && v.status === "active")
+        r.data.find((v: any) => v.userId === user?.sub && v.status === "active") ?? null
       ),
     enabled: !!user && isAnyCoach(user),
   });
