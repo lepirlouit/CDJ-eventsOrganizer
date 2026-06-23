@@ -43,7 +43,11 @@ export async function initiateAuth(email: string): Promise<CognitoUser> {
 
   return new Promise((resolve, reject) => {
     const user = new CognitoUser({ Username: email, Pool });
-    const authDetails = new AuthenticationDetails({ Username: email });
+    const lang = localStorage.getItem("cdj-lang") ?? "en";
+    const authDetails = new AuthenticationDetails({
+      Username: email,
+      ClientMetadata: { lang },
+    });
     user.initiateAuth(authDetails, {
       onSuccess: () => { _pendingUser = user; resolve(user); },
       onFailure: reject,

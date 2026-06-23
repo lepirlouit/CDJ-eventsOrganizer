@@ -21,7 +21,7 @@ export const handler: CreateAuthChallengeTriggerHandler = async (event) => {
     return event;
   }
 
-  const lang = (event.request.userAttributes["custom:preferredLang"] as "en" | "fr" | "nl") ?? "en";
+  const lang = (event.request.clientMetadata?.lang as "en" | "fr" | "nl") ?? "en";
   const email = event.request.userAttributes.email ?? event.userName;
 
   const template = otpEmail(lang, otp);

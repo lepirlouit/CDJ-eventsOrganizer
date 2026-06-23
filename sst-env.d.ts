@@ -22,6 +22,10 @@ declare module "sst" {
       "name": string
       "type": "sst.aws.Bucket"
     }
+    "FnDELETE_admin_dojos_dojoId_locations_locationId": {
+      "name": string
+      "type": "sst.aws.Function"
+    }
     "FnDELETE_admin_dojos_dojoId_members_userId": {
       "name": string
       "type": "sst.aws.Function"
@@ -118,6 +122,10 @@ declare module "sst" {
       "name": string
       "type": "sst.aws.Function"
     }
+    "FnPOST_admin_dojos_dojoId_locations": {
+      "name": string
+      "type": "sst.aws.Function"
+    }
     "FnPOST_admin_dojos_dojoId_members_userId": {
       "name": string
       "type": "sst.aws.Function"
@@ -147,6 +155,10 @@ declare module "sst" {
       "type": "sst.aws.Function"
     }
     "FnPUT_admin_dojos_dojoId": {
+      "name": string
+      "type": "sst.aws.Function"
+    }
+    "FnPUT_admin_dojos_dojoId_locations_locationId": {
       "name": string
       "type": "sst.aws.Function"
     }
