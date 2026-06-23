@@ -1,11 +1,10 @@
 import type { CreateAuthChallengeTriggerHandler } from "aws-lambda";
 import { createHmac, randomInt } from "crypto";
 import { sendEmail, otpEmail } from "@coderdojo/core";
-
-const HMAC_SECRET = process.env.OTP_HMAC_SECRET ?? "dev-secret-change-in-prod";
+import { Resource } from "sst";
 
 function hmacOtp(otp: string): string {
-  return createHmac("sha256", HMAC_SECRET).update(otp).digest("hex");
+  return createHmac("sha256", Resource.OtpHmacSecret.value).update(otp).digest("hex");
 }
 
 export const handler: CreateAuthChallengeTriggerHandler = async (event) => {

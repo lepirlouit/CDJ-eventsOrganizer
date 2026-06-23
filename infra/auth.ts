@@ -1,5 +1,10 @@
 import { table } from "./storage";
 
+// HMAC key for OTP integrity. Set per stage with:
+//   npx sst secret set OtpHmacSecret <value> --stage <stage>
+// Deploy fails loudly if it is unset — there is no insecure fallback.
+const otpHmacSecret = new sst.Secret("OtpHmacSecret");
+
 const preSignUp = new sst.aws.Function(`PreSignUp`, {
   handler: "packages/functions/src/auth/pre-signup.handler",
   link: [table],
@@ -12,7 +17,7 @@ const defineAuthChallenge = new sst.aws.Function(`DefineAuthChallenge`, {
 
 const createAuthChallenge = new sst.aws.Function(`CreateAuthChallenge`, {
   handler: "packages/functions/src/auth/create-auth-challenge.handler",
-  link: [table],
+  link: [table, otpHmacSecret],
   environment: {
     SES_FROM_EMAIL: "noreply@cdj.pirlou.it",
   },
@@ -36,7 +41,7 @@ new aws.iam.RolePolicy(`CreateAuthChallengeSesPolicy`, {
 
 const verifyAuthChallenge = new sst.aws.Function(`VerifyAuthChallenge`, {
   handler: "packages/functions/src/auth/verify-auth-challenge.handler",
-  link: [table],
+  link: [table, otpHmacSecret],
 });
 
 const postConfirmation = new sst.aws.Function(`PostConfirmation`, {
