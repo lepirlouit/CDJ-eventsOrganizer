@@ -24,8 +24,8 @@ api.interceptors.response.use(
       // Try refresh
       try {
         const { data } = await axios.get(`${API_URL}/auth/session`, { withCredentials: true });
-        setAccessToken(data.accessToken);
-        error.config.headers.Authorization = `Bearer ${data.accessToken}`;
+        setAccessToken(data.idToken);
+        error.config.headers.Authorization = `Bearer ${data.idToken}`;
         return api.request(error.config);
       } catch {
         setAccessToken(null);

@@ -68,7 +68,16 @@ export function isSuperAdmin(claims: JwtClaims): boolean {
  */
 async function resolveDbUserId(db: any, claims: JwtClaims): Promise<string | null> {
   const result = await db.entities.user.query.byEmail({ email: claims.email }).go();
-  return result.data[0]?.userId ?? null;
+  if (result.data.length === 0) return null;
+  if (result.data.length === 1) return result.data[0].userId;
+
+  // Multiple User records share this email (seed + PostConfirmation race).
+  // Prefer the one that actually has a DojoMembership so coaches get their access.
+  for (const u of result.data) {
+    const mem = await db.entities.dojoMembership.query.byUser({ userId: u.userId }).go();
+    if (mem.data.length > 0) return u.userId;
+  }
+  return result.data[0].userId;
 }
 
 /**

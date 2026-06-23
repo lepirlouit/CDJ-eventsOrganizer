@@ -54,14 +54,14 @@ export default function App() {
     const savedId = sessionStorage.getItem("idToken");
     if (saved && savedId) {
       setToken(saved);
-      setAccessToken(saved);
+      setAccessToken(savedId);
       setBaseUser(parseIdToken(savedId));
       fetchMemberships().finally(() => setLoading(false));
     } else {
       api.get("/auth/session", { withCredentials: true })
         .then(({ data }) => {
           setToken(data.accessToken);
-          setAccessToken(data.accessToken);
+          setAccessToken(data.idToken);
           setBaseUser(parseIdToken(data.idToken));
           return fetchMemberships();
         })
@@ -74,7 +74,7 @@ export default function App() {
     sessionStorage.setItem("accessToken", token);
     sessionStorage.setItem("idToken", idToken);
     setToken(token);
-    setAccessToken(token);
+    setAccessToken(idToken);
     setBaseUser(parseIdToken(idToken));
     fetchMemberships();
   }, []);
@@ -105,7 +105,7 @@ export default function App() {
                   <ProtectedRoute><RegisterPage /></ProtectedRoute>
                 } />
                 <Route path="/dashboard/registrations" element={
-                  <ProtectedRoute roles={["parent"]}><MyRegistrationsPage /></ProtectedRoute>
+                  <ProtectedRoute><MyRegistrationsPage /></ProtectedRoute>
                 } />
                 <Route path="/dashboard/admin" element={
                   <ProtectedRoute requireAnyCoach><AdminDashboardPage /></ProtectedRoute>
