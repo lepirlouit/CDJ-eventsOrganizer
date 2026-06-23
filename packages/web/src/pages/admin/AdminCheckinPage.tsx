@@ -23,10 +23,15 @@ export function AdminCheckinPage() {
   const qc = useQueryClient();
   const [search, setSearch] = useState("");
 
-  const { data: registrations = [], isLoading } = useQuery({
+  const { data: registrations = [], isLoading: loadingReg } = useQuery({
     queryKey: ["adminRegistrations", eventId],
-    queryFn: () =>
-      api.get(`/admin/events/${eventId}/registrations`).then((r) => r.data),
+    queryFn: () => api.get(`/admin/events/${eventId}/registrations`).then((r) => r.data),
+    refetchInterval: 15_000,
+  });
+
+  const { data: volunteers = [], isLoading: loadingVol } = useQuery({
+    queryKey: ["volunteers", eventId],
+    queryFn: () => api.get(`/admin/events/${eventId}/volunteers`).then((r) => r.data),
     refetchInterval: 15_000,
   });
 
@@ -51,26 +56,55 @@ export function AdminCheckinPage() {
     onSettled: () => qc.invalidateQueries({ queryKey: ["adminRegistrations", eventId] }),
   });
 
+  const volunteerCheckinMutation = useMutation({
+    mutationFn: ({ userId, checkedIn }: { userId: string; checkedIn: boolean }) =>
+      api.patch(`/admin/events/${eventId}/volunteers/${userId}/checkin`, { checkedIn }),
+    onMutate: async ({ userId, checkedIn }) => {
+      await qc.cancelQueries({ queryKey: ["volunteers", eventId] });
+      const prev = qc.getQueryData(["volunteers", eventId]);
+      qc.setQueryData(["volunteers", eventId], (old: any[]) =>
+        (old ?? []).map((v) => (v.userId === userId ? { ...v, checkedIn } : v))
+      );
+      return { prev };
+    },
+    onError: (_err, _vars, ctx) => {
+      qc.setQueryData(["volunteers", eventId], ctx?.prev);
+    },
+    onSettled: () => qc.invalidateQueries({ queryKey: ["volunteers", eventId] }),
+  });
+
   const confirmed = useMemo(
     () => registrations.filter((r: any) => r.status === "confirmed"),
     [registrations]
   );
 
-  const filtered = useMemo(() => {
-    if (!search) return confirmed;
-    const q = search.toLowerCase();
+  const q = search.toLowerCase();
+
+  const filteredNinjas = useMemo(() => {
+    if (!q) return confirmed;
     return confirmed.filter(
       (r: any) =>
         r.ninjaName?.toLowerCase().includes(q) ||
         r.parentName?.toLowerCase().includes(q)
     );
-  }, [confirmed, search]);
+  }, [confirmed, q]);
 
-  const checkedInCount = confirmed.filter((r: any) => r.checkedIn).length;
-  const notChecked = filtered.filter((r: any) => !r.checkedIn);
-  const checkedIn = filtered.filter((r: any) => r.checkedIn);
+  const filteredVolunteers = useMemo(() => {
+    if (!q) return volunteers;
+    return volunteers.filter((v: any) => v.coachName?.toLowerCase().includes(q));
+  }, [volunteers, q]);
 
-  if (isLoading) return <LinearProgress />;
+  const ninjaCheckedIn = confirmed.filter((r: any) => r.checkedIn).length;
+  const coachCheckedIn = volunteers.filter((v: any) => v.checkedIn).length;
+  const totalCheckedIn = ninjaCheckedIn + coachCheckedIn;
+  const totalPresent = confirmed.length + volunteers.length;
+
+  const notChecked = filteredNinjas.filter((r: any) => !r.checkedIn);
+  const checkedIn = filteredNinjas.filter((r: any) => r.checkedIn);
+  const coachesNotChecked = filteredVolunteers.filter((v: any) => !v.checkedIn);
+  const coachesCheckedIn = filteredVolunteers.filter((v: any) => v.checkedIn);
+
+  if (loadingReg || loadingVol) return <LinearProgress />;
 
   return (
     <Box maxWidth={700} mx="auto">
@@ -94,9 +128,14 @@ export function AdminCheckinPage() {
         }}
       >
         <Typography variant="h4" fontWeight={700}>
-          {checkedInCount} / {confirmed.length}
+          {totalCheckedIn} / {totalPresent}
         </Typography>
-        <Typography>{t("admin.checkin.counter", { count: checkedInCount, total: confirmed.length })}</Typography>
+        <Typography>{t("admin.checkin.counter", { count: totalCheckedIn, total: totalPresent })}</Typography>
+        {volunteers.length > 0 && (
+          <Typography variant="body2" sx={{ opacity: 0.85, mt: 0.5 }}>
+            {ninjaCheckedIn}/{confirmed.length} ninjas · {coachCheckedIn}/{volunteers.length} coaches
+          </Typography>
+        )}
       </Box>
 
       <TextField
@@ -136,7 +175,35 @@ export function AdminCheckinPage() {
         </Card>
       ))}
 
-      {checkedIn.length > 0 && (
+      {coachesNotChecked.length > 0 && (
+        <>
+          <Divider sx={{ my: 2 }}>
+            <Chip label="Coaches" size="small" color="info" />
+          </Divider>
+          {coachesNotChecked.map((vol: any) => (
+            <Card key={vol.userId} sx={{ mb: 1 }}>
+              <CardContent sx={{ display: "flex", alignItems: "center", gap: 2, py: 1.5, "&:last-child": { pb: 1.5 } }}>
+                <RadioButtonUncheckedIcon color="disabled" />
+                <Box flexGrow={1}>
+                  <Typography fontWeight={600}>{vol.coachName}</Typography>
+                  <Typography variant="body2" color="text.secondary">{vol.coachEmail}</Typography>
+                </Box>
+                <Button
+                  variant="contained"
+                  size="large"
+                  sx={{ minWidth: 110 }}
+                  onClick={() => volunteerCheckinMutation.mutate({ userId: vol.userId, checkedIn: true })}
+                  disabled={volunteerCheckinMutation.isPending}
+                >
+                  {t("admin.checkin.checked_in")}? ✓
+                </Button>
+              </CardContent>
+            </Card>
+          ))}
+        </>
+      )}
+
+      {(checkedIn.length > 0 || coachesCheckedIn.length > 0) && (
         <>
           <Divider sx={{ my: 2 }}>
             <Chip label={t("admin.checkin.checked_in")} color="success" size="small" />
@@ -155,6 +222,27 @@ export function AdminCheckinPage() {
                   color="inherit"
                   onClick={() => checkinMutation.mutate({ registrationId: reg.registrationId, undo: true })}
                   disabled={checkinMutation.isPending}
+                >
+                  {t("admin.checkin.undo")}
+                </Button>
+              </CardContent>
+            </Card>
+          ))}
+          {coachesCheckedIn.map((vol: any) => (
+            <Card key={vol.userId} sx={{ mb: 1, bgcolor: "success.50", opacity: 0.8 }}>
+              <CardContent sx={{ display: "flex", alignItems: "center", gap: 2, py: 1.5, "&:last-child": { pb: 1.5 } }}>
+                <CheckCircleIcon color="success" />
+                <Box flexGrow={1}>
+                  <Typography fontWeight={600}>{vol.coachName}</Typography>
+                  <Typography variant="body2" color="text.secondary">{vol.coachEmail}</Typography>
+                </Box>
+                <Chip label="Coach" size="small" color="info" sx={{ mr: 1 }} />
+                <Button
+                  variant="outlined"
+                  size="small"
+                  color="inherit"
+                  onClick={() => volunteerCheckinMutation.mutate({ userId: vol.userId, checkedIn: false })}
+                  disabled={volunteerCheckinMutation.isPending}
                 >
                   {t("admin.checkin.undo")}
                 </Button>
