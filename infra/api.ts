@@ -73,12 +73,15 @@ route("GET", "/dojos/{dojoId}", "packages/functions/src/dojos/get.handler", { au
 route("GET", "/dojos/{dojoId}/events", "packages/functions/src/events/list.handler", { auth: false });
 route("GET", "/events", "packages/functions/src/events/list-all.handler", { auth: false });
 route("GET", "/events/{eventId}", "packages/functions/src/events/get.handler", { auth: false });
+route("POST", "/dojos/{dojoId}/contact", "packages/functions/src/dojos/contact.handler", { auth: false });
 
 // Parent (auth required)
 route("POST", "/events/{eventId}/registrations", "packages/functions/src/registrations/create.handler");
 route("GET", "/users/me", "packages/functions/src/users/me.handler");
 route("PUT", "/users/me", "packages/functions/src/users/update-me.handler");
 route("GET", "/users/me/registrations", "packages/functions/src/registrations/list-mine.handler");
+route("GET", "/users/me/data-export", "packages/functions/src/users/data-export.handler");
+route("DELETE", "/users/me", "packages/functions/src/users/erase.handler");
 route("DELETE", "/registrations/{registrationId}", "packages/functions/src/registrations/cancel.handler");
 
 // Children (parent's saved participant profiles)
@@ -126,6 +129,14 @@ route("GET",    "/admin/dojos/{dojoId}/members",              "packages/function
 route("POST",   "/admin/dojos/{dojoId}/members/add",          "packages/functions/src/members/add.handler");
 route("DELETE", "/admin/dojos/{dojoId}/members/{userId}",     "packages/functions/src/members/remove.handler");
 route("PUT",    "/admin/dojos/{dojoId}/members/{userId}/role","packages/functions/src/members/update-role.handler");
+route("PUT",    "/admin/dojos/{dojoId}/tracks",               "packages/functions/src/dojos/update-tracks.handler");
+route("POST",   "/admin/dojos/{dojoId}/broadcast",            "packages/functions/src/dojos/broadcast.handler");
+
+// Dojo custom registration questions
+route("GET",    "/dojos/{dojoId}/questions",                  "packages/functions/src/dojos/questions/list.handler");
+route("POST",   "/admin/dojos/{dojoId}/questions",            "packages/functions/src/dojos/questions/create.handler");
+route("PUT",    "/admin/dojos/{dojoId}/questions/{questionId}","packages/functions/src/dojos/questions/update.handler");
+route("DELETE", "/admin/dojos/{dojoId}/questions/{questionId}","packages/functions/src/dojos/questions/delete.handler");
 route("GET",    "/users/me/memberships",                      "packages/functions/src/members/my-memberships.handler");
 
 // Super Admin
@@ -133,3 +144,5 @@ route("POST", "/admin/dojos", "packages/functions/src/dojos/create.handler");
 route("PUT", "/admin/dojos/{dojoId}", "packages/functions/src/dojos/update.handler");
 route("GET", "/admin/ateliers", "packages/functions/src/ateliers/list.handler");
 route("POST", "/admin/users/{userId}/role", "packages/functions/src/users/assign-role.handler");
+route("GET", "/admin/stats", "packages/functions/src/admin/stats.handler");
+route("POST", "/admin/newsletter", "packages/functions/src/admin/newsletter.handler");
