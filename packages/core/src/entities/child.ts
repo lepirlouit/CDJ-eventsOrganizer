@@ -11,6 +11,8 @@ export const ChildEntity = new Entity(
       userId: { type: "string", required: true },
       name: { type: "string", required: true },
       birthdate: { type: "string", required: true },
+      // Optional, self-declared. Drives super-admin boy/girl statistics.
+      gender: { type: ["boy", "girl", "other", "prefer_not_to_say"] as const },
       previousVisits: { type: "number" },
       notes: { type: "string" },
       // Canonical unique-participant id. Unset means the child is its own

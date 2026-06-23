@@ -131,6 +131,68 @@ export function volunteerConfirmedEmail(
   return { subject, html, text: html.replace(/<[^>]+>/g, "") };
 }
 
+// Escapes HTML and converts newlines to <br> for author-written messages.
+function richText(s: string): string {
+  return s
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/\n/g, "<br>");
+}
+
+/**
+ * Generic broadcast email for newsletters and event promotions. The subject and
+ * message are author-written (by a lead coach or super-admin), so this wraps the
+ * message rather than translating it.
+ */
+export function broadcastEmail(params: { subject: string; message: string }): EmailTemplate {
+  const html = `<div>${richText(params.message)}</div>`;
+  return { subject: params.subject, html, text: params.message };
+}
+
+/** Sent to a dojo's lead coaches when a visitor uses the "contact dojo" form. */
+export function contactDojoEmail(
+  lang: Lang,
+  params: { dojoName: string; visitorName: string; visitorEmail: string; message: string }
+): EmailTemplate {
+  const subject = t(
+    lang,
+    `New message for ${params.dojoName}`,
+    `Nouveau message pour ${params.dojoName}`,
+    `Nieuw bericht voor ${params.dojoName}`
+  );
+  const html = `
+    <h2>${t(lang, "New message from the website", "Nouveau message depuis le site", "Nieuw bericht via de website")}</h2>
+    <p><strong>${t(lang, "From", "De", "Van")}:</strong> ${richText(params.visitorName)} (${richText(params.visitorEmail)})</p>
+    <p><strong>${t(lang, "Message", "Message", "Bericht")}:</strong></p>
+    <div>${richText(params.message)}</div>
+    <p>${t(lang, "Reply directly to this person at their email above.", "Répondez directement à cette personne à l'adresse ci-dessus.", "Antwoord rechtstreeks aan deze persoon op het e-mailadres hierboven.")}</p>
+  `;
+  return { subject, html, text: html.replace(/<[^>]+>/g, "") };
+}
+
+/** Confirmation sent to the visitor who submitted the "contact dojo" form. */
+export function contactDojoConfirmationEmail(
+  lang: Lang,
+  params: { dojoName: string }
+): EmailTemplate {
+  const subject = t(
+    lang,
+    `Your message to ${params.dojoName} was sent`,
+    `Votre message à ${params.dojoName} a été envoyé`,
+    `Uw bericht aan ${params.dojoName} is verzonden`
+  );
+  const html = `
+    <p>${t(
+      lang,
+      `Thanks for reaching out! Your message to ${params.dojoName} has been forwarded to their coaches, who will get back to you.`,
+      `Merci de nous avoir contactés! Votre message à ${params.dojoName} a été transmis à leurs coaches, qui vous répondront.`,
+      `Bedankt voor uw bericht! Uw bericht aan ${params.dojoName} is doorgestuurd naar hun coaches, die contact met u zullen opnemen.`
+    )}</p>
+  `;
+  return { subject, html, text: html.replace(/<[^>]+>/g, "") };
+}
+
 export function volunteerEventCancelledEmail(
   lang: Lang,
   params: { coachName: string; eventTitle: string }

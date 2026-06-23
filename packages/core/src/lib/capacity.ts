@@ -1,6 +1,7 @@
 import { ulid } from "ulid";
 import { db } from "../entities/index.js";
 import type { Role } from "../types/index.js";
+import { isReservedReleased, atelierIsFull, decideOutcome } from "./capacity-logic.js";
 
 // Explicit type for the registration base to avoid ElectroDB's overloaded
 // put() signature causing TypeScript to infer the array-batch overload.
@@ -13,6 +14,7 @@ type RegistrationBase = {
   registeredByUserId?: string;
   ninjaName: string;
   ninjaBirthdate: string;
+  ninjaGender?: "boy" | "girl" | "other" | "prefer_not_to_say";
   parentName: string;
   parentEmail: string;
   parentPhone?: string;
@@ -23,19 +25,12 @@ type RegistrationBase = {
   consentPhotos: boolean;
   consentContact: boolean;
   isCoachChild: boolean;
+  customAnswers?: Record<string, unknown>;
   checkedIn: false;
 };
 
 function zeroPad(n: number, width = 8): string {
   return String(n).padStart(width, "0");
-}
-
-function isReservedReleased(event: {
-  releaseAt?: string;
-  registrationCloseAt: string;
-}): boolean {
-  const releaseAt = event.releaseAt ?? event.registrationCloseAt;
-  return new Date() > new Date(releaseAt);
 }
 
 export async function registerParticipant(params: {
@@ -47,6 +42,7 @@ export async function registerParticipant(params: {
   registeredByUserId?: string;
   ninjaName: string;
   ninjaBirthdate: string;
+  ninjaGender?: "boy" | "girl" | "other" | "prefer_not_to_say";
   parentName: string;
   parentEmail: string;
   parentPhone?: string;
@@ -56,6 +52,7 @@ export async function registerParticipant(params: {
   heardAbout?: string;
   consentPhotos: boolean;
   consentContact: boolean;
+  customAnswers?: Record<string, unknown>;
 }) {
   const eventResult = await db.entities.event.query.byId({ eventId: params.eventId }).go();
   const event = eventResult.data[0];
@@ -68,8 +65,22 @@ export async function registerParticipant(params: {
   }
 
   const isCoachParent = params.callerRole === "coach" || params.callerRole === "lead_coach";
-  const released = isReservedReleased(event);
+  const released = isReservedReleased(event, new Date());
   const registrationId = ulid();
+
+  // Per-track capacity: when the chosen atelier has a maxSeats limit and it is
+  // already full, the participant goes to the waitlist even if the event still
+  // has space in its pools.
+  const atelier = event.ateliers?.find((a) => a.atelierId === params.atelierId);
+  let atelierFull = false;
+  if (atelier?.maxSeats !== undefined && atelier.maxSeats !== null) {
+    const confirmedInAtelier = await db.entities.registration.query
+      .byEvent({ eventId: params.eventId })
+      .where(({ status, atelierId }, op) =>
+        `${op.eq(status, "confirmed")} AND ${op.eq(atelierId, params.atelierId)}`)
+      .go();
+    atelierFull = atelierIsFull(atelier, confirmedInAtelier.data.length);
+  }
 
   const base: RegistrationBase = {
     registrationId,
@@ -80,6 +91,7 @@ export async function registerParticipant(params: {
     registeredByUserId: params.registeredByUserId,
     ninjaName: params.ninjaName,
     ninjaBirthdate: params.ninjaBirthdate,
+    ninjaGender: params.ninjaGender,
     parentName: params.parentName,
     parentEmail: params.parentEmail,
     parentPhone: params.parentPhone,
@@ -90,23 +102,18 @@ export async function registerParticipant(params: {
     consentPhotos: params.consentPhotos,
     consentContact: params.consentContact,
     isCoachChild: isCoachParent,
+    customAnswers: params.customAnswers,
     checkedIn: false,
   };
 
-  // Try reserved pool first for coach parents
-  if (isCoachParent && !released && event.coachReservedSeats > 0) {
-    if (event.coachRegistrationCount < event.coachReservedSeats) {
-      await tryConfirm(base, event, "coach");
-      return { status: "confirmed", registrationId, isCoachChild: true };
-    }
+  const outcome = decideOutcome({ event, isCoachParent, released, atelierFull });
+
+  if (outcome === "coach") {
+    await tryConfirm(base, event, "coach");
+    return { status: "confirmed", registrationId, isCoachChild: true };
   }
 
-  // General pool check
-  const effectiveCapacity = released
-    ? event.maxCapacity
-    : event.maxCapacity - event.coachReservedSeats;
-
-  if (event.registrationCount < effectiveCapacity) {
+  if (outcome === "general") {
     await tryConfirm(base, event, "general");
     return { status: "confirmed", registrationId, isCoachChild: isCoachParent };
   }

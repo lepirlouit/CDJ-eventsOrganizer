@@ -15,6 +15,8 @@ export const WaitlistEntryEntity = new Entity(
       positionPadded: { type: "string", required: true },
       ninjaName: { type: "string", required: true },
       ninjaBirthdate: { type: "string", required: true },
+      // Optional, stamped from the child's profile at registration time.
+      ninjaGender: { type: ["boy", "girl", "other", "prefer_not_to_say"] as const },
       parentName: { type: "string", required: true },
       parentEmail: { type: "string", required: true },
       parentPhone: { type: "string" },
@@ -25,6 +27,8 @@ export const WaitlistEntryEntity = new Entity(
       consentPhotos: { type: "boolean", required: true, default: false },
       consentContact: { type: "boolean", required: true, default: false },
       isCoachChild: { type: "boolean", required: true, default: false },
+      // Answers to the dojo's custom questions, keyed by questionId.
+      customAnswers: { type: "any" },
       status: {
         type: ["waiting", "promoted", "expired", "cancelled"] as const,
         required: true,

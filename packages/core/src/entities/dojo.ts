@@ -29,6 +29,19 @@ export const DojoEntity = new Entity(
           },
         },
       },
+      // Reusable per-dojo activity tracks, editable by lead coaches and
+      // selectable per event. When empty, events fall back to GLOBAL_ATELIERS.
+      tracks: {
+        type: "list",
+        items: {
+          type: "map",
+          properties: {
+            trackId: { type: "string", required: true },
+            name:    { type: "string", required: true },
+            active:  { type: "boolean", required: true },
+          },
+        },
+      },
     },
     indexes: {
       byId: {

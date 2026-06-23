@@ -125,6 +125,28 @@ export async function requireDojoLeadCoach(
   return role === "lead_coach";
 }
 
+/**
+ * Returns true if the caller may perform door check-ins for the given dojo.
+ * Lead coaches and super-admins always may. A plain coach may only when their
+ * membership's `canCheckIn` is not explicitly false (absence = allowed).
+ */
+export async function requireCheckInCoach(
+  db: any,
+  _userId: string,   // kept for signature compat; resolved via claims.email internally
+  dojoId: string,
+  claims: JwtClaims
+): Promise<boolean> {
+  if (isSuperAdmin(claims)) return true;
+  const dbUserId = await resolveDbUserId(db, claims);
+  if (!dbUserId) return false;
+  const result = await db.entities.dojoMembership.get({ userId: dbUserId, dojoId }).go();
+  const membership = result.data;
+  if (!membership) return false;
+  if (membership.role === "lead_coach") return true;
+  if (membership.role === "coach") return membership.canCheckIn !== false;
+  return false;
+}
+
 /** Returns the user's preferredLang from DynamoDB by their DynamoDB ULID userId. */
 export async function getUserLang(db: any, userId: string): Promise<Lang> {
   const result = await db.entities.user.query.byId({ userId }).go();

@@ -36,6 +36,7 @@ export const UserEntity = new Entity(
           properties: {
             name:           { type: "string", required: true },
             birthdate:      { type: "string", required: true },
+            gender:         { type: ["boy", "girl", "other", "prefer_not_to_say"] as const },
             previousVisits: { type: "number" },
           },
         },

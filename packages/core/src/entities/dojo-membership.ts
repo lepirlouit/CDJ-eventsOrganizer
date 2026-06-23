@@ -8,6 +8,9 @@ export const DojoMembershipEntity = new Entity(
       userId: { type: "string", required: true },
       dojoId: { type: "string", required: true },
       role: { type: ["coach", "lead_coach"] as const, required: true },
+      // Whether a plain coach may perform door check-ins. Lead coaches set this.
+      // Optional + absence means allowed (default true), so existing rows keep access.
+      canCheckIn: { type: "boolean" },
       createdAt: { type: "string", required: true, default: () => new Date().toISOString() },
     },
     indexes: {

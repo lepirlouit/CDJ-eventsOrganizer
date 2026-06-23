@@ -8,6 +8,7 @@ import { WaitlistEntryEntity } from "./waitlist-entry.js";
 import { EventVolunteerEntity } from "./event-volunteer.js";
 import { DojoMembershipEntity } from "./dojo-membership.js";
 import { ChildEntity } from "./child.js";
+import { CustomQuestionEntity } from "./custom-question.js";
 
 export { DocumentClient, table } from "./client.js";
 
@@ -21,6 +22,7 @@ export const db = new Service(
     eventVolunteer: EventVolunteerEntity,
     dojoMembership: DojoMembershipEntity,
     child: ChildEntity,
+    customQuestion: CustomQuestionEntity,
   },
   { client: DocumentClient, table }
 );
