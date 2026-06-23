@@ -30,7 +30,31 @@ npm run remove         # sst remove --stage dev
 npm run refresh
 ```
 
-There are no automated tests. Verification is done by running the app.
+### Tests
+
+```bash
+npm test          # vitest run — unit tests for pure logic in packages/core
+npm run test:watch
+```
+
+Unit tests (vitest, Node environment) cover the dependency-free modules in
+`packages/core`: capacity/waitlist decisions (`lib/capacity-logic.ts`), gender
+stats aggregation (`lib/stats-lib.ts`), name-matching (`lib/text.ts`), email
+templates (`lib/email-templates.ts`), and the DB-injectable auth helpers
+(`types/index.ts`, tested with a mock `db`). Lambda handlers and the `web`/
+`functions` packages import SST `Resource.*` at module load, which is unavailable
+outside an SST build, so business rules are extracted into these pure modules to
+keep them testable.
+
+Component tests (vitest + jsdom + React Testing Library) cover the registration
+form (`packages/web/src/pages/parent/RegisterPage.test.tsx`): rendering/prefill,
+child-name-≠-parent validation, full-track disabling, required custom-question
+validation, and a successful submit. They opt into jsdom via a
+`// @vitest-environment jsdom` docblock and mock `lib/api`, `useAuth`, and
+`react-i18next`. The shared `vitest.config.ts` registers `@vitejs/plugin-react`.
+
+End-to-end verification of live handlers/UI is still done by running the app
+(`npm run dev`).
 
 ## Architecture
 
