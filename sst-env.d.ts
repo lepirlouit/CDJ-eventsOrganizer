@@ -54,6 +54,10 @@ declare module "sst" {
       "name": string
       "type": "sst.aws.Function"
     }
+    "FnGET_admin_dojos_dojoId_events": {
+      "name": string
+      "type": "sst.aws.Function"
+    }
     "FnGET_admin_dojos_dojoId_members": {
       "name": string
       "type": "sst.aws.Function"
@@ -126,7 +130,7 @@ declare module "sst" {
       "name": string
       "type": "sst.aws.Function"
     }
-    "FnPOST_admin_dojos_dojoId_members_userId": {
+    "FnPOST_admin_dojos_dojoId_members_add": {
       "name": string
       "type": "sst.aws.Function"
     }
@@ -191,6 +195,10 @@ declare module "sst" {
       "type": "sst.aws.Function"
     }
     "PreSignUp": {
+      "name": string
+      "type": "sst.aws.Function"
+    }
+    "PreTokenGeneration": {
       "name": string
       "type": "sst.aws.Function"
     }
