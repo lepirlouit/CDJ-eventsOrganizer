@@ -38,8 +38,8 @@ const dojoSchema = z.object({
   name: z.string().min(1),
   city: z.string().min(1),
   address: z.string().min(1),
-  latitude: z.coerce.number().optional(),
-  longitude: z.coerce.number().optional(),
+  latitude: z.number().optional(),
+  longitude: z.number().optional(),
 });
 type DojoForm = z.infer<typeof dojoSchema>;
 
@@ -47,8 +47,8 @@ const locationSchema = z.object({
   name:      z.string().min(1),
   address:   z.string().min(1),
   city:      z.string().min(1),
-  latitude:  z.coerce.number().optional(),
-  longitude: z.coerce.number().optional(),
+  latitude:  z.number().optional(),
+  longitude: z.number().optional(),
   mapsUrl:   z.string().optional(),
 });
 type LocationForm = z.infer<typeof locationSchema>;
@@ -114,7 +114,7 @@ export function SuperAdminDojosPage() {
   });
 
   // ── Dojo form ──────────────────────────────────────────────────────────────
-  const dojoForm = useForm<DojoForm>({ resolver: zodResolver(dojoSchema) });
+  const dojoForm = useForm<z.input<typeof dojoSchema>, unknown, DojoForm>({ resolver: zodResolver(dojoSchema) });
   const dojoAddress = useWatch({ control: dojoForm.control, name: "address" });
   const dojoCity    = useWatch({ control: dojoForm.control, name: "city" });
   const dojoLat     = useWatch({ control: dojoForm.control, name: "latitude" });
@@ -139,7 +139,7 @@ export function SuperAdminDojosPage() {
   }
 
   // ── Location form ──────────────────────────────────────────────────────────
-  const locForm = useForm<LocationForm>({ resolver: zodResolver(locationSchema) });
+  const locForm = useForm<z.input<typeof locationSchema>, unknown, LocationForm>({ resolver: zodResolver(locationSchema) });
   const locAddress = useWatch({ control: locForm.control, name: "address" });
   const locCity    = useWatch({ control: locForm.control, name: "city" });
   const locLat     = useWatch({ control: locForm.control, name: "latitude" });

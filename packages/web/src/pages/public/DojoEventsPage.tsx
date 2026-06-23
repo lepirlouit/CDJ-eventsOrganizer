@@ -61,7 +61,7 @@ export function DojoEventsPage() {
       {isLoading ? (
         <Grid container spacing={2}>
           {Array.from({ length: 3 }).map((_, i) => (
-            <Grid item xs={12} sm={6} md={4} key={i}>
+            <Grid size={{ xs: 12, sm: 6, md: 4 }} key={i}>
               <Skeleton variant="rectangular" height={220} sx={{ borderRadius: 2 }} />
             </Grid>
           ))}
@@ -71,7 +71,7 @@ export function DojoEventsPage() {
       ) : (
         <Grid container spacing={2}>
           {events.map((ev: any) => (
-            <Grid item xs={12} sm={6} md={4} key={ev.eventId}>
+            <Grid size={{ xs: 12, sm: 6, md: 4 }} key={ev.eventId}>
               <EventCard
                 eventId={ev.eventId}
                 title={ev.title}

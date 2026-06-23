@@ -5,9 +5,9 @@
   "type": "module",
   "dependencies": {
     "@coderdojo/core": "*",
-    "@aws-sdk/client-cognito-identity-provider": "^3.600.0",
-    "@aws-sdk/client-s3": "^3.600.0",
-    "@aws-sdk/s3-request-presigner": "^3.600.0",
+    "@aws-sdk/client-cognito-identity-provider": "^3.1075.0",
+    "@aws-sdk/client-s3": "^3.1075.0",
+    "@aws-sdk/s3-request-presigner": "^3.1075.0",
     "ulid": "^2.3.0"
   },
   "devDependencies": {

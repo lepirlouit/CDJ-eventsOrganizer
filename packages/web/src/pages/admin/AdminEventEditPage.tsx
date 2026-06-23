@@ -85,7 +85,7 @@ export function AdminEventEditPage() {
 
   const [tracks, setTracks] = useState<TrackSelection>({});
 
-  const { register, handleSubmit, control, reset, setValue, formState: { errors } } = useForm<FormData>({
+  const { register, handleSubmit, control, reset, setValue, formState: { errors } } = useForm<z.input<typeof schema>, unknown, FormData>({
     resolver: zodResolver(schema),
     defaultValues: { status: "draft", coachReservedSeats: 0, maxCapacity: 30 },
   });

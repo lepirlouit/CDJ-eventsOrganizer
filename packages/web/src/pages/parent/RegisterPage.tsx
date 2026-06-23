@@ -26,7 +26,7 @@ import { useAuth } from "../../hooks/useAuth";
 
 const parentSchema = z.object({
   parentName:     z.string().min(1),
-  parentEmail:    z.string().email(),
+  parentEmail:    z.email(),
   parentPhone:    z.string().optional(),
   heardAbout:     z.string().optional(),
   consentPhotos:  z.boolean().default(false),
@@ -92,7 +92,7 @@ export function RegisterPage() {
   });
   const activeQuestions = questions.filter((q) => q.active).sort((a, b) => a.order - b.order);
 
-  const { register, handleSubmit, control, reset, formState: { errors } } = useForm<ParentForm>({
+  const { register, handleSubmit, control, reset, formState: { errors } } = useForm<z.input<typeof parentSchema>, unknown, ParentForm>({
     resolver: zodResolver(parentSchema),
     defaultValues: { parentEmail: user?.email ?? "", consentPhotos: false, consentContact: false },
   });

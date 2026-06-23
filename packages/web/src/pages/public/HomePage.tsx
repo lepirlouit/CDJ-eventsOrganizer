@@ -122,11 +122,11 @@ export function HomePage() {
       </Typography>
       <Grid container spacing={3}>
         {!isMobile && (
-          <Grid item xs={12} md={5}>
+          <Grid size={{ xs: 12, md: 5 }}>
             {mapSection}
           </Grid>
         )}
-        <Grid item xs={12} md={isMobile ? 12 : 7}>
+        <Grid size={{ xs: 12, md: isMobile ? 12 : 7 }}>
           {isMobile && <Box mb={2}>{mapSection}</Box>}
 
           <TextField

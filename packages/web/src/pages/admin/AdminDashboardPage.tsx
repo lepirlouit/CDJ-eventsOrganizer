@@ -44,8 +44,8 @@ const locationSchema = z.object({
   name:      z.string().min(1),
   address:   z.string().min(1),
   city:      z.string().min(1),
-  latitude:  z.coerce.number().optional(),
-  longitude: z.coerce.number().optional(),
+  latitude:  z.number().optional(),
+  longitude: z.number().optional(),
   mapsUrl:   z.string().optional(),
 });
 type LocationForm = z.infer<typeof locationSchema>;
@@ -68,7 +68,7 @@ export function AdminDashboardPage() {
   });
   const locations = locationDojoDeta?.locations ?? [];
 
-  const locForm = useForm<LocationForm>({ resolver: zodResolver(locationSchema) });
+  const locForm = useForm<z.input<typeof locationSchema>, unknown, LocationForm>({ resolver: zodResolver(locationSchema) });
   const locAddress  = useWatch({ control: locForm.control, name: "address" });
   const locCity     = useWatch({ control: locForm.control, name: "city" });
   const locLat      = useWatch({ control: locForm.control, name: "latitude" });
@@ -104,7 +104,7 @@ export function AdminDashboardPage() {
 
       <Grid container spacing={2}>
         {memberships.map((m) => (
-          <Grid item xs={12} sm={6} md={4} key={m.dojoId}>
+          <Grid size={{ xs: 12, sm: 6, md: 4 }} key={m.dojoId}>
             <Card>
               <CardContent>
                 <Box display="flex" alignItems="center" gap={1} mb={0.5}>
