@@ -30,6 +30,10 @@ declare module "sst" {
       "name": string
       "type": "sst.aws.Function"
     }
+    "FnDELETE_admin_dojos_dojoId_questions_questionId": {
+      "name": string
+      "type": "sst.aws.Function"
+    }
     "FnDELETE_admin_events_eventId": {
       "name": string
       "type": "sst.aws.Function"
@@ -50,7 +54,19 @@ declare module "sst" {
       "name": string
       "type": "sst.aws.Function"
     }
+    "FnDELETE_users_me": {
+      "name": string
+      "type": "sst.aws.Function"
+    }
+    "FnDELETE_users_me_children_childId": {
+      "name": string
+      "type": "sst.aws.Function"
+    }
     "FnGET_admin_ateliers": {
+      "name": string
+      "type": "sst.aws.Function"
+    }
+    "FnGET_admin_children_childId_registrations": {
       "name": string
       "type": "sst.aws.Function"
     }
@@ -59,6 +75,10 @@ declare module "sst" {
       "type": "sst.aws.Function"
     }
     "FnGET_admin_dojos_dojoId_members": {
+      "name": string
+      "type": "sst.aws.Function"
+    }
+    "FnGET_admin_dojos_dojoId_participants": {
       "name": string
       "type": "sst.aws.Function"
     }
@@ -78,6 +98,10 @@ declare module "sst" {
       "name": string
       "type": "sst.aws.Function"
     }
+    "FnGET_admin_stats": {
+      "name": string
+      "type": "sst.aws.Function"
+    }
     "FnGET_auth_session": {
       "name": string
       "type": "sst.aws.Function"
@@ -94,6 +118,10 @@ declare module "sst" {
       "name": string
       "type": "sst.aws.Function"
     }
+    "FnGET_dojos_dojoId_questions": {
+      "name": string
+      "type": "sst.aws.Function"
+    }
     "FnGET_events": {
       "name": string
       "type": "sst.aws.Function"
@@ -103,6 +131,14 @@ declare module "sst" {
       "type": "sst.aws.Function"
     }
     "FnGET_users_me": {
+      "name": string
+      "type": "sst.aws.Function"
+    }
+    "FnGET_users_me_children": {
+      "name": string
+      "type": "sst.aws.Function"
+    }
+    "FnGET_users_me_data-export": {
       "name": string
       "type": "sst.aws.Function"
     }
@@ -126,6 +162,10 @@ declare module "sst" {
       "name": string
       "type": "sst.aws.Function"
     }
+    "FnPOST_admin_dojos_dojoId_broadcast": {
+      "name": string
+      "type": "sst.aws.Function"
+    }
     "FnPOST_admin_dojos_dojoId_events": {
       "name": string
       "type": "sst.aws.Function"
@@ -138,11 +178,23 @@ declare module "sst" {
       "name": string
       "type": "sst.aws.Function"
     }
+    "FnPOST_admin_dojos_dojoId_questions": {
+      "name": string
+      "type": "sst.aws.Function"
+    }
     "FnPOST_admin_events_eventId_ateliers": {
       "name": string
       "type": "sst.aws.Function"
     }
     "FnPOST_admin_events_eventId_waitlist_id_promote": {
+      "name": string
+      "type": "sst.aws.Function"
+    }
+    "FnPOST_admin_newsletter": {
+      "name": string
+      "type": "sst.aws.Function"
+    }
+    "FnPOST_admin_participants_merge": {
       "name": string
       "type": "sst.aws.Function"
     }
@@ -154,11 +206,19 @@ declare module "sst" {
       "name": string
       "type": "sst.aws.Function"
     }
+    "FnPOST_dojos_dojoId_contact": {
+      "name": string
+      "type": "sst.aws.Function"
+    }
     "FnPOST_events_eventId_registrations": {
       "name": string
       "type": "sst.aws.Function"
     }
     "FnPOST_events_eventId_volunteers": {
+      "name": string
+      "type": "sst.aws.Function"
+    }
+    "FnPOST_users_me_children": {
       "name": string
       "type": "sst.aws.Function"
     }
@@ -171,6 +231,14 @@ declare module "sst" {
       "type": "sst.aws.Function"
     }
     "FnPUT_admin_dojos_dojoId_members_userId_role": {
+      "name": string
+      "type": "sst.aws.Function"
+    }
+    "FnPUT_admin_dojos_dojoId_questions_questionId": {
+      "name": string
+      "type": "sst.aws.Function"
+    }
+    "FnPUT_admin_dojos_dojoId_tracks": {
       "name": string
       "type": "sst.aws.Function"
     }
@@ -190,9 +258,17 @@ declare module "sst" {
       "name": string
       "type": "sst.aws.Function"
     }
+    "FnPUT_users_me_children_childId": {
+      "name": string
+      "type": "sst.aws.Function"
+    }
     "MainTable": {
       "name": string
       "type": "sst.aws.Dynamo"
+    }
+    "OtpHmacSecret": {
+      "type": "sst.sst.Secret"
+      "value": string
     }
     "PostConfirmation": {
       "name": string
