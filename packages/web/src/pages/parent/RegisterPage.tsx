@@ -204,11 +204,11 @@ export function RegisterPage() {
     a.maxSeats !== undefined && a.maxSeats !== null && (atelierCounts[a.atelierId] ?? 0) >= a.maxSeats;
 
   return (
-    <Box maxWidth={680} mx="auto">
-      <Typography variant="h5" fontWeight={700} mb={0.5}>
+    <Box sx={{ maxWidth: 680, mx: "auto" }}>
+      <Typography variant="h5" sx={{ fontWeight: 700, mb: 0.5 }}>
         {t("events.register")} — {event.title}
       </Typography>
-      <Typography color="text.secondary" mb={3}>
+      <Typography color="text.secondary" sx={{ mb: 3 }}>
         {new Date(event.date).toLocaleDateString()}
       </Typography>
 
@@ -220,7 +220,7 @@ export function RegisterPage() {
 
         {/* ── Parent info ───────────────────────────────────── */}
         <Paper sx={{ p: 3, mb: 3 }}>
-          <Typography variant="h6" mb={2}>Parent</Typography>
+          <Typography variant="h6" sx={{ mb: 2 }}>Parent</Typography>
           <TextField
             label="Name" fullWidth sx={{ mb: 2 }}
             {...register("parentName")}
@@ -250,10 +250,10 @@ export function RegisterPage() {
         </Paper>
 
         {/* ── Children picker ───────────────────────────────── */}
-        <Typography variant="h6" mb={1}>{t("children.title")}</Typography>
+        <Typography variant="h6" sx={{ mb: 1 }}>{t("children.title")}</Typography>
         {childError && <Alert severity="warning" sx={{ mb: 2 }}>{childError}</Alert>}
         {children.length === 0 && (
-          <Typography color="text.secondary" mb={2}>{t("children.select_prompt")}</Typography>
+          <Typography color="text.secondary" sx={{ mb: 2 }}>{t("children.select_prompt")}</Typography>
         )}
 
         {children.map((c) => {
@@ -382,7 +382,7 @@ export function RegisterPage() {
           />
           <TextField
             label={t("children.birthdate")} type="date" fullWidth sx={{ mb: 2 }}
-            InputLabelProps={{ shrink: true }}
+            slotProps={{ inputLabel: { shrink: true } }}
             value={newBirthdate} onChange={(e) => setNewBirthdate(e.target.value)}
           />
           <TextField

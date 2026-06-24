@@ -38,7 +38,7 @@ export function LanguageSwitcher() {
   }
 
   return (
-    <Box display="flex" gap={0.25} mr={1}>
+    <Box sx={{ display: "flex", gap: 0.25, mr: 1 }}>
       {LANGS.map(({ code, label }) => (
         <LangButton
           key={code}

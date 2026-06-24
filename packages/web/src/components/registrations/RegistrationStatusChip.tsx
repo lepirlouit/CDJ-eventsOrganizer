@@ -16,7 +16,7 @@ const statusColor = {
 
 export function RegistrationStatusChip({ status, isCoachChild, checkedIn, size = "small" }: Props) {
   return (
-    <Box display="inline-flex" gap={0.5} alignItems="center">
+    <Box sx={{ display: "inline-flex", gap: 0.5, alignItems: "center" }}>
       <Chip label={status} size={size} color={statusColor[status]} />
       {isCoachChild && <Chip label="Coach reserved" size={size} color="info" variant="outlined" />}
       {checkedIn && <Chip label="✓ Present" size={size} color="success" variant="outlined" />}

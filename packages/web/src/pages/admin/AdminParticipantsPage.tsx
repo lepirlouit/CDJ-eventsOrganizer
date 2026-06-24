@@ -57,8 +57,8 @@ export function AdminParticipantsPage() {
 
   return (
     <Box>
-      <Typography variant="h5" fontWeight={700} mb={1}>{t("admin.participants.title")}</Typography>
-      <Typography color="text.secondary" mb={3}>
+      <Typography variant="h5" sx={{ fontWeight: 700, mb: 1 }}>{t("admin.participants.title")}</Typography>
+      <Typography color="text.secondary" sx={{ mb: 3 }}>
         {t("admin.participants.unique_count", { count: participants.length })}
       </Typography>
       <Paper>
@@ -80,7 +80,7 @@ export function AdminParticipantsPage() {
               return (
                 <TableRow key={p.participantId}>
                   <TableCell>
-                    <Box display="flex" alignItems="center" gap={1} flexWrap="wrap">
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 1, flexWrap: "wrap" }}>
                       {p.childIds[0] ? (
                         <Link to={`/dashboard/admin/children/${p.childIds[0]}`}>{p.name}</Link>
                       ) : (

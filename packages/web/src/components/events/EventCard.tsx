@@ -43,8 +43,8 @@ export function EventCard({
   return (
     <Card elevation={2} sx={{ height: "100%", display: "flex", flexDirection: "column" }}>
       <CardContent sx={{ flexGrow: 1 }}>
-        <Box display="flex" justifyContent="space-between" alignItems="flex-start" mb={0.5}>
-          <Typography variant="h6" fontWeight={600} lineHeight={1.2}>
+        <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", mb: 0.5 }}>
+          <Typography variant="h6" sx={{ fontWeight: 600, lineHeight: 1.2 }}>
             {title}
           </Typography>
           <Chip
@@ -55,12 +55,12 @@ export function EventCard({
           />
         </Box>
 
-        <Typography variant="body2" color="text.secondary" mb={1}>
+        <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
           {new Date(date).toLocaleDateString(undefined, { dateStyle: "full" })}
           {locationCity && ` · ${locationCity}`}
         </Typography>
 
-        <Box mb={1}>
+        <Box sx={{ mb: 1 }}>
           <LinearProgress
             variant="determinate"
             value={fillPercent}
@@ -76,13 +76,13 @@ export function EventCard({
         </Box>
 
         {coachReservedSeats > 0 && (
-          <Typography variant="caption" color="info.main" display="block" mb={1}>
+          <Typography variant="caption" color="info.main" sx={{ display: "block", mb: 1 }}>
             {t("events.coach_reserved_seats", { count: coachReservedSeats })}
           </Typography>
         )}
 
         {ateliers.length > 0 && (
-          <Box display="flex" flexWrap="wrap" gap={0.5}>
+          <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
             {ateliers.slice(0, 4).map((a) => (
               <Chip key={a.atelierId} label={a.name} size="small" variant="outlined" />
             ))}

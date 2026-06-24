@@ -72,9 +72,9 @@ export function MyChildrenPage() {
   if (isLoading) return <LinearProgress />;
 
   return (
-    <Box maxWidth={700} mx="auto">
-      <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
-        <Typography variant="h5" fontWeight={700}>{t("children.title")}</Typography>
+    <Box sx={{ maxWidth: 700, mx: "auto" }}>
+      <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 3 }}>
+        <Typography variant="h5" sx={{ fontWeight: 700 }}>{t("children.title")}</Typography>
         <Button variant="contained" startIcon={<AddIcon />} onClick={openNew}>
           {t("children.add")}
         </Button>
@@ -86,7 +86,7 @@ export function MyChildrenPage() {
         children.map((c) => (
           <Card key={c.childId} sx={{ mb: 2 }}>
             <CardContent>
-              <Typography fontWeight={600}>{c.name}</Typography>
+              <Typography sx={{ fontWeight: 600 }}>{c.name}</Typography>
               <Typography variant="body2" color="text.secondary">
                 {new Date(c.birthdate).toLocaleDateString()}
               </Typography>
@@ -124,7 +124,7 @@ export function MyChildrenPage() {
             type="date"
             fullWidth
             sx={{ mb: 2 }}
-            InputLabelProps={{ shrink: true }}
+            slotProps={{ inputLabel: { shrink: true } }}
             value={editing?.birthdate ?? ""}
             onChange={(e) => setEditing((p) => (p ? { ...p, birthdate: e.target.value } : p))}
           />

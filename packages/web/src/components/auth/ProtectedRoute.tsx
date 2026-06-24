@@ -17,7 +17,7 @@ export function ProtectedRoute({ roles, requireAnyCoach, children }: Props) {
 
   if (loading) {
     return (
-      <Box display="flex" justifyContent="center" pt={8}>
+      <Box sx={{ display: "flex", justifyContent: "center", pt: 8 }}>
         <CircularProgress />
       </Box>
     );

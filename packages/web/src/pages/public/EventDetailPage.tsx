@@ -57,25 +57,25 @@ export function EventDetailPage() {
   const regOpen = now >= event.registrationOpenAt && now <= event.registrationCloseAt;
 
   return (
-    <Box maxWidth={700} mx="auto">
-      <Typography variant="h4" fontWeight={700} mb={1}>{event.title}</Typography>
-      <Typography color="text.secondary" mb={3}>{event.description}</Typography>
+    <Box sx={{ maxWidth: 700, mx: "auto" }}>
+      <Typography variant="h4" sx={{ fontWeight: 700, mb: 1 }}>{event.title}</Typography>
+      <Typography color="text.secondary" sx={{ mb: 3 }}>{event.description}</Typography>
 
       <Card sx={{ mb: 3 }}>
         <CardContent>
           <Stack spacing={1.5}>
-            <Box display="flex" gap={2}>
-              <Typography fontWeight={600} minWidth={100}>Date</Typography>
+            <Box sx={{ display: "flex", gap: 2 }}>
+              <Typography sx={{ fontWeight: 600, minWidth: 100 }}>Date</Typography>
               <Typography>{new Date(event.date).toLocaleDateString("en-BE", { dateStyle: "full" })}</Typography>
             </Box>
-            <Box display="flex" gap={2}>
-              <Typography fontWeight={600} minWidth={100}>Location</Typography>
+            <Box sx={{ display: "flex", gap: 2 }}>
+              <Typography sx={{ fontWeight: 600, minWidth: 100 }}>Location</Typography>
               <Typography>{event.location?.address}, {event.location?.city}</Typography>
             </Box>
             <Divider />
-            <Box display="flex" gap={2} alignItems="center">
-              <Typography fontWeight={600} minWidth={100}>Capacity</Typography>
-              <Box flexGrow={1}>
+            <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
+              <Typography sx={{ fontWeight: 600, minWidth: 100 }}>Capacity</Typography>
+              <Box sx={{ flexGrow: 1 }}>
                 <LinearProgress
                   variant="determinate"
                   value={Math.min(100, (event.registrationCount / (event.maxCapacity - event.coachReservedSeats)) * 100)}
@@ -99,9 +99,9 @@ export function EventDetailPage() {
       </Card>
 
       {event.ateliers && event.ateliers.length > 0 && (
-        <Box mb={3}>
-          <Typography variant="h6" mb={1}>Ateliers</Typography>
-          <Box display="flex" flexWrap="wrap" gap={1}>
+        <Box sx={{ mb: 3 }}>
+          <Typography variant="h6" sx={{ mb: 1 }}>Ateliers</Typography>
+          <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
             {event.ateliers.map((a: any) => (
               <Chip key={a.atelierId} label={a.name} />
             ))}
@@ -125,9 +125,9 @@ export function EventDetailPage() {
       {isCoach && isPublished && (
         <Card variant="outlined" sx={{ mb: 2 }}>
           <CardContent>
-            <Typography variant="h6" mb={1}>{t("volunteers.title")}</Typography>
+            <Typography variant="h6" sx={{ mb: 1 }}>{t("volunteers.title")}</Typography>
             {myVolunteer.data ? (
-              <Box display="flex" alignItems="center" gap={2}>
+              <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
                 <Chip label={t("volunteers.signed_up")} color="success" />
                 <Button
                   variant="outlined"

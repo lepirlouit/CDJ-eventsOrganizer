@@ -95,8 +95,8 @@ export function AdminDashboardPage() {
 
   return (
     <Box>
-      <Typography variant="h5" fontWeight={700} mb={1}>{t("admin.dashboard")}</Typography>
-      <Typography color="text.secondary" mb={3}>
+      <Typography variant="h5" sx={{ fontWeight: 700, mb: 1 }}>{t("admin.dashboard")}</Typography>
+      <Typography color="text.secondary" sx={{ mb: 3 }}>
         {memberships.length === 0
           ? "You are not assigned to any dojo yet."
           : `Managing ${memberships.length} dojo(s)`}
@@ -107,8 +107,8 @@ export function AdminDashboardPage() {
           <Grid size={{ xs: 12, sm: 6, md: 4 }} key={m.dojoId}>
             <Card>
               <CardContent>
-                <Box display="flex" alignItems="center" gap={1} mb={0.5}>
-                  <Typography variant="h6" fontWeight={600}>{m.dojoName}</Typography>
+                <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 0.5 }}>
+                  <Typography variant="h6" sx={{ fontWeight: 600 }}>{m.dojoName}</Typography>
                   <Chip
                     label={m.role === "lead_coach" ? "Lead Coach" : "Coach"}
                     size="small"
@@ -141,13 +141,13 @@ export function AdminDashboardPage() {
         <DialogTitle>Locations — {locationDojo?.name}</DialogTitle>
         <DialogContent>
           {locations.length === 0 ? (
-            <Typography color="text.secondary" mb={2}>No locations yet.</Typography>
+            <Typography color="text.secondary" sx={{ mb: 2 }}>No locations yet.</Typography>
           ) : (
-            <Box mb={2}>
+            <Box sx={{ mb: 2 }}>
               {locations.map((loc) => (
-                <Box key={loc.locationId} display="flex" alignItems="center" justifyContent="space-between" py={1} borderBottom="1px solid" borderColor="divider">
+                <Box key={loc.locationId} sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", py: 1, borderBottom: "1px solid", borderColor: "divider" }}>
                   <Box>
-                    <Typography fontWeight={600}>{loc.name}</Typography>
+                    <Typography sx={{ fontWeight: 600 }}>{loc.name}</Typography>
                     <Typography variant="body2" color="text.secondary">{loc.address}, {loc.city}</Typography>
                   </Box>
                   <IconButton size="small" color="error" onClick={() => delLocMutation.mutate(loc.locationId)} disabled={delLocMutation.isPending}>
@@ -159,14 +159,14 @@ export function AdminDashboardPage() {
           )}
 
           <Divider sx={{ mb: 2 }} />
-          <Typography variant="subtitle2" mb={1}>Add location</Typography>
+          <Typography variant="subtitle2" sx={{ mb: 1 }}>Add location</Typography>
           <form onSubmit={locForm.handleSubmit((d) => addLocMutation.mutate(d))} id="admin-loc-form">
             <TextField label="Location name" fullWidth sx={{ mb: 1.5 }} {...locForm.register("name")} error={!!locForm.formState.errors.name} required size="small" />
-            <Box display="flex" gap={1.5} mb={1.5}>
+            <Box sx={{ display: "flex", gap: 1.5, mb: 1.5 }}>
               <TextField label="Address" fullWidth {...locForm.register("address")} error={!!locForm.formState.errors.address} required size="small" />
               <TextField label="City" fullWidth {...locForm.register("city")} error={!!locForm.formState.errors.city} required size="small" />
             </Box>
-            <Box display="flex" alignItems="center" gap={1} mb={1}>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
               <Button size="small" variant="outlined" startIcon={locLocating ? <CircularProgress size={14} /> : <MyLocationIcon />} onClick={locateLocation} disabled={!locAddress || locLocating}>
                 Locate on map
               </Button>

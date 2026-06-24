@@ -151,8 +151,8 @@ export function AdminEventEditPage() {
   if (!isNew && isLoading) return <LinearProgress />;
 
   return (
-    <Box maxWidth={700} mx="auto">
-      <Typography variant="h5" fontWeight={700} mb={3}>
+    <Box sx={{ maxWidth: 700, mx: "auto" }}>
+      <Typography variant="h5" sx={{ fontWeight: 700, mb: 3 }}>
         {isNew ? t("admin.event_create") : t("common.edit")}
       </Typography>
       {mutation.isError && <Alert severity="error" sx={{ mb: 2 }}>{t("common.error")}</Alert>}
@@ -160,15 +160,15 @@ export function AdminEventEditPage() {
         <form onSubmit={handleSubmit((d) => mutation.mutate(d))}>
           <TextField label={t("admin.event_form.title")} fullWidth sx={{ mb: 2 }} {...register("title")} error={!!errors.title} required />
           <TextField label={t("admin.event_form.description")} fullWidth multiline rows={3} sx={{ mb: 2 }} {...register("description")} />
-          <TextField label={t("admin.event_form.date")} type="date" fullWidth sx={{ mb: 2 }} InputLabelProps={{ shrink: true }} {...register("date")} error={!!errors.date} required />
+          <TextField label={t("admin.event_form.date")} type="date" fullWidth sx={{ mb: 2 }} slotProps={{ inputLabel: { shrink: true } }} {...register("date")} error={!!errors.date} required />
 
           {/* Location picker — pre-fills address fields from saved dojo locations */}
           {dojoLocations.length > 0 && (
             <Box sx={{ mb: 2 }}>
-              <Typography variant="body2" color="text.secondary" mb={1}>
+              <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
                 {t("admin.event_form.pick_location")}
               </Typography>
-              <Box display="flex" flexWrap="wrap" gap={1}>
+              <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
                 {dojoLocations.map((loc) => (
                   <Button
                     key={loc.locationId}
@@ -196,21 +196,21 @@ export function AdminEventEditPage() {
             error={!!errors.coachReservedSeats}
             helperText={t("admin.event_form.coach_reserved_tip")}
           />
-          <TextField label={t("admin.event_form.registration_open")} type="datetime-local" fullWidth sx={{ mb: 2 }} InputLabelProps={{ shrink: true }} {...register("registrationOpenAt")} required />
-          <TextField label={t("admin.event_form.registration_close")} type="datetime-local" fullWidth sx={{ mb: 2 }} InputLabelProps={{ shrink: true }} {...register("registrationCloseAt")} required />
+          <TextField label={t("admin.event_form.registration_open")} type="datetime-local" fullWidth sx={{ mb: 2 }} slotProps={{ inputLabel: { shrink: true } }} {...register("registrationOpenAt")} required />
+          <TextField label={t("admin.event_form.registration_close")} type="datetime-local" fullWidth sx={{ mb: 2 }} slotProps={{ inputLabel: { shrink: true } }} {...register("registrationCloseAt")} required />
           {/* ── Tracks selectable per event, each with an optional seat limit ── */}
           <Divider sx={{ mb: 2 }} />
-          <Typography variant="subtitle1" mb={1}>{t("admin.tracks.event_tracks")}</Typography>
+          <Typography variant="subtitle1" sx={{ mb: 1 }}>{t("admin.tracks.event_tracks")}</Typography>
           {trackOptions.length === 0 ? (
-            <Typography variant="body2" color="text.secondary" mb={2}>
+            <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
               {t("admin.tracks.none_configured")}
             </Typography>
           ) : (
-            <Box mb={3}>
+            <Box sx={{ mb: 3 }}>
               {trackOptions.map((tr) => {
                 const sel = tracks[tr.atelierId];
                 return (
-                  <Box key={tr.atelierId} display="flex" alignItems="center" gap={2} mb={1}>
+                  <Box key={tr.atelierId} sx={{ display: "flex", alignItems: "center", gap: 2, mb: 1 }}>
                     <FormControlLabel
                       sx={{ flex: 1 }}
                       control={
@@ -257,7 +257,7 @@ export function AdminEventEditPage() {
               </TextField>
             )}
           />
-          <Box display="flex" gap={2}>
+          <Box sx={{ display: "flex", gap: 2 }}>
             <Button type="submit" variant="contained" disabled={mutation.isPending}>{t("common.save")}</Button>
             <Button variant="outlined" onClick={() => navigate("/dashboard/admin/events")}>{t("common.cancel")}</Button>
           </Box>

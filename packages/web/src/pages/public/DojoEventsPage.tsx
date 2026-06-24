@@ -45,16 +45,16 @@ export function DojoEventsPage() {
         <Skeleton variant="text" width={300} height={48} sx={{ mb: 1 }} />
       ) : (
         <>
-          <Typography variant="h4" fontWeight={700} mb={0.5}>
+          <Typography variant="h4" sx={{ fontWeight: 700, mb: 0.5 }}>
             {dojo?.name}
           </Typography>
-          <Typography color="text.secondary" mb={3}>
+          <Typography color="text.secondary" sx={{ mb: 3 }}>
             {dojo?.city} · {dojo?.address}
           </Typography>
         </>
       )}
 
-      <Typography variant="h5" fontWeight={600} mb={2}>
+      <Typography variant="h5" sx={{ fontWeight: 600, mb: 2 }}>
         {t("home.upcoming")}
       </Typography>
 

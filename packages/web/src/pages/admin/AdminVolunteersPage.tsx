@@ -37,7 +37,7 @@ export function AdminVolunteersPage() {
 
   return (
     <Box>
-      <Typography variant="h5" fontWeight={700} mb={3}>
+      <Typography variant="h5" sx={{ fontWeight: 700, mb: 3 }}>
         {t("volunteers.title")} ({checkedInCount}/{volunteers.length} {t("admin.checkin.checked_in").toLowerCase()})
       </Typography>
       {volunteers.length === 0 ? (

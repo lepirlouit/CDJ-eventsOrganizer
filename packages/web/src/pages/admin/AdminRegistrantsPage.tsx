@@ -35,9 +35,9 @@ export function AdminRegistrantsPage() {
 
   return (
     <Box>
-      <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
-        <Box display="flex" alignItems="center" gap={2}>
-          <Typography variant="h5" fontWeight={700}>{t("admin.registrants")}</Typography>
+      <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 2 }}>
+        <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+          <Typography variant="h5" sx={{ fontWeight: 700 }}>{t("admin.registrants")}</Typography>
           {laptopCount > 0 && (
             <Chip
               icon={<LaptopIcon />}
@@ -48,7 +48,7 @@ export function AdminRegistrantsPage() {
             />
           )}
         </Box>
-        <Box display="flex" gap={1}>
+        <Box sx={{ display: "flex", gap: 1 }}>
           <Button variant="contained" component={Link} to={`/dashboard/admin/events/${eventId}/checkin`}>
             {t("admin.checkin.title")} ({confirmed.filter((r: any) => r.checkedIn).length}/{confirmed.length})
           </Button>

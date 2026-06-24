@@ -117,9 +117,9 @@ export function AdminEventsPage() {
 
   return (
     <Box>
-      <Box display="flex" justifyContent="space-between" alignItems="center" mb={3} flexWrap="wrap" gap={2}>
-        <Typography variant="h5" fontWeight={700}>{t("nav.events")}</Typography>
-        <Box display="flex" gap={2} alignItems="center">
+      <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 3, flexWrap: "wrap", gap: 2 }}>
+        <Typography variant="h5" sx={{ fontWeight: 700 }}>{t("nav.events")}</Typography>
+        <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
           {memberships.length > 1 && (
             <TextField
               select
@@ -196,11 +196,11 @@ export function AdminEventsPage() {
       <Dialog open={tracksOpen} onClose={() => setTracksOpen(false)} fullWidth maxWidth="sm">
         <DialogTitle>{t("admin.tracks.manage")}</DialogTitle>
         <DialogContent>
-          <Typography variant="caption" color="text.secondary" display="block" mb={2}>
+          <Typography variant="caption" color="text.secondary" sx={{ display: "block", mb: 2 }}>
             {t("admin.tracks.help")}
           </Typography>
           {draftTracks.map((tr, i) => (
-            <Box key={i} display="flex" alignItems="center" gap={1} mb={1.5}>
+            <Box key={i} sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1.5 }}>
               <TextField
                 label={t("admin.tracks.name")}
                 size="small"
@@ -247,12 +247,12 @@ export function AdminEventsPage() {
       <Dialog open={questionsOpen} onClose={() => setQuestionsOpen(false)} fullWidth maxWidth="sm">
         <DialogTitle>{t("admin.questions.manage")}</DialogTitle>
         <DialogContent>
-          <Typography variant="caption" color="text.secondary" display="block" mb={2}>
+          <Typography variant="caption" color="text.secondary" sx={{ display: "block", mb: 2 }}>
             {t("admin.questions.help")}
           </Typography>
           {questions.map((q) => (
-            <Box key={q.questionId} display="flex" alignItems="center" gap={1} mb={1} py={0.5} borderBottom="1px solid" borderColor="divider">
-              <Box flex={1}>
+            <Box key={q.questionId} sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1, py: 0.5, borderBottom: "1px solid", borderColor: "divider" }}>
+              <Box sx={{ flex: 1 }}>
                 <Typography variant="body2">{q.label}</Typography>
                 <Typography variant="caption" color="text.secondary">{t(`admin.questions.type_${q.type}`)}{q.required ? " · *" : ""}</Typography>
               </Box>
@@ -274,7 +274,7 @@ export function AdminEventsPage() {
           ))}
 
           <Divider sx={{ my: 2 }} />
-          <Typography variant="subtitle2" mb={1}>{t("admin.questions.add")}</Typography>
+          <Typography variant="subtitle2" sx={{ mb: 1 }}>{t("admin.questions.add")}</Typography>
           <TextField
             label={t("admin.questions.label")} fullWidth size="small" sx={{ mb: 1.5 }}
             value={newQuestion.label}
@@ -335,7 +335,7 @@ export function AdminEventsPage() {
       <Dialog open={emailOpen} onClose={() => setEmailOpen(false)} fullWidth maxWidth="sm">
         <DialogTitle>{t("admin.email.title")}</DialogTitle>
         <DialogContent>
-          <Typography variant="caption" color="text.secondary" display="block" mb={2}>
+          <Typography variant="caption" color="text.secondary" sx={{ display: "block", mb: 2 }}>
             {t("admin.email.help")}
           </Typography>
           <TextField
@@ -357,10 +357,10 @@ export function AdminEventsPage() {
             onChange={(e) => setEmailForm((f) => ({ ...f, message: e.target.value }))}
           />
           {broadcastMutation.isError && (
-            <Typography color="error" variant="caption" mt={1} display="block">{t("common.error")}</Typography>
+            <Typography color="error" variant="caption" sx={{ mt: 1, display: "block" }}>{t("common.error")}</Typography>
           )}
           {broadcastMutation.isSuccess && (
-            <Typography color="success.main" variant="caption" mt={1} display="block">
+            <Typography color="success.main" variant="caption" sx={{ mt: 1, display: "block" }}>
               {t("admin.email.sent", { count: (broadcastMutation.data?.data?.sent ?? 0) as number })}
             </Typography>
           )}

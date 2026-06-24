@@ -78,8 +78,8 @@ export function MyRegistrationsPage() {
   if (regsLoading) return <LinearProgress />;
 
   return (
-    <Box maxWidth={700} mx="auto">
-      <Typography variant="h5" fontWeight={700} mb={3}>{t("nav.my_registrations")}</Typography>
+    <Box sx={{ maxWidth: 700, mx: "auto" }}>
+      <Typography variant="h5" sx={{ fontWeight: 700, mb: 3 }}>{t("nav.my_registrations")}</Typography>
       {registrations.length === 0 ? (
         <Typography color="text.secondary">{t("registration.none_yet")}</Typography>
       ) : (
@@ -90,15 +90,15 @@ export function MyRegistrationsPage() {
           return (
             <Card key={reg.registrationId} sx={{ mb: 2 }}>
               <CardContent>
-                <Box display="flex" alignItems="center" gap={1} mb={1} flexWrap="wrap">
-                  <Typography fontWeight={600}>{reg.ninjaName}</Typography>
+                <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1, flexWrap: "wrap" }}>
+                  <Typography sx={{ fontWeight: 600 }}>{reg.ninjaName}</Typography>
                   <RegistrationStatusChip
                     status={reg.status}
                     isCoachChild={reg.isCoachChild}
                     checkedIn={reg.checkedIn}
                   />
                 </Box>
-                <Typography variant="body1" fontWeight={500}>
+                <Typography variant="body1" sx={{ fontWeight: 500 }}>
                   {event?.title ?? "…"}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
@@ -106,7 +106,7 @@ export function MyRegistrationsPage() {
                     ? `${new Date(event.date).toLocaleDateString(undefined, { dateStyle: "medium" })}${event.location?.city ? ` · ${event.location.city}` : ""}`
                     : ""}
                 </Typography>
-                <Box mt={1}>
+                <Box sx={{ mt: 1 }}>
                   <Chip label={atelierName} size="small" variant="outlined" />
                 </Box>
               </CardContent>
@@ -127,9 +127,9 @@ export function MyRegistrationsPage() {
 
       {/* ── Privacy / GDPR ────────────────────────────────────────────────── */}
       <Divider sx={{ my: 4 }} />
-      <Typography variant="h6" mb={1}>{t("privacy.title")}</Typography>
-      <Typography variant="body2" color="text.secondary" mb={2}>{t("privacy.help")}</Typography>
-      <Box display="flex" gap={2} flexWrap="wrap">
+      <Typography variant="h6" sx={{ mb: 1 }}>{t("privacy.title")}</Typography>
+      <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>{t("privacy.help")}</Typography>
+      <Box sx={{ display: "flex", gap: 2, flexWrap: "wrap" }}>
         <Button variant="outlined" onClick={downloadMyData}>{t("privacy.export")}</Button>
         <Button
           variant="outlined"

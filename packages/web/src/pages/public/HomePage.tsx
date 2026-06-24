@@ -117,7 +117,7 @@ export function HomePage() {
 
   return (
     <Box>
-      <Typography variant="h4" fontWeight={700} mb={3}>
+      <Typography variant="h4" sx={{ fontWeight: 700, mb: 3 }}>
         {t("home.map_title")}
       </Typography>
       <Grid container spacing={3}>
@@ -127,7 +127,7 @@ export function HomePage() {
           </Grid>
         )}
         <Grid size={{ xs: 12, md: isMobile ? 12 : 7 }}>
-          {isMobile && <Box mb={2}>{mapSection}</Box>}
+          {isMobile && <Box sx={{ mb: 2 }}>{mapSection}</Box>}
 
           <TextField
             fullWidth
@@ -136,19 +136,21 @@ export function HomePage() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             sx={{ mb: 2 }}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon fontSize="small" />
-                </InputAdornment>
-              ),
-              endAdornment: search ? (
-                <InputAdornment position="end">
-                  <IconButton size="small" onClick={() => setSearch("")} edge="end">
-                    <ClearIcon fontSize="small" />
-                  </IconButton>
-                </InputAdornment>
-              ) : null,
+            slotProps={{
+              input: {
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <SearchIcon fontSize="small" />
+                  </InputAdornment>
+                ),
+                endAdornment: search ? (
+                  <InputAdornment position="end">
+                    <IconButton size="small" onClick={() => setSearch("")} edge="end">
+                      <ClearIcon fontSize="small" />
+                    </IconButton>
+                  </InputAdornment>
+                ) : null,
+              },
             }}
           />
 
@@ -180,13 +182,13 @@ export function HomePage() {
                   elevation={isSelected ? 4 : 1}
                 >
                   <CardContent>
-                    <Typography variant="h6" fontWeight={600}>
+                    <Typography variant="h6" sx={{ fontWeight: 600 }}>
                       {dojo.name}
                     </Typography>
-                    <Typography variant="body2" color="text.secondary" mb={1}>
+                    <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
                       {dojo.city}
                     </Typography>
-                    <Box display="flex" flexWrap="wrap" gap={1}>
+                    <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
                       {events.map((ev) => {
                         const available = ev.maxCapacity - ev.coachReservedSeats - ev.registrationCount;
                         return (
@@ -230,7 +232,7 @@ export function HomePage() {
       <Dialog open={!!contactDojo} onClose={() => setContactDojo(null)} fullWidth maxWidth="sm">
         <DialogTitle>{t("home.contact")} — {contactDojo?.name}</DialogTitle>
         <DialogContent>
-          <Typography variant="caption" color="text.secondary" display="block" mb={2}>
+          <Typography variant="caption" color="text.secondary" sx={{ display: "block", mb: 2 }}>
             {t("home.contact_help")}
           </Typography>
           <TextField
@@ -249,7 +251,7 @@ export function HomePage() {
             onChange={(e) => setContactForm((f) => ({ ...f, message: e.target.value }))}
           />
           {contactMutation.isError && (
-            <Typography color="error" variant="caption" mt={1} display="block">{t("common.error")}</Typography>
+            <Typography color="error" variant="caption" sx={{ display: "block", mt: 1 }}>{t("common.error")}</Typography>
           )}
         </DialogContent>
         <DialogActions>

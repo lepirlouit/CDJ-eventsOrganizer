@@ -35,12 +35,12 @@ export function SuperAdminStatsPage() {
 
   return (
     <Box>
-      <Typography variant="h5" fontWeight={700} mb={1}>{t("stats.title")}</Typography>
-      <Typography color="text.secondary" mb={3}>
+      <Typography variant="h5" sx={{ fontWeight: 700, mb: 1 }}>{t("stats.title")}</Typography>
+      <Typography color="text.secondary" sx={{ mb: 3 }}>
         {t("stats.total")}: {data.total}
       </Typography>
 
-      <Typography variant="h6" mb={1}>{t("stats.by_gender")}</Typography>
+      <Typography variant="h6" sx={{ mb: 1 }}>{t("stats.by_gender")}</Typography>
       <Paper sx={{ mb: 4 }}>
         <Table size="small">
           <TableBody>
@@ -54,7 +54,7 @@ export function SuperAdminStatsPage() {
         </Table>
       </Paper>
 
-      <Typography variant="h6" mb={1}>{t("stats.per_dojo")}</Typography>
+      <Typography variant="h6" sx={{ mb: 1 }}>{t("stats.per_dojo")}</Typography>
       <Paper>
         <Table size="small">
           <TableHead>

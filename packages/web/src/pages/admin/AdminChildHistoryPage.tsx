@@ -52,9 +52,9 @@ export function AdminChildHistoryPage() {
   if (isLoading) return <LinearProgress />;
 
   return (
-    <Box maxWidth={700} mx="auto">
-      <Typography variant="h5" fontWeight={700} mb={1}>{t("admin.child_history.title")}</Typography>
-      {regs[0] && <Typography color="text.secondary" mb={3}>{regs[0].ninjaName}</Typography>}
+    <Box sx={{ maxWidth: 700, mx: "auto" }}>
+      <Typography variant="h5" sx={{ fontWeight: 700, mb: 1 }}>{t("admin.child_history.title")}</Typography>
+      {regs[0] && <Typography color="text.secondary" sx={{ mb: 3 }}>{regs[0].ninjaName}</Typography>}
 
       {regs.length === 0 ? (
         <Typography color="text.secondary">{t("admin.child_history.none")}</Typography>
@@ -65,8 +65,8 @@ export function AdminChildHistoryPage() {
           return (
             <Card key={reg.registrationId} sx={{ mb: 2 }}>
               <CardContent>
-                <Box display="flex" alignItems="center" gap={1} mb={1} flexWrap="wrap">
-                  <Typography fontWeight={600}>{event?.title ?? "…"}</Typography>
+                <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1, flexWrap: "wrap" }}>
+                  <Typography sx={{ fontWeight: 600 }}>{event?.title ?? "…"}</Typography>
                   <RegistrationStatusChip
                     status={reg.status}
                     isCoachChild={reg.isCoachChild}
@@ -78,7 +78,7 @@ export function AdminChildHistoryPage() {
                     ? `${new Date(event.date).toLocaleDateString(undefined, { dateStyle: "medium" })}${event.location?.city ? ` · ${event.location.city}` : ""}`
                     : ""}
                 </Typography>
-                <Box mt={1}>
+                <Box sx={{ mt: 1 }}>
                   <Chip label={atelierName} size="small" variant="outlined" />
                 </Box>
               </CardContent>

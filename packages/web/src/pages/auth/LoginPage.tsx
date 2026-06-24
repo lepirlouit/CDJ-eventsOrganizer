@@ -32,10 +32,10 @@ export function LoginPage() {
   }
 
   return (
-    <Box display="flex" justifyContent="center" pt={8}>
+    <Box sx={{ display: "flex", justifyContent: "center", pt: 8 }}>
       <Card sx={{ width: "100%", maxWidth: 440 }}>
         <CardContent sx={{ p: 4 }}>
-          <Typography variant="h5" fontWeight={700} mb={3} textAlign="center">
+          <Typography variant="h5" sx={{ fontWeight: 700, mb: 3, textAlign: "center" }}>
             CoderDojo Events
           </Typography>
           {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}

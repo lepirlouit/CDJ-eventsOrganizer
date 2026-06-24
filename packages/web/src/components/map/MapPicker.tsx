@@ -70,7 +70,7 @@ export function MapPicker({ lat, lng, onChange }: Props) {
           )}
         </MapContainer>
       </Box>
-      <Typography variant="caption" color="text.secondary" mt={0.5} display="block">
+      <Typography variant="caption" color="text.secondary" sx={{ mt: 0.5, display: "block" }}>
         {position
           ? `📍 ${lat!.toFixed(5)}, ${lng!.toFixed(5)} — drag the pin or click to reposition`
           : "Click on the map to place a pin"}

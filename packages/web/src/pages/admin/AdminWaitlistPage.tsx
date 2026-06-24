@@ -36,7 +36,7 @@ export function AdminWaitlistPage() {
 
   return (
     <Box>
-      <Typography variant="h5" fontWeight={700} mb={3}>{t("admin.waitlist")}</Typography>
+      <Typography variant="h5" sx={{ fontWeight: 700, mb: 3 }}>{t("admin.waitlist")}</Typography>
       <Paper>
         <Table>
           <TableHead>

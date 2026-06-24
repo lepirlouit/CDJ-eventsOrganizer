@@ -44,13 +44,13 @@ export function VerifyOtpPage() {
   }
 
   return (
-    <Box display="flex" justifyContent="center" pt={8}>
+    <Box sx={{ display: "flex", justifyContent: "center", pt: 8 }}>
       <Card sx={{ width: "100%", maxWidth: 440 }}>
         <CardContent sx={{ p: 4 }}>
-          <Typography variant="h5" fontWeight={700} mb={1} textAlign="center">
+          <Typography variant="h5" sx={{ fontWeight: 700, mb: 1, textAlign: "center" }}>
             {t("auth.check_email")}
           </Typography>
-          <Typography color="text.secondary" mb={3} textAlign="center">
+          <Typography color="text.secondary" sx={{ mb: 3, textAlign: "center" }}>
             {t("auth.enter_code")}
           </Typography>
           {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
@@ -64,7 +64,7 @@ export function VerifyOtpPage() {
               value={otp}
               onChange={(e) => setOtp(e.target.value)}
               sx={{ mb: 2 }}
-              inputProps={{ maxLength: 6 }}
+              slotProps={{ htmlInput: { maxLength: 6 } }}
               autoFocus
             />
             <Button

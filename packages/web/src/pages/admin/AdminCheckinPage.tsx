@@ -107,9 +107,9 @@ export function AdminCheckinPage() {
   if (loadingReg || loadingVol) return <LinearProgress />;
 
   return (
-    <Box maxWidth={700} mx="auto">
-      <Box display="flex" alignItems="center" justifyContent="space-between" mb={2}>
-        <Typography variant="h5" fontWeight={700}>
+    <Box sx={{ maxWidth: 700, mx: "auto" }}>
+      <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mb: 2 }}>
+        <Typography variant="h5" sx={{ fontWeight: 700 }}>
           {t("admin.checkin.title")}
         </Typography>
         <Button component={Link} to={`/dashboard/admin/events/${eventId}/registrants`} variant="outlined" size="small">
@@ -127,7 +127,7 @@ export function AdminCheckinPage() {
           textAlign: "center",
         }}
       >
-        <Typography variant="h4" fontWeight={700}>
+        <Typography variant="h4" sx={{ fontWeight: 700 }}>
           {totalCheckedIn} / {totalPresent}
         </Typography>
         <Typography>{t("admin.checkin.counter", { count: totalCheckedIn, total: totalPresent })}</Typography>
@@ -144,12 +144,14 @@ export function AdminCheckinPage() {
         value={search}
         onChange={(e) => setSearch(e.target.value)}
         sx={{ mb: 3 }}
-        InputProps={{
-          startAdornment: (
-            <InputAdornment position="start">
-              <SearchIcon />
-            </InputAdornment>
-          ),
+        slotProps={{
+          input: {
+            startAdornment: (
+              <InputAdornment position="start">
+                <SearchIcon />
+              </InputAdornment>
+            ),
+          },
         }}
       />
 
@@ -157,8 +159,8 @@ export function AdminCheckinPage() {
         <Card key={reg.registrationId} sx={{ mb: 1 }}>
           <CardContent sx={{ display: "flex", alignItems: "center", gap: 2, py: 1.5, "&:last-child": { pb: 1.5 } }}>
             <RadioButtonUncheckedIcon color="disabled" />
-            <Box flexGrow={1}>
-              <Typography fontWeight={600}>{reg.ninjaName}</Typography>
+            <Box sx={{ flexGrow: 1 }}>
+              <Typography sx={{ fontWeight: 600 }}>{reg.ninjaName}</Typography>
               <Typography variant="body2" color="text.secondary">{reg.parentName} · {reg.atelierId}</Typography>
             </Box>
             {reg.isCoachChild && <Chip label="Coach" size="small" color="info" />}
@@ -184,8 +186,8 @@ export function AdminCheckinPage() {
             <Card key={vol.userId} sx={{ mb: 1 }}>
               <CardContent sx={{ display: "flex", alignItems: "center", gap: 2, py: 1.5, "&:last-child": { pb: 1.5 } }}>
                 <RadioButtonUncheckedIcon color="disabled" />
-                <Box flexGrow={1}>
-                  <Typography fontWeight={600}>{vol.coachName}</Typography>
+                <Box sx={{ flexGrow: 1 }}>
+                  <Typography sx={{ fontWeight: 600 }}>{vol.coachName}</Typography>
                   <Typography variant="body2" color="text.secondary">{vol.coachEmail}</Typography>
                 </Box>
                 <Button
@@ -212,8 +214,8 @@ export function AdminCheckinPage() {
             <Card key={reg.registrationId} sx={{ mb: 1, bgcolor: "success.50", opacity: 0.8 }}>
               <CardContent sx={{ display: "flex", alignItems: "center", gap: 2, py: 1.5, "&:last-child": { pb: 1.5 } }}>
                 <CheckCircleIcon color="success" />
-                <Box flexGrow={1}>
-                  <Typography fontWeight={600}>{reg.ninjaName}</Typography>
+                <Box sx={{ flexGrow: 1 }}>
+                  <Typography sx={{ fontWeight: 600 }}>{reg.ninjaName}</Typography>
                   <Typography variant="body2" color="text.secondary">{reg.parentName}</Typography>
                 </Box>
                 <Button
@@ -232,8 +234,8 @@ export function AdminCheckinPage() {
             <Card key={vol.userId} sx={{ mb: 1, bgcolor: "success.50", opacity: 0.8 }}>
               <CardContent sx={{ display: "flex", alignItems: "center", gap: 2, py: 1.5, "&:last-child": { pb: 1.5 } }}>
                 <CheckCircleIcon color="success" />
-                <Box flexGrow={1}>
-                  <Typography fontWeight={600}>{vol.coachName}</Typography>
+                <Box sx={{ flexGrow: 1 }}>
+                  <Typography sx={{ fontWeight: 600 }}>{vol.coachName}</Typography>
                   <Typography variant="body2" color="text.secondary">{vol.coachEmail}</Typography>
                 </Box>
                 <Chip label="Coach" size="small" color="info" sx={{ mr: 1 }} />
