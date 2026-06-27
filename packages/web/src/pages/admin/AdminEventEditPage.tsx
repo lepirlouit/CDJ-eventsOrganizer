@@ -17,6 +17,7 @@ import Checkbox from "@mui/material/Checkbox";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import LinearProgress from "@mui/material/LinearProgress";
 import { api } from "../../lib/api";
+import { DescriptionEditor } from "../../components/events/DescriptionEditor";
 
 const schema = z.object({
   title: z.string().min(1),
@@ -165,7 +166,16 @@ export function AdminEventEditPage() {
       <Paper sx={{ p: 3 }}>
         <form onSubmit={handleSubmit((d) => mutation.mutate(d))}>
           <TextField label={t("admin.event_form.title")} fullWidth sx={{ mb: 2 }} {...register("title")} error={!!errors.title} required />
-          <TextField label={t("admin.event_form.description")} fullWidth multiline rows={3} sx={{ mb: 2 }} {...register("description")} />
+          <Typography variant="body2" color="text.secondary" sx={{ mb: 0.5 }}>
+            {t("admin.event_form.description")}
+          </Typography>
+          <Controller
+            name="description"
+            control={control}
+            render={({ field }) => (
+              <DescriptionEditor value={field.value ?? ""} onChange={field.onChange} />
+            )}
+          />
           <TextField label={t("admin.event_form.date")} type="date" fullWidth sx={{ mb: 2 }} slotProps={{ inputLabel: { shrink: true } }} {...register("date")} error={!!errors.date} required />
 
           {/* Location picker — pre-fills address fields from saved dojo locations */}

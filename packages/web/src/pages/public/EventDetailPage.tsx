@@ -12,6 +12,7 @@ import LinearProgress from "@mui/material/LinearProgress";
 import Alert from "@mui/material/Alert";
 import Stack from "@mui/material/Stack";
 import { api } from "../../lib/api";
+import { sanitizeHtml } from "../../lib/sanitize";
 import { useAuth, isAnyCoach } from "../../hooks/useAuth";
 
 export function EventDetailPage() {
@@ -59,7 +60,18 @@ export function EventDetailPage() {
   return (
     <Box sx={{ maxWidth: 700, mx: "auto" }}>
       <Typography variant="h4" sx={{ fontWeight: 700, mb: 1 }}>{event.title}</Typography>
-      <Typography color="text.secondary" sx={{ mb: 3 }}>{event.description}</Typography>
+      {event.description && (
+        <Box
+          sx={{
+            color: "text.secondary",
+            mb: 3,
+            "& img": { maxWidth: "100%", height: "auto", borderRadius: 1 },
+            "& p": { my: 1 },
+            "& :first-of-type": { mt: 0 },
+          }}
+          dangerouslySetInnerHTML={{ __html: sanitizeHtml(event.description) }}
+        />
+      )}
 
       <Card sx={{ mb: 3 }}>
         <CardContent>

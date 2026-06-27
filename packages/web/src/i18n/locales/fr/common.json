@@ -105,7 +105,18 @@
       "registration_close": "Clôture des inscriptions",
       "ateliers": "Ateliers",
       "status": "Statut",
-      "pick_location": "Utiliser un lieu enregistré :"
+      "pick_location": "Utiliser un lieu enregistré :",
+      "link_prompt": "Saisissez une URL (laissez vide pour retirer le lien)",
+      "toolbar": {
+        "bold": "Gras",
+        "italic": "Italique",
+        "heading": "Titre",
+        "subheading": "Sous-titre",
+        "bullet_list": "Liste à puces",
+        "numbered_list": "Liste numérotée",
+        "link": "Lien",
+        "image": "Insérer une image"
+      }
     },
     "checkin": {
       "title": "Check-in",

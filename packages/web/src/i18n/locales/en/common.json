@@ -105,7 +105,18 @@
       "registration_close": "Registration closes",
       "ateliers": "Ateliers",
       "status": "Status",
-      "pick_location": "Use a saved location:"
+      "pick_location": "Use a saved location:",
+      "link_prompt": "Enter a URL (leave empty to remove the link)",
+      "toolbar": {
+        "bold": "Bold",
+        "italic": "Italic",
+        "heading": "Heading",
+        "subheading": "Subheading",
+        "bullet_list": "Bullet list",
+        "numbered_list": "Numbered list",
+        "link": "Link",
+        "image": "Insert image"
+      }
     },
     "checkin": {
       "title": "Check-in",

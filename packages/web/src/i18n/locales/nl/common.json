@@ -105,7 +105,18 @@
       "registration_close": "Inschrijving sluit",
       "ateliers": "Ateliers",
       "status": "Status",
-      "pick_location": "Gebruik een opgeslagen locatie:"
+      "pick_location": "Gebruik een opgeslagen locatie:",
+      "link_prompt": "Voer een URL in (laat leeg om de link te verwijderen)",
+      "toolbar": {
+        "bold": "Vet",
+        "italic": "Cursief",
+        "heading": "Kop",
+        "subheading": "Subkop",
+        "bullet_list": "Opsommingslijst",
+        "numbered_list": "Genummerde lijst",
+        "link": "Link",
+        "image": "Afbeelding invoegen"
+      }
     },
     "checkin": {
       "title": "Check-in",

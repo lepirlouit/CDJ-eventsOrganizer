@@ -28,6 +28,26 @@ export const table = new sst.aws.Dynamo(`MainTable`, {
 
 export const exportBucket = new sst.aws.Bucket(`ExportBucket`, {
   transform: {
-    bucket: { bucketName: `coderdojo-${$app.stage}-exports` },
+    // The physical-name property on aws.s3.Bucket is `bucket` (not `bucketName`).
+    bucket: { bucket: `coderdojo-${$app.stage}-exports` },
+  },
+});
+
+// Persistent bucket for images embedded in event descriptions. Served under the
+// site's own domain via a second CloudFront origin (see infra/web.ts), so it must
+// allow CloudFront to read it. CORS allows the browser's presigned PUT direct to S3.
+export const uploadsBucket = new sst.aws.Bucket(`UploadsBucket`, {
+  access: "cloudfront",
+  cors: {
+    allowMethods: ["PUT", "GET", "HEAD"],
+    allowOrigins:
+      $app.stage === "prod"
+        ? ["https://cdj.pirlou.it"]
+        : ["http://localhost:5173", "https://cdj.pirlou.it"],
+    allowHeaders: ["*"],
+    exposeHeaders: ["ETag"],
+  },
+  transform: {
+    bucket: { bucket: `coderdojo-${$app.stage}-uploads` },
   },
 });

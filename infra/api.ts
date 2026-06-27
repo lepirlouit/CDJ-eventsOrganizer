@@ -1,4 +1,4 @@
-import { table, exportBucket } from "./storage";
+import { table, exportBucket, uploadsBucket } from "./storage";
 import { userPool, userPoolClient } from "./auth";
 
 // One shared managed policy; attached to each function's role via
@@ -19,7 +19,7 @@ const WEB_URL = $app.stage === "prod"
   : "http://localhost:5173";
 
 const fnDefaults = {
-  link: [table, exportBucket, userPool],
+  link: [table, exportBucket, uploadsBucket, userPool],
   runtime: "nodejs22.x" as const,
   environment: {
     SES_FROM_EMAIL: "noreply@cdj.pirlou.it",
@@ -83,6 +83,9 @@ route("GET", "/users/me/registrations", "packages/functions/src/registrations/li
 route("GET", "/users/me/data-export", "packages/functions/src/users/data-export.handler");
 route("DELETE", "/users/me", "packages/functions/src/users/erase.handler");
 route("DELETE", "/registrations/{registrationId}", "packages/functions/src/registrations/cancel.handler");
+
+// Image uploads for rich-text event descriptions (coach/lead_coach)
+route("POST", "/admin/uploads/presign", "packages/functions/src/uploads/presign.handler");
 
 // Children (parent's saved participant profiles)
 route("GET", "/users/me/children", "packages/functions/src/children/list.handler");

@@ -198,6 +198,10 @@ declare module "sst" {
       "name": string
       "type": "sst.aws.Function"
     }
+    "FnPOST_admin_uploads_presign": {
+      "name": string
+      "type": "sst.aws.Function"
+    }
     "FnPOST_admin_users_userId_role": {
       "name": string
       "type": "sst.aws.Function"
@@ -281,6 +285,10 @@ declare module "sst" {
     "PreTokenGeneration": {
       "name": string
       "type": "sst.aws.Function"
+    }
+    "UploadsBucket": {
+      "name": string
+      "type": "sst.aws.Bucket"
     }
     "VerifyAuthChallenge": {
       "name": string
