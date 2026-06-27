@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import {
   otpEmail,
+  magicLinkEmail,
   broadcastEmail,
   contactDojoEmail,
   contactDojoConfirmationEmail,
@@ -12,6 +13,24 @@ describe("otpEmail", () => {
     expect(otpEmail("en", "123456").subject).toContain("123456");
     expect(otpEmail("fr", "123456").subject).toContain("connexion");
     expect(otpEmail("nl", "123456").subject).toContain("inlogcode");
+  });
+});
+
+describe("magicLinkEmail", () => {
+  const url = "https://cdj.pirlou.it/login/verify?email=a%40b.co&token=abc123";
+
+  it("embeds the magic link and the fallback code in both html and text", () => {
+    const m = magicLinkEmail("en", { url, otp: "123456" });
+    expect(m.html).toContain(url);
+    expect(m.html).toContain("123456");
+    expect(m.text).toContain(url);
+    expect(m.text).toContain("123456");
+  });
+
+  it("localizes the subject per language", () => {
+    expect(magicLinkEmail("en", { url, otp: "1" }).subject).toContain("Sign in");
+    expect(magicLinkEmail("fr", { url, otp: "1" }).subject).toContain("Connexion");
+    expect(magicLinkEmail("nl", { url, otp: "1" }).subject).toContain("Aanmelden");
   });
 });
 

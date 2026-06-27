@@ -9,6 +9,7 @@ import { EventVolunteerEntity } from "./event-volunteer.js";
 import { DojoMembershipEntity } from "./dojo-membership.js";
 import { ChildEntity } from "./child.js";
 import { CustomQuestionEntity } from "./custom-question.js";
+import { LoginTokenEntity } from "./login-token.js";
 
 export { DocumentClient, table } from "./client.js";
 
@@ -23,6 +24,7 @@ export const db = new Service(
     dojoMembership: DojoMembershipEntity,
     child: ChildEntity,
     customQuestion: CustomQuestionEntity,
+    loginToken: LoginTokenEntity,
   },
   { client: DocumentClient, table }
 );

@@ -64,6 +64,22 @@ export async function initiateAuth(email: string, langHint = "en"): Promise<Cogn
   });
 }
 
+/**
+ * Redeem a magic-link token (or a manually-typed code) with no pre-existing
+ * pending session — e.g. when the link is opened on another device or in a
+ * fresh tab. Starts a brand-new CUSTOM_AUTH challenge for the email and answers
+ * it immediately. The CreateAuthChallenge Lambda is idempotent, so this reuses
+ * the secrets already emailed instead of sending a new code.
+ */
+export async function redeemMagicLink(
+  email: string,
+  token: string,
+  langHint = "en"
+): Promise<{ accessToken: string; idToken: string }> {
+  const user = await initiateAuth(email, langHint);
+  return answerChallenge(user, token);
+}
+
 export function answerChallenge(
   user: CognitoUser,
   otp: string

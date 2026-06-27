@@ -15,11 +15,17 @@ const defineAuthChallenge = new sst.aws.Function(`DefineAuthChallenge`, {
   link: [table],
 });
 
+// Base URL of the web app, used to build the magic link in the login email.
+const WEB_URL = $app.stage === "prod"
+  ? "https://cdj.pirlou.it"
+  : "http://localhost:5173";
+
 const createAuthChallenge = new sst.aws.Function(`CreateAuthChallenge`, {
   handler: "packages/functions/src/auth/create-auth-challenge.handler",
   link: [table, otpHmacSecret],
   environment: {
     SES_FROM_EMAIL: "noreply@cdj.pirlou.it",
+    WEB_URL,
   },
 });
 

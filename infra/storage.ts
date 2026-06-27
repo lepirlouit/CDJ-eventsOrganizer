@@ -15,6 +15,9 @@ export const table = new sst.aws.Dynamo(`MainTable`, {
     gsi2: { hashKey: "gsi2pk", rangeKey: "gsi2sk" },
     gsi3: { hashKey: "gsi3pk", rangeKey: "gsi3sk" },
   },
+  // Single-use magic-link / OTP login tokens expire themselves via DynamoDB TTL.
+  // (Code also checks expiresAt, since TTL deletion is best-effort and delayed.)
+  ttl: "expiresAt",
   transform: {
     table: {
       name: `coderdojo-${$app.stage}-main`,

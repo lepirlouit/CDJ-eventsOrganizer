@@ -82,7 +82,7 @@ Resources are defined in `infra/` and wired together in `sst.config.ts`. Depende
 
 ### Core package (`packages/core/`)
 
-- **Entities** (`src/entities/`): seven ElectroDB entities sharing a single DynamoDB table. Each entity file imports `DocumentClient` and `table` from `client.ts` (not from `table.ts`) to avoid a circular ESM import. `table.ts` composes all entities into an ElectroDB `Service` (`db`).
+- **Entities** (`src/entities/`): ten ElectroDB entities sharing a single DynamoDB table. Each entity file imports `DocumentClient` and `table` from `client.ts` (not from `table.ts`) to avoid a circular ESM import. `table.ts` composes all entities into an ElectroDB `Service` (`db`).
 - **Capacity logic** (`src/lib/capacity.ts`): `registerParticipant()` handles the dual-pool capacity split (general vs. coach-reserved seats) and falls through to the waitlist. Uses an explicit `RegistrationBase` type and casts `db.entities.registration.put` to `any` because ElectroDB v3's overloaded `put()` causes TypeScript to infer the array-batch overload.
 - **Types** (`src/types/index.ts`): `getDojoRole()`, `requireDojoCoach()`, `requireDojoLeadCoach()` — DB-based auth helpers used by all Lambda handlers. Role checks never trust JWT claims for dojo-specific authorization.
 - **userId vs Cognito sub**: `User.userId` is a DynamoDB ULID. `claims.sub` is the Cognito sub — a different value. `DojoMembership` stores the ULID. Always use `getDbUserId(db, claims)` (email lookup → ULID) when querying `DojoMembership` by the caller's identity. Do NOT pass `claims.sub` directly as a DojoMembership userId.
@@ -102,14 +102,18 @@ One file per endpoint, grouped by domain. Every handler:
 
 The `route()` function in `infra/api.ts` defines which handler file maps to which HTTP method + path.
 
-### Auth flow (passwordless OTP)
+### Auth flow (passwordless — magic link + OTP fallback)
+
+The login email contains a one-click **magic link** AND a 6-digit code; either is a
+valid answer to the same Cognito `CUSTOM_AUTH` challenge.
 
 1. Frontend calls `ensureUserExists(email)` — a silent Cognito `Pool.signUp()` with a dummy password. The `PreSignUp` Lambda auto-confirms users so no verification email is sent.
 2. Frontend calls `initiateAuth(email)` — triggers the CUSTOM_AUTH challenge chain.
-3. `CreateAuthChallenge` Lambda generates a 6-digit OTP, HMACs it, and sends it via SES. It guards against `userNotFound: true` (Cognito passes a random UUID as `event.userName` in that case — do not send to it).
-4. `VerifyAuthChallenge` does a timing-safe HMAC comparison.
+3. `CreateAuthChallenge` Lambda mints a 6-digit OTP **and** a high-entropy magic token, HMACs both, stores the hashes in a `LoginToken` record (one per email, 15-min `expiresAt`/TTL), and emails the link (`${WEB_URL}/login/verify?email=…&token=…`) + code via SES. It guards against `userNotFound: true` (Cognito passes a random UUID as `event.userName` — do not send to it).
+   - **Idempotency**: the magic link is redeemed with a *fresh* `initiateAuth` (often on another device), which re-fires this trigger — as does each retry in a multi-attempt session. If a valid `LoginToken` already exists for the email, it reuses the stored hashes and does **not** send a second email. So the same link/code keeps working cross-device, and there's no duplicate email.
+4. `VerifyAuthChallenge` does a timing-safe HMAC comparison of the answer against **both** hashes (OTP or magic token). On success it **deletes** the `LoginToken` (single use). Deleting — rather than a "consumed" flag — keeps re-login within the TTL window working, since a fresh login and a replay are indistinguishable at the trigger.
 5. `PostConfirmation` creates the DynamoDB User record on first login.
-6. `CognitoUser` instance is stored in a module-level variable in `packages/web/src/lib/auth.ts` (not in router state — it can't be serialized by the History API's structured-clone algorithm).
+6. Frontend redemption (`packages/web/src/pages/auth/VerifyOtpPage.tsx`): if this tab still holds the pending `CognitoUser` (same browser that started login), it answers that session directly; otherwise (magic link opened in a new tab / another device) `redeemMagicLink(email, token)` starts a fresh challenge and answers it. The `CognitoUser` instance is stored in a module-level variable in `packages/web/src/lib/auth.ts` (not in router state — it can't be serialized by the History API's structured-clone algorithm).
 
 ### Frontend (`packages/web/src/`)
 

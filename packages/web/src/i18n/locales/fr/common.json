@@ -13,6 +13,10 @@
     "enter_email": "Entrez votre adresse e-mail",
     "check_email": "Vérifiez votre e-mail",
     "enter_code": "Entrez le code à 6 chiffres que nous vous avons envoyé",
+    "magic_link_instructions": "Nous vous avons envoyé un lien de connexion par e-mail. Cliquez dessus pour continuer, ou entrez le code ci-dessous.",
+    "signing_in": "Connexion en cours…",
+    "link_invalid": "Ce lien de connexion est invalide ou a expiré. Entrez plutôt le code reçu par e-mail.",
+    "code_label": "Code",
     "invalid_code": "Code invalide, veuillez réessayer",
     "sign_in": "Se connecter",
     "verify": "Vérifier"

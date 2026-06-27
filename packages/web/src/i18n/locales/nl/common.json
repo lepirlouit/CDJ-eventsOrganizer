@@ -13,6 +13,10 @@
     "enter_email": "Voer uw e-mailadres in",
     "check_email": "Controleer uw e-mail",
     "enter_code": "Voer de 6-cijferige code in die we u hebben gestuurd",
+    "magic_link_instructions": "We hebben u een aanmeldlink gemaild. Klik erop om door te gaan, of voer hieronder de code in.",
+    "signing_in": "U wordt aangemeld…",
+    "link_invalid": "Deze aanmeldlink is ongeldig of verlopen. Voer in plaats daarvan de code uit uw e-mail in.",
+    "code_label": "Code",
     "invalid_code": "Ongeldige code, probeer opnieuw",
     "sign_in": "Inloggen",
     "verify": "Verifiëren"

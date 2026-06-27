@@ -30,6 +30,65 @@ export function otpEmail(lang: Lang, otp: string): EmailTemplate {
   };
 }
 
+/**
+ * Passwordless sign-in email: a one-click magic link plus the 6-digit code as
+ * a fallback for users who'd rather type it (or whose mail client mangles the
+ * link). Both secrets are valid for the same login.
+ */
+export function magicLinkEmail(
+  lang: Lang,
+  params: { url: string; otp: string }
+): EmailTemplate {
+  const { url, otp } = params;
+
+  const subject = t(
+    lang,
+    "Sign in to CoderDojo Events",
+    "Connexion à CoderDojo Events",
+    "Aanmelden bij CoderDojo Events"
+  );
+  const intro = t(
+    lang,
+    "Click the button below to sign in. The link expires in 15 minutes and can only be used once.",
+    "Cliquez sur le bouton ci-dessous pour vous connecter. Le lien expire dans 15 minutes et ne peut être utilisé qu'une seule fois.",
+    "Klik op de onderstaande knop om aan te melden. De link verloopt over 15 minuten en kan slechts één keer worden gebruikt."
+  );
+  const cta = t(lang, "Sign in", "Se connecter", "Aanmelden");
+  const fallbackLabel = t(
+    lang,
+    "Or enter this code manually:",
+    "Ou entrez ce code manuellement :",
+    "Of voer deze code handmatig in:"
+  );
+  const ignore = t(
+    lang,
+    "If you didn't request this, you can safely ignore this email.",
+    "Si vous n'êtes pas à l'origine de cette demande, vous pouvez ignorer cet e-mail.",
+    "Als u dit niet hebt aangevraagd, kunt u deze e-mail negeren."
+  );
+
+  const html = `
+    <p>${intro}</p>
+    <p>
+      <a href="${url}" style="display:inline-block;padding:12px 24px;background:#1976d2;color:#ffffff;text-decoration:none;border-radius:6px;font-weight:600">${cta}</a>
+    </p>
+    <p style="color:#555">${fallbackLabel} <strong style="font-size:18px;letter-spacing:2px">${otp}</strong></p>
+    <p style="color:#888;font-size:13px">${ignore}</p>
+  `;
+
+  const text = [
+    intro,
+    "",
+    `${cta}: ${url}`,
+    "",
+    `${fallbackLabel.replace(/\s*[:：]\s*$/, "")}: ${otp}`,
+    "",
+    ignore,
+  ].join("\n");
+
+  return { subject, html, text };
+}
+
 export function registrationConfirmedEmail(
   lang: Lang,
   params: {

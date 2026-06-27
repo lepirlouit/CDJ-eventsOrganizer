@@ -7,4 +7,5 @@ export { EventVolunteerEntity } from "./event-volunteer.js";
 export { DojoMembershipEntity } from "./dojo-membership.js";
 export { ChildEntity } from "./child.js";
 export { CustomQuestionEntity } from "./custom-question.js";
+export { LoginTokenEntity } from "./login-token.js";
 export { db, DocumentClient, table } from "./table.js";

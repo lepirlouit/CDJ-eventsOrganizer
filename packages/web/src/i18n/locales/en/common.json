@@ -13,6 +13,10 @@
     "enter_email": "Enter your email address",
     "check_email": "Check your email",
     "enter_code": "Enter the 6-digit code we sent you",
+    "magic_link_instructions": "We've emailed you a sign-in link. Click it to continue, or enter the code below.",
+    "signing_in": "Signing you in…",
+    "link_invalid": "This sign-in link is invalid or has expired. Enter the code from your email instead.",
+    "code_label": "Code",
     "invalid_code": "Invalid code, please try again",
     "sign_in": "Sign in",
     "verify": "Verify"
