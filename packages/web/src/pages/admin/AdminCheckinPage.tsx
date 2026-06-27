@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import Box from "@mui/material/Box";
@@ -20,6 +20,7 @@ import { api } from "../../lib/api";
 export function AdminCheckinPage() {
   const { id: eventId } = useParams<{ id: string }>();
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const qc = useQueryClient();
   const [search, setSearch] = useState("");
 
@@ -112,7 +113,7 @@ export function AdminCheckinPage() {
         <Typography variant="h5" sx={{ fontWeight: 700 }}>
           {t("admin.checkin.title")}
         </Typography>
-        <Button component={Link} to={`/dashboard/admin/events/${eventId}/registrants`} variant="outlined" size="small">
+        <Button onClick={() => navigate(-1)} variant="outlined" size="small">
           {t("common.back")}
         </Button>
       </Box>
