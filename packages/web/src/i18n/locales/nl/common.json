@@ -87,8 +87,10 @@
     "export": "CSV exporteren",
     "promote": "Bevorderen",
     "event_create": "Evenement aanmaken",
+    "event_clone": "Evenement klonen",
     "event_form": {
       "title": "Titel",
+      "copy_suffix": "(kopie)",
       "description": "Beschrijving",
       "date": "Datum",
       "location_address": "Adres",

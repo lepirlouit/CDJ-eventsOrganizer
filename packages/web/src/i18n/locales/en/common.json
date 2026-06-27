@@ -87,8 +87,10 @@
     "export": "Export CSV",
     "promote": "Promote",
     "event_create": "Create Event",
+    "event_clone": "Clone Event",
     "event_form": {
       "title": "Title",
+      "copy_suffix": "(copy)",
       "description": "Description",
       "date": "Date",
       "location_address": "Address",

@@ -52,15 +52,19 @@ export function AdminEventEditPage() {
   const { id: eventId } = useParams<{ id: string }>();
   const [searchParams] = useSearchParams();
   const isNew = eventId === "new";
+  const cloneFrom = searchParams.get("cloneFrom");
+  const isClone = isNew && !!cloneFrom;
   const { t } = useTranslation();
   const navigate = useNavigate();
   const qc = useQueryClient();
   const dojoId = searchParams.get("dojoId") ?? "";
 
+  // The event we prefill from: the edited event, or — when cloning — the source.
+  const sourceEventId = isNew ? cloneFrom : eventId;
   const { data: event, isLoading } = useQuery({
-    queryKey: ["event", eventId],
-    queryFn: () => api.get(`/events/${eventId}`).then((r) => r.data),
-    enabled: !isNew && !!eventId,
+    queryKey: ["event", sourceEventId],
+    queryFn: () => api.get(`/events/${sourceEventId}`).then((r) => r.data),
+    enabled: !!sourceEventId,
   });
 
   // Load dojo locations for the picker
@@ -93,7 +97,9 @@ export function AdminEventEditPage() {
   useEffect(() => {
     if (event) {
       reset({
-        title: event.title,
+        // When cloning, mark the title as a copy and never inherit a
+        // published/completed status — the clone starts as a fresh draft.
+        title: isClone ? `${event.title} ${t("admin.event_form.copy_suffix")}` : event.title,
         description: event.description ?? "",
         date: event.date,
         locationAddress: event.location?.address ?? "",
@@ -102,7 +108,7 @@ export function AdminEventEditPage() {
         coachReservedSeats: event.coachReservedSeats ?? 0,
         registrationOpenAt: event.registrationOpenAt?.slice(0, 16) ?? "",
         registrationCloseAt: event.registrationCloseAt?.slice(0, 16) ?? "",
-        status: event.status,
+        status: isClone ? "draft" : event.status,
       });
       // Prefill track selection from the event's existing ateliers.
       const sel: TrackSelection = {};
@@ -111,7 +117,7 @@ export function AdminEventEditPage() {
       }
       setTracks(sel);
     }
-  }, [event, reset]);
+  }, [event, reset, isClone, t]);
 
   function applyLocation(loc: DojoLocation) {
     setValue("locationAddress", loc.address);
@@ -148,12 +154,12 @@ export function AdminEventEditPage() {
     },
   });
 
-  if (!isNew && isLoading) return <LinearProgress />;
+  if (sourceEventId && isLoading) return <LinearProgress />;
 
   return (
     <Box sx={{ maxWidth: 700, mx: "auto" }}>
       <Typography variant="h5" sx={{ fontWeight: 700, mb: 3 }}>
-        {isNew ? t("admin.event_create") : t("common.edit")}
+        {isClone ? t("admin.event_clone") : isNew ? t("admin.event_create") : t("common.edit")}
       </Typography>
       {mutation.isError && <Alert severity="error" sx={{ mb: 2 }}>{t("common.error")}</Alert>}
       <Paper sx={{ p: 3 }}>
