@@ -14,11 +14,16 @@ export const handler: APIGatewayProxyHandlerV2 = async (event) => {
   const body = JSON.parse(event.body ?? "{}");
   const {
     title, description, date, location, maxCapacity, coachReservedSeats,
-    registrationOpenAt, registrationCloseAt, releaseAt, atelierIds, ateliers,
+    registrationOpenAt, registrationCloseAt, releaseAt, atelierIds, ateliers, status,
   } = body;
 
   if (!title || !date || !maxCapacity || !registrationOpenAt || !registrationCloseAt) {
     return err("title, date, maxCapacity, registrationOpenAt, registrationCloseAt required", 400);
+  }
+
+  const VALID_STATUSES = ["draft", "published", "cancelled", "completed"] as const;
+  if (status !== undefined && !VALID_STATUSES.includes(status)) {
+    return err("invalid status", 400);
   }
 
   if (coachReservedSeats !== undefined && coachReservedSeats > maxCapacity) {
@@ -59,7 +64,7 @@ export const handler: APIGatewayProxyHandlerV2 = async (event) => {
     registrationCount: 0, coachRegistrationCount: 0, waitlistCount: 0,
     registrationOpenAt, registrationCloseAt, releaseAt,
     ateliers: eventAteliers,
-    status: "draft",
+    status: status ?? "draft",
   }).go();
 
   const result = await db.entities.event.query.byId({ eventId }).go();
