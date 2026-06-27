@@ -150,7 +150,7 @@ export function AdminEventEditPage() {
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["adminEvents"] });
-      navigate("/dashboard/admin/events");
+      navigate(`/dashboard/admin/events?dojoId=${resolvedDojoId}`);
     },
   });
 
@@ -265,7 +265,7 @@ export function AdminEventEditPage() {
           />
           <Box sx={{ display: "flex", gap: 2 }}>
             <Button type="submit" variant="contained" disabled={mutation.isPending}>{t("common.save")}</Button>
-            <Button variant="outlined" onClick={() => navigate("/dashboard/admin/events")}>{t("common.cancel")}</Button>
+            <Button variant="outlined" onClick={() => navigate(`/dashboard/admin/events?dojoId=${resolvedDojoId}`)}>{t("common.cancel")}</Button>
           </Box>
         </form>
       </Paper>

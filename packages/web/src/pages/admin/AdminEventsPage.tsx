@@ -182,7 +182,7 @@ export function AdminEventsPage() {
                   </Button>
                   {myRole === "lead_coach" && (
                     <>
-                      <Button size="small" component={Link} to={`/dashboard/admin/events/${ev.eventId}/edit`}>
+                      <Button size="small" component={Link} to={`/dashboard/admin/events/${ev.eventId}/edit?dojoId=${dojoId}`}>
                         {t("common.edit")}
                       </Button>
                       <Button size="small" component={Link} to={`/dashboard/admin/events/new/edit?dojoId=${dojoId}&cloneFrom=${ev.eventId}`}>
