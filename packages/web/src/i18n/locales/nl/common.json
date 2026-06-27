@@ -138,7 +138,15 @@
       "title": "Coaches",
       "can_checkin": "Mag inchecken",
       "add": "Coach toevoegen",
-      "role": "Rol"
+      "role": "Rol",
+      "manage": "Coaches",
+      "coach": "Coach",
+      "lead_coach": "Hoofdcoach",
+      "none": "Nog geen coaches.",
+      "email": "E-mailadres",
+      "add_help": "De persoon moet minstens één keer ingelogd zijn voordat je hem kunt toevoegen.",
+      "not_found": "Gebruiker niet gevonden — vraag hen eerst in te loggen.",
+      "self_hint": "Je kunt je eigen rol niet wijzigen of jezelf verwijderen."
     },
     "tracks": {
       "manage": "Tracks beheren",

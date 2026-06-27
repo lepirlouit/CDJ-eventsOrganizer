@@ -138,7 +138,15 @@
       "title": "Coachs",
       "can_checkin": "Peut enregistrer",
       "add": "Ajouter un coach",
-      "role": "Rôle"
+      "role": "Rôle",
+      "manage": "Coachs",
+      "coach": "Coach",
+      "lead_coach": "Coach principal",
+      "none": "Aucun coach pour l'instant.",
+      "email": "Adresse e-mail",
+      "add_help": "La personne doit s'être connectée au moins une fois avant de pouvoir être ajoutée.",
+      "not_found": "Utilisateur introuvable — demandez-lui de se connecter d'abord.",
+      "self_hint": "Vous ne pouvez pas modifier votre propre rôle ni vous retirer."
     },
     "tracks": {
       "manage": "Gérer les ateliers",
